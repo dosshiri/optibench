@@ -75,7 +75,7 @@ def anneal_tsp(D, tl, seed, sample):
     last = 0.0
     while tm.left() > last * 1.2 or calls == 0:
         t0 = time.perf_counter()
-        xs = sample(Q, seed + calls)
+        xs = sample(Q, seed * 100000 + calls)  # シードごとに乱数の種が重ならないようにする
         last = time.perf_counter() - t0
         calls += 1
         ok = 0
@@ -214,7 +214,7 @@ def anneal_jssp(data, tl, seed, sample):
     while (best is None or best > lb) and (tm.left() > last * 1.2 or calls == 0):
         Q, var, ops = jssp_qubo(jobs, nm, T)
         t0 = time.perf_counter()
-        xs = sample(Q, seed + calls)
+        xs = sample(Q, seed * 100000 + calls)  # シードごとに乱数の種が重ならないようにする
         last = time.perf_counter() - t0
         calls += 1
         ms = None
