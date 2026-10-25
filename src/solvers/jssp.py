@@ -298,25 +298,20 @@ def _cpsat(data, tl, seed, workers):
                 optimal=st == cp_model.OPTIMAL)
 
 
-@solver("CP-SAT", problems="jssp", packages=["ortools"])
-def cpsat1(data, tl, seed):
-    return _cpsat(data, tl, seed, 1)
-
-
-@solver("CP-SAT-4w", problems="jssp", threads=4, packages=["ortools"])
-def cpsat4(data, tl, seed):
-    return _cpsat(data, tl, seed, 4)
+@solver("CP-SAT", problems="jssp", threads=[1, 4], packages=["ortools"])
+def cpsat(data, tl, seed, threads=1):
+    return _cpsat(data, tl, seed, threads)
 
 
 # ---------------------------------------------------------------- MIP (Manne の離接定式化, HiGHS)
-@solver("MIP-HiGHS", problems="jssp", packages=["highspy"])
-def mip_disjunctive(data, tl, seed):
+@solver("MIP-HiGHS", problems="jssp", parallel=True, packages=["highspy"])
+def mip_disjunctive(data, tl, seed, threads=1):
     import highspy
     jobs, nm = data
     H = float(sum(p for j in jobs for _, p in j))
     h = highspy.Highs()
     h.setOptionValue("output_flag", False)
-    h.setOptionValue("threads", 1)
+    h.setOptionValue("threads", threads)
     h.setOptionValue("random_seed", seed)
     h.setOptionValue("time_limit", float(tl))
     inf = highspy.kHighsInf

@@ -243,22 +243,17 @@ def _cpsat(inst, tl, seed, workers):
                 optimal=st == cp_model.OPTIMAL, solution=R.tolist())
 
 
-@solver("CP-SAT", problems="nsp", packages=["ortools"])
-def cpsat1(inst, tl, seed):
-    return _cpsat(inst, tl, seed, 1)
+@solver("CP-SAT", problems="nsp", threads=[1, 4], packages=["ortools"])
+def cpsat(inst, tl, seed, threads=1):
+    return _cpsat(inst, tl, seed, threads)
 
 
-@solver("CP-SAT-4w", problems="nsp", threads=4, packages=["ortools"])
-def cpsat4(inst, tl, seed):
-    return _cpsat(inst, tl, seed, 4)
-
-
-@solver("MIP-HiGHS", problems="nsp", packages=["highspy"])
-def mip(inst, tl, seed):
+@solver("MIP-HiGHS", problems="nsp", parallel=True, packages=["highspy"])
+def mip(inst, tl, seed, threads=1):
     import highspy
     h = highspy.Highs()
     h.setOptionValue("output_flag", False)
-    h.setOptionValue("threads", 1)
+    h.setOptionValue("threads", threads)
     h.setOptionValue("random_seed", seed)
     h.setOptionValue("time_limit", float(tl))
     lin = lambda t: sum(c * v for c, v in t)

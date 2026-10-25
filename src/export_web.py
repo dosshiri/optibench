@@ -17,13 +17,23 @@ from analyze import summarize
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジトリ直下
 
+def solver_names(conditions):
+    """手法名 -> 解法名. 記録が無い古い run は、手法名の末尾の "-<スレッド数>w" を外して求める."""
+    out = {}
+    for m, t in conditions["threads"].items():
+        suffix = f"-{t}w"
+        out[m] = m[:-len(suffix)] if t > 1 and m.endswith(suffix) else m
+    out.update(conditions.get("solvers", {}))
+    return out
+
+
 def run_summary(meta):
     """ビューに載せる run のメタデータ."""
     c, e = meta["conditions"], meta["environment"]
     return dict(run_id=meta["run_id"], problem=meta["problem"], started_at=meta["started_at"],
                 finished_at=meta.get("finished_at"), status=meta.get("status"), note=meta.get("note", ""),
                 migrated=meta.get("migrated", False), environment=e, git=meta["git"],
-                time_limit=c["time_limit"], workers=c["workers"], threads=c["threads"],
+                time_limit=c["time_limit"], workers=c["workers"], threads=c["threads"], solvers=solver_names(c),
                 seeds={m: len(s) for m, s in c["methods"].items()}, instance_sha256=meta["instance_sha256"])
 
 

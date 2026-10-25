@@ -15,25 +15,50 @@ import runmeta
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジトリ直下
 
 
+def plan_methods(problem, only=None, threads=None):
+    """実行する手法 {手法名: dict(solver, threads, seeds)} を決める.
+    only: カンマ区切りの解法名・手法名, threads: カンマ区切りのスレッド数（どちらも None なら既定）."""
+    solvers = registry.solvers(problem)
+    req = [int(t) for t in threads.split(",")] if threads else None
+    plan = {}
+
+    def add(s, t):
+        plan[registry.label(s.name, t)] = dict(solver=s.name, threads=t, seeds=list(range(1, s.seeds + 1)))
+
+    names = only.split(",") if only else list(solvers)
+    for name in names:
+        if name in solvers:
+            s = solvers[name]
+            for t in (s.threads if req is None else [t for t in req if s.parallel or t == 1]):
+                add(s, t)
+        else:
+            add(*registry.resolve(problem, name))  # "CP-SAT-8w" のような手法名. 未登録ならここで止める
+    if not plan:
+        sys.exit("実行する手法がありません（--only / --threads の指定を確認してください）")
+    return plan
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("problem")
     ap.add_argument("time_limit", type=float)
     ap.add_argument("--workers", type=int, default=4)
-    ap.add_argument("--only", default=None, help="カンマ区切りの手法名")
+    ap.add_argument("--only", default=None, help="カンマ区切りの解法名または手法名（例: CP-SAT, CP-SAT-8w）")
+    ap.add_argument("--threads", default=None,
+                    help="カンマ区切りのスレッド数（例: 1,4）. 並列実行できる解法をそれぞれのスレッド数で実行する。"
+                         "1 を含めない場合、1 スレッド専用の解法は実行しない（省略時は解法ごとの既定）")
     ap.add_argument("--instances", default=None, help="カンマ区切りのインスタンス名（省略時は問題の既定の一覧）")
     ap.add_argument("--run", default=None, help="再開する run_id（省略時は新しい run を作る）")
     ap.add_argument("--machine", default=None, help="実行環境の名前（省略時はホスト名）。run_id にも使う")
     ap.add_argument("--note", default="", help="run に付けるメモ")
     a = ap.parse_args()
     problem = registry.get_problem(a.problem)
-    solvers = registry.solvers(a.problem)
-    only = a.only.split(",") if a.only else None
-    for m in only or []:
-        registry.get_solver(a.problem, m)  # 未登録の手法名ならここで止める
     insts = a.instances.split(",") if a.instances else problem.default_instances()
-    # 既定のシードは 1, 2, ..., seeds
-    methods = {m: list(range(1, s.seeds + 1)) for m, s in solvers.items() if only is None or m in only}
+    plan = plan_methods(a.problem, a.only, a.threads)
+    methods = {m: p["seeds"] for m, p in plan.items()}
+    for m, p in plan.items():
+        if p["threads"] > (os.cpu_count() or 1):
+            print(f"警告: {m} のスレッド数 {p['threads']} が論理 CPU 数 {os.cpu_count()} を超えています", file=sys.stderr)
 
     if a.run:
         meta = runmeta.read_meta(a.run)
@@ -44,7 +69,18 @@ def main():
         if meta["instance_sha256"] != runmeta.instance_hashes(a.problem, meta["conditions"]["instances"]):
             print("警告: run 作成時とインスタンスファイルの内容が異なります", file=sys.stderr)
         insts = meta["conditions"]["instances"]
-        methods = {m: s for m, s in meta["conditions"]["methods"].items() if only is None or m in only}
+        c = meta["conditions"]
+        if a.only or a.threads:
+            # 指定された手法だけを実行する。run に無い手法（新しいスレッド数など）は条件に追加する
+            for m, p in plan.items():
+                if m not in c["methods"]:
+                    c["methods"][m] = p["seeds"]
+                    c["threads"][m] = p["threads"]
+                    c.setdefault("solvers", {})[m] = p["solver"]
+                    print(f"run に {m} を追加します", file=sys.stderr)
+            methods = {m: c["methods"][m] for m in plan}
+        else:
+            methods = c["methods"]
         meta.update(status="running", finished_at=None)
         meta.setdefault("resumed_at", []).append(runmeta.now())
     else:
@@ -54,7 +90,8 @@ def main():
                     command=" ".join([os.path.basename(sys.executable)] + sys.argv),
                     environment=env, git=runmeta.git_info(),
                     conditions=dict(time_limit=a.time_limit, workers=a.workers,
-                                    threads={m: solvers[m].threads for m in methods},
+                                    threads={m: p["threads"] for m, p in plan.items()},
+                                    solvers={m: p["solver"] for m, p in plan.items()},
                                     instances=insts, methods=methods),
                     instance_sha256=runmeta.instance_hashes(a.problem, insts))
         if meta["git"]["dirty"]:

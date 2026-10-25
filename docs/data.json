@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T06:09:39+00:00",
+ "generated": "2026-10-25T07:41:18+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
@@ -80,6 +80,14 @@
     "ORTools-GLS": 1,
     "CP-SAT": 1,
     "MIP-HiGHS": 1
+   },
+   "solvers": {
+    "nn+ls": "nn+ls",
+    "SA": "SA",
+    "LKH(elkai)": "LKH(elkai)",
+    "ORTools-GLS": "ORTools-GLS",
+    "CP-SAT": "CP-SAT",
+    "MIP-HiGHS": "MIP-HiGHS"
    },
    "seeds": {
     "nn+ls": 1,
@@ -589,6 +597,14 @@
     "CP-SAT": 1,
     "MIP-HiGHS": 1
    },
+   "solvers": {
+    "nn+ls": "nn+ls",
+    "SA": "SA",
+    "LKH(elkai)": "LKH(elkai)",
+    "ORTools-GLS": "ORTools-GLS",
+    "CP-SAT": "CP-SAT",
+    "MIP-HiGHS": "MIP-HiGHS"
+   },
    "seeds": {
     "nn+ls": 1,
     "SA": 3,
@@ -1097,6 +1113,15 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1
+   },
+   "solvers": {
+    "SPT": "SPT",
+    "MWKR": "MWKR",
+    "Tabu-N5": "Tabu-N5",
+    "GA": "GA",
+    "CP-SAT": "CP-SAT",
+    "CP-SAT-4w": "CP-SAT",
+    "MIP-HiGHS": "MIP-HiGHS"
    },
    "seeds": {
     "SPT": 1,
@@ -2022,6 +2047,13 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1
+   },
+   "solvers": {
+    "Greedy": "Greedy",
+    "SA": "SA",
+    "CP-SAT": "CP-SAT",
+    "CP-SAT-4w": "CP-SAT",
+    "MIP-HiGHS": "MIP-HiGHS"
    },
    "seeds": {
     "Greedy": 1,

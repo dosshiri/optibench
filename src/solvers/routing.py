@@ -219,8 +219,8 @@ def ortools_gls(D, tl, seed):
 
 
 # ---------------------------------------------------------------- CP-SAT AddCircuit
-@solver("CP-SAT", problems=ROUTING, packages=["ortools"])
-def cpsat_circuit(D, tl, seed):
+@solver("CP-SAT", problems=ROUTING, parallel=True, packages=["ortools"])
+def cpsat_circuit(D, tl, seed, threads=1):
     from ortools.sat.python import cp_model
     n = D.shape[0]
     m = cp_model.CpModel()
@@ -234,7 +234,7 @@ def cpsat_circuit(D, tl, seed):
     m.Minimize(sum(int(D[i, j]) * v for (i, j), v in x.items()))
     s = cp_model.CpSolver()
     s.parameters.max_time_in_seconds = tl
-    s.parameters.num_workers = 1
+    s.parameters.num_workers = threads
     s.parameters.random_seed = seed
     st = s.Solve(m)
     if st not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
@@ -270,8 +270,8 @@ def _components(n, succ_pairs):
     return comps
 
 
-@solver("MIP-HiGHS", problems=ROUTING, packages=["highspy"])
-def mip_dfj(D, tl, seed):
+@solver("MIP-HiGHS", problems=ROUTING, parallel=True, packages=["highspy"])
+def mip_dfj(D, tl, seed, threads=1):
     """対称: 無向辺 x_e, 次数2. 非対称: 有向弧, 入出次数1. 部分巡回路を見つけるたびに除去制約を追加して再求解."""
     import highspy
     tm = Timer(tl)
@@ -279,7 +279,7 @@ def mip_dfj(D, tl, seed):
     sym = bool((D == D.T).all())
     h = highspy.Highs()
     h.setOptionValue("output_flag", False)
-    h.setOptionValue("threads", 1)
+    h.setOptionValue("threads", threads)
     h.setOptionValue("random_seed", seed)
     inf = highspy.kHighsInf
     if sym:

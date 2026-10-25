@@ -68,7 +68,7 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 ## 実行条件
 
 - 制限時間 60 秒（`LKH(elkai)` は時間制限を持たないため runs=10 固定、構築法は収束まで）
-- 全手法 1 スレッド（`-4w` のみ 4 スレッド、単独実行）。1 スレッド手法は 4 ジョブ並列で実行
+- 全手法 1 スレッド（`-4w` のみ 4 スレッド、単独実行）。1 スレッド手法は 4 ジョブ並列で実行。手法名の `-<n>w` は同じ解法を n スレッドで実行したもの（`--threads` で任意のスレッド数を追加できます。[`docs/extending.md`](docs/extending.md#スレッド数を変えて実行する)）
 - 確率的手法（`SA`, `GA`, `Tabu-N5`）は 3 シードの平均
 - 指標: 参照値に対するギャップ (%) = (得られた値 − 参照値) / 参照値 × 100
 - 実行環境: 4 vCPU / 16 GB のクラウドコンテナ、Python 3.13、OR-Tools 9.15、HiGHS 1.15（run ごとの詳細は各 `run.json`）
@@ -104,7 +104,7 @@ python src/analyze.py                # 問題ごとに最新の run の集計表
 python src/export_web.py             # docs/data.json・data.js と results/README.md・figures を更新
 ```
 
-`--only` で手法を、`--instances` でインスタンスを絞れます。`--note "メモ"` で run にメモを、`--machine 名前` で実行環境の名前（省略時はホスト名）を付けられます。
+`--only` で手法を、`--instances` でインスタンスを絞れます。`--threads 1,4,8` で並列実行できる解法（CP-SAT, MIP-HiGHS）をそれぞれのスレッド数で実行し、`--run <run_id> --threads 8` で既存の run に後からスレッド条件を追加できます。`--note "メモ"` で run にメモを、`--machine 名前` で実行環境の名前（省略時はホスト名）を付けられます。
 
 ## 実験結果の履歴管理
 
@@ -123,7 +123,7 @@ results/runs/<run_id>/
 |---|---|
 | `started_at`, `finished_at`, `status` | 実行開始・終了日時（UTC）と状態（`running` / `complete`） |
 | `environment` | マシン名、CPU 型番、論理 CPU 数、メモリ、OS、Python とソルバー各パッケージのバージョン |
-| `conditions` | 制限時間、同時実行ジョブ数、手法ごとのスレッド数、インスタンス一覧、手法ごとのシード |
+| `conditions` | 制限時間、同時実行ジョブ数、手法ごとのスレッド数（`threads`）と元の解法名（`solvers`）、インスタンス一覧、手法ごとのシード |
 | `git` | 実行時のコミットハッシュ・ブランチ、`src/`・`instances/`・`requirements.txt` に未コミットの変更があったか（`dirty`）とそのファイル |
 | `instance_sha256` | 各インスタンスファイルの SHA-256（同じ名前で中身が変わっていないかの確認用） |
 | `command`, `note` | 実行したコマンドと任意のメモ |
