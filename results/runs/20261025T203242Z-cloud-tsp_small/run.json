@@ -1,13 +1,13 @@
 {
- "run_id": "20261025T203242Z-vm-tsp_small",
+ "run_id": "20261025T203242Z-cloud-tsp_small",
  "problem": "tsp_small",
  "started_at": "2026-10-25T20:32:42+00:00",
- "finished_at": null,
- "status": "running",
+ "finished_at": "2026-10-25T20:59:50+00:00",
+ "status": "complete",
  "note": "クラウドでの試走（量子・疑似量子アニーリング系の追加に合わせた小規模 TSP）",
  "command": "python src/run_bench.py tsp_small 60 --note クラウドでの試走（量子・疑似量子アニーリング系の追加に合わせた小規模 TSP）",
  "environment": {
-  "machine": "vm",
+  "machine": "cloud",
   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
   "cpu_count": 4,
   "memory_gb": 15.7,
