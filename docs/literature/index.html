@@ -8,292 +8,53 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
-<style>
-/* Layout: single reading column (~62rem) with a sticky problem index; tables scroll in their own frames */
-:root{
-  --bg:#f6f7f9; --surface:#ffffff; --ink:#1b2430; --muted:#5a6676; --line:#d9dee6;
-  --accent:#1f5f8b; --accent-soft:#e3eef6;
-  --mp:#2e6f4e; --mp-soft:#e2f1e8;      /* 数理計画 */
-  --mh:#9a5a12; --mh-soft:#f8ecdc;      /* メタヒューリスティクス */
-  --ml:#6b3fa0; --ml-soft:#efe6f8;      /* 機械学習 */
-  --sp:#3d4f63; --sp-soft:#e6eaf0;      /* 専用ヒューリスティクス */
-  --warn:#a33a2a; --warn-soft:#f8e3df;
-  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
-  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
-  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#12171e; --surface:#1a212b; --ink:#e4e9f0; --muted:#9aa6b6; --line:#2d3743;
-  --accent:#7cb8e2; --accent-soft:#1c2f40;
-  --mp:#7fcfa2; --mp-soft:#183126; --mh:#e7b06a; --mh-soft:#352715;
-  --ml:#c4a3ee; --ml-soft:#2b2140; --sp:#b4c2d4; --sp-soft:#232c38;
-  --warn:#f09583; --warn-soft:#3a201b; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#12171e; --surface:#1a212b; --ink:#e4e9f0; --muted:#9aa6b6; --line:#2d3743;
-  --accent:#7cb8e2; --accent-soft:#1c2f40;
-  --mp:#7fcfa2; --mp-soft:#183126; --mh:#e7b06a; --mh-soft:#352715;
-  --ml:#c4a3ee; --ml-soft:#2b2140; --sp:#b4c2d4; --sp-soft:#232c38;
-  --warn:#f09583; --warn-soft:#3a201b; color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0}
-[hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.8;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.wrap{max-width:62rem;margin:0 auto}
-header.top{padding-block:48px 24px;border-bottom:1px solid var(--line)}
-.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
-h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,42px);line-height:1.3;margin:8px 0 12px;text-wrap:balance}
-h2{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.4;margin:0 0 8px;text-wrap:balance}
-h3{font-size:16px;font-weight:700;margin:24px 0 8px;text-wrap:balance}
-p{margin:0 0 12px;max-width:44em}
-.lead{color:var(--muted);max-width:44em}
-a{color:var(--accent);text-underline-offset:2px}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
-nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
-  display:flex;flex-wrap:wrap;gap:4px 16px;padding-block:10px;font-size:13px}
-nav.idx a{text-decoration:none;color:var(--ink)}
-nav.idx a:hover{color:var(--accent)}
-nav.idx code{font-family:var(--f-mono);color:var(--muted);font-size:11px;margin-right:4px}
-section{padding-block:40px 8px;border-bottom:1px solid var(--line);scroll-margin-top:48px}
-.legend{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
-.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:3px;white-space:nowrap;line-height:1.7}
-.t-mp{background:var(--mp-soft);color:var(--mp)}
-.t-mh{background:var(--mh-soft);color:var(--mh)}
-.t-ml{background:var(--ml-soft);color:var(--ml)}
-.t-sp{background:var(--sp-soft);color:var(--sp)}
-.takeaways{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:12px;margin-top:16px}
-.tk{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;min-width:0}
-.tk b.p{font-family:var(--f-mono);font-size:12px;color:var(--accent);display:block;margin-bottom:2px}
-.tk p{margin:0;font-size:14px}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:12px;margin:12px 0}
-.fact{border-top:2px solid var(--accent);padding-top:8px;min-width:0}
-.fact .k{font-size:12px;color:var(--muted);letter-spacing:.04em}
-.fact .v{font-size:14px}
-.tbl{overflow-x:auto;margin:8px 0 16px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;min-width:720px;font-size:13.5px;line-height:1.65}
-th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
-th{font-size:12px;color:var(--muted);font-weight:700;background:var(--bg);white-space:nowrap}
-tr:last-child td{border-bottom:0}
-td.ref{white-space:nowrap;font-size:12.5px}
-td .yr{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:block}
-.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:12.5px}
-.matrix td,.matrix th{text-align:center}
-.matrix td:first-child,.matrix th:first-child{text-align:left}
-.lvl{font-family:var(--f-mono);font-weight:600}
-.l3{color:var(--mp)} .l2{color:var(--accent)} .l1{color:var(--mh)} .l0{color:var(--muted)}
-.note{font-size:12.5px;color:var(--muted)}
-.caveat{background:var(--warn-soft);border-left:3px solid var(--warn);padding:10px 14px;border-radius:0 4px 4px 0;margin:12px 0;font-size:14px;max-width:48em}
-.caveat b{color:var(--warn)}
-ol.pit{padding-left:1.4em;margin:12px 0;display:grid;gap:10px;max-width:50em}
-ol.pit li b{display:block}
-ol.refs{padding-left:1.6em;font-size:13px;line-height:1.7;display:grid;gap:4px;max-width:56em;word-break:break-word}
-footer{padding-block:24px;font-size:12.5px;color:var(--muted)}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-html{scroll-behavior:smooth}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="wrap">
 <header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
   <div class="eyebrow">文献レビュー · 2026-10-25 時点</div>
   <h1>組合せ最適化 解法比較レビュー</h1>
-  <p class="lead">TSP・ATSP・JSSP・ナーススケジューリングの4問題について、数理計画法、メタヒューリスティクス、専用ヒューリスティクス、機械学習系の手法を比べた論文と既存ベンチマークを整理しました。手元ベンチマークの設計に使える標準インスタンス集、代表ソルバー、比較の中立性に関する注意点もまとめています。</p>
+  <p class="lead">巡回セールスマン問題（TSP・ATSP）とその時間枠付き版（ATSP-TW）、ジョブショップスケジューリング（JSSP）、ナーススケジューリングについて、これまでの論文や公開ベンチマークで、どの解法が強いと報告されているかを調べました。問題ごとにページを分け、標準的なベンチマーク問題、代表的なソルバー、主な比較研究とその結果をまとめています。量子アニーリング・疑似量子アニーリングは、5 問題をまたいで<a href="annealing.html">別ページ</a>にまとめました。</p>
   <div class="legend">
     <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / B&amp;P)</span>
     <span class="tag t-mh">メタヒューリスティクス</span>
     <span class="tag t-sp">専用ヒューリスティクス</span>
     <span class="tag t-ml">機械学習</span>
+    <span class="tag t-qa">アニーリング系 (QUBO)</span>
   </div>
 </header>
 
 <nav class="idx" aria-label="目次">
-  <a href="#summary"><code>00</code>要点</a>
-  <a href="#tsp"><code>TSP</code>対称巡回セールスマン</a>
-  <a href="#atsp"><code>ATSP</code>非対称巡回セールスマン</a>
-  <a href="#jssp"><code>JSSP</code>ジョブショップ</a>
-  <a href="#nrp"><code>NRP</code>ナーススケジューリング</a>
-  <a href="#matrix">手法×問題</a>
+  <a href="#summary">問題ごとの要点</a>
+  <a href="#annealing">アニーリング系</a>
   <a href="#neutral">中立性の注意点</a>
-  <a href="#plan">手元ベンチへの示唆</a>
-  <a href="#refs">文献</a>
+  <a href="#plan">手元ベンチマークの組み方</a>
+  <a href="#refs">共通の文献</a>
 </nav>
 
 <section id="summary">
-  <h2>要点</h2>
+  <h2>問題ごとの要点</h2>
+  <p>問題名を選ぶと、その問題のページに進みます。</p>
+  <!-- 問題を追加したら、ここに 1 項目足す -->
   <div class="takeaways">
-    <div class="tk"><b class="p">TSP</b><p>厳密解は Concorde（分枝カット）が事実上の標準で、汎用MIPソルバーは大きく劣ります。近似解では LKH と EAX型GA が最強クラスです。ニューラル解法は小規模・一様乱数インスタンス以外ではまだ品質で及びません。</p></div>
-    <div class="tk"><b class="p">ATSP</b><p>専用の比較研究は TSP より少なめです。厳密解は加法的限界の分枝限定法や分枝カット、近似解はサイクルカバー・パッチング系と、対称化変換したうえでの LKH が中心です。インスタンスの構造によって勝者が変わるのが特徴です。</p></div>
-    <div class="tk"><b class="p">JSSP</b><p>汎用ソルバーでは CP（CP Optimizer, CP-SAT）が MIP を明確に上回ります。最良既知解の更新は今も タブーサーチ系が担っています。深層強化学習は CP-SAT との差を縮めていますが、まだ追い越してはいません。</p></div>
-    <div class="tk"><b class="p">ナーススケジューリング</b><p>問題定義が研究ごとに異なるため、INRC-I / INRC-II / Curtois–Qu の共通ベンチマークが比較の基盤です。MIPベース（分解・分枝価格法）とメタヒューリスティクスが拮抗しており、最近は分枝価格法が最適性を証明できる範囲を広げています。</p></div>
+    <div class="tk"><a href="tsp.html"><b class="p">TSP</b><p>厳密解は Concorde（分枝カット）が事実上の標準で、汎用MIPソルバーは大きく劣ります。近似解では LKH と EAX型GA が最強クラスです。ニューラル解法は小規模・一様乱数インスタンス以外ではまだ品質で及びません。</p></a></div>
+    <div class="tk"><a href="atsp.html"><b class="p">ATSP</b><p>専用の比較研究は少なめです。厳密解は加法的限界の分枝限定法や分枝カット、近似解はサイクルカバー・パッチング系と、対称化変換したうえでの LKH が中心です。インスタンスの構造によって勝者が変わるのが特徴です。</p></a></div>
+    <div class="tk"><a href="atsptw.html"><b class="p">ATSP-TW</b><p>厳密解は専用の分枝カット（時間バケット定式化）と動的計画法、近似解は GVNS などのメタヒューリスティクスが強いです。汎用 MIP は中規模まで戦えますが、汎用 CP と OR-Tools Routing は時間枠が厳しいと実行可能解を見つけること自体に苦労します。ニューラル解法は実行不能な解が残ります。</p></a></div>
+    <div class="tk"><a href="jssp.html"><b class="p">JSSP</b><p>汎用ソルバーでは CP（CP Optimizer, CP-SAT）が MIP を明確に上回ります。最良既知解の更新は今も タブーサーチ系が担っています。深層強化学習は CP-SAT との差を縮めていますが、まだ追い越してはいません。</p></a></div>
+    <div class="tk"><a href="nsp.html"><b class="p">ナーススケジューリング</b><p>問題定義が研究ごとに異なるため、INRC-I / INRC-II / Curtois–Qu の共通ベンチマークが比較の基盤です。MIPベース（分解・分枝価格法）とメタヒューリスティクスが拮抗しており、最近は分枝価格法が最適性を証明できる範囲を広げています。</p></a></div>
+  </div>
+  <h3 id="annealing">問題をまたぐテーマ</h3>
+  <div class="takeaways">
+    <div class="tk"><a href="annealing.html"><b class="p">量子・疑似量子アニーリング</b><p>D-Wave 実機・ハイブリッド、富士通デジタルアニーラ、東芝 SQBM+、Amplify AE、OpenJij などの QUBO 型解法です。実証は数都市〜数十都市、6×6 程度の JSSP、数人規模の勤務表にとどまり、LKH・CP-SAT・MIP を上回ったという中立的な報告は見つかりませんでした。QUBO 化で変数が都市数の 2 乗、JSSP では工程数×計画期間に増えることが主な壁です。</p></a></div>
   </div>
   <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、スレッド数、ソルバー版）での結果です。論文間で直接比較することはできません。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
-</section>
-
-<section id="tsp">
-  <div class="eyebrow">Symmetric Traveling Salesman Problem</div>
-  <h2>TSP（対称巡回セールスマン問題）</h2>
-  <div class="facts">
-    <div class="fact"><div class="k">標準インスタンス</div><div class="v">TSPLIB（Reinelt 1991）、National TSP・VLSI（Waterloo）、DIMACS TSP Challenge の一様乱数・クラスタ生成器</div></div>
-    <div class="fact"><div class="k">代表ソルバー</div><div class="v">Concorde（厳密）、LKH-2/3、GA-EAX、OR-Tools Routing、Gurobi/CPLEX/HiGHS + 部分巡回除去の遅延制約</div></div>
-    <div class="fact"><div class="k">到達点</div><div class="v">85,900都市（pla85900）まで最適性が証明済み。数万〜数十万都市規模では最良既知解との差は通常1%未満</div></div>
-  </div>
-
-  <h3>主要な比較研究</h3>
-  <div class="tbl"><table>
-    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
-    <tbody>
-      <tr><td class="ref">Liu, Zhang, Tang, Yao<span class="yr">arXiv 2209.10913</span></td>
-        <td><span class="tag t-ml">POMO</span> <span class="tag t-ml">DACT</span> <span class="tag t-ml">NeuroLKH</span> 対 <span class="tag t-sp">LKH-3</span> <span class="tag t-mh">EAX</span> <span class="tag t-mh">MAOS</span></td>
-        <td>50〜10,000都市。一様乱数・クラスタ・TSPLIB・VLSI・National</td>
-        <td>品質ではEAXが最良で、実問題系30インスタンス中22で最多成功。50都市の乱数ではEAX/MAOSがギャップ <span class="num">0.0000%</span>、POMO（拡張なし）は <span class="num">0.1185%</span>。クラスタ型や分布外ではニューラル解法の劣化が大きい（DACTを50→100都市へ汎化するとギャップ <span class="num">27.54%</span>）。一方、小規模乱数での時間・電力効率はニューラル構築型が優位。Concordeは大規模で時間がかかるため対象外。</td></tr>
-      <tr><td class="ref">Nagata, Kobayashi<span class="yr">INFORMS J. Comput. 2013</span></td>
-        <td><span class="tag t-mh">GA + 辺組立交叉 (EAX)</span> 対 LKH 等</td>
-        <td>TSPLIB、National、VLSI など大規模を含む</td>
-        <td>LKHと並ぶ近似解法の頂点。大規模インスタンスで当時の最良既知解を複数更新したと報告。<span class="note">（本文の数値は未確認。<a href="https://github.com/nagata-yuichi/GA-EAX" target="_blank" rel="noopener">GA-EAX</a> として公開実装あり）</span></td></tr>
-      <tr><td class="ref">Applegate, Bixby, Chvátal, Cook<span class="yr">書籍 2006</span></td>
-        <td><span class="tag t-mp">分枝カット (Concorde)</span></td>
-        <td>TSPLIB 全般</td>
-        <td>厳密解法の標準的な文献。汎用MIPに部分巡回除去制約を足すだけの定式化より桁違いに強い。これは独自の切除平面族、LKHによる初期上界、局所カット生成の効果。</td></tr>
-      <tr><td class="ref">Xin, Song, Cao, Zhang<span class="yr">NeurIPS 2021</span></td>
-        <td><span class="tag t-ml">NeuroLKH</span> 対 <span class="tag t-sp">LKH</span></td>
-        <td>一様乱数100〜5,000都市、TSPLIB</td>
-        <td>学習した辺スコアでLKHの候補集合を置き換える混合型。同じ時間ならLKHより小さいギャップ。「MLが既存の強い解法を補強する」方向の代表例。</td></tr>
-      <tr><td class="ref">Johnson, McGeoch<span class="yr">DIMACS TSP Challenge 2002</span></td>
-        <td><span class="tag t-sp">構築法</span> <span class="tag t-sp">2-opt / 3-opt / LK</span> <span class="tag t-mh">反復LK</span></td>
-        <td>一様乱数・クラスタ生成器、TSPLIB</td>
-        <td>品質と時間のトレードオフを機械性能で正規化して比較した古典。ハードウェア正規化の手法自体も参考になる。</td></tr>
-    </tbody>
-  </table></div>
-  <p class="note">Kool ら（ICLR 2019）の Attention Model 以降、ニューラル解法の論文の多くは50〜100都市の一様乱数で、Concorde や LKH と比べて評価しています。実問題系のインスタンスや1万都市超での評価は少ないため、Liu らの体系的評価が中立的な参照点になります。</p>
-</section>
-
-<section id="atsp">
-  <div class="eyebrow">Asymmetric Traveling Salesman Problem</div>
-  <h2>ATSP（非対称巡回セールスマン問題）</h2>
-  <div class="facts">
-    <div class="fact"><div class="k">標準インスタンス</div><div class="v">TSPLIB ATSP（ftv, kro124p, rbg, p43 など19件）、Cirasella ら（2001）の実問題を模した生成器（DIMACS ATSP）</div></div>
-    <div class="fact"><div class="k">代表ソルバー</div><div class="v">Fischetti–Toth 加法的限界の分枝限定法、Fischetti–Lodi–Toth 分枝カット、LKH-3（ATSP直接対応）、Concorde（2n点の対称問題に変換）、MIP（DFJ / MTZ / 流量定式化）</div></div>
-    <div class="fact"><div class="k">特徴</div><div class="v">割当緩和の強さが構造に依存します。rbg 系のように割当緩和がほぼ最適なものと、極端に弱いものが混在しています</div></div>
-  </div>
-  <h3>主要な比較研究</h3>
-  <div class="tbl"><table>
-    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
-    <tbody>
-      <tr><td class="ref">Roberti, Toth<span class="yr">EURO J. Transp. Logist. 2012</span></td>
-        <td><span class="tag t-mp">分枝限定法</span> <span class="tag t-mp">分枝カット</span> <span class="tag t-mp">多項式サイズMIP定式化</span></td>
-        <td>TSPLIB ATSP ほかのベンチマーク</td>
-        <td>ATSP厳密解法と定式化を同じ条件で比べた代表的なレビュー兼実験。DFJ緩和に基づく分枝カットが総合的に強く、MTZのような多項式サイズの定式化はLP緩和が弱いと整理しています。<span class="note">（要旨で確認。詳細な数値は本文で確認が必要）</span></td></tr>
-      <tr><td class="ref">Cirasella, Johnson, McGeoch, Zhang<span class="yr">ALENEX 2001</span></td>
-        <td><span class="tag t-sp">最近傍 / 貪欲</span> <span class="tag t-sp">Kanellakis–Papadimitriou 局所探索</span> <span class="tag t-sp">Zhang のサイクルカバー・パッチング</span></td>
-        <td>実問題を模した複数の乱数生成クラス + TSPLIB</td>
-        <td>「全クラスで支配的な単一手法はない」という暫定的な結論。各クラスの最良解は Zhang 法か反復KP法のどちらかから得られました。インスタンス生成器はその後のATSP研究で広く使われています。</td></tr>
-      <tr><td class="ref">Nagata, Soler<span class="yr">Expert Syst. Appl. 2012</span></td>
-        <td><span class="tag t-mh">EAX の ATSP 版 GA</span></td>
-        <td>TSPLIB ATSP、DIMACS ATSP</td>
-        <td>EAXをATSPに拡張したもので、大規模ATSPで高品質な解を報告しています。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
-      <tr><td class="ref">Kwon ら（MatNet）<span class="yr">NeurIPS 2021</span></td>
-        <td><span class="tag t-ml">行列入力の強化学習</span> 対 MIP・LKH</td>
-        <td>乱数距離行列 20〜100点</td>
-        <td>座標を持たないATSPを直接扱える数少ないニューラル解法。評価は小規模の合成データに限られます。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
-    </tbody>
-  </table></div>
-  <div class="caveat"><b>ATSPの空白。</b> 汎用MIPソルバー、LKH-3、Concorde（変換）、メタヒューリスティクスを同じ条件で横並びにした最近の比較は、本調査では見つかりませんでした。手元ベンチマークで独自の知見を出しやすい領域です。</div>
-</section>
-
-<section id="jssp">
-  <div class="eyebrow">Job Shop Scheduling Problem (makespan)</div>
-  <h2>JSSP（ジョブショップスケジューリング）</h2>
-  <div class="facts">
-    <div class="fact"><div class="k">標準インスタンス</div><div class="v">FT（1963）、LA（Lawrence 1984）、ABZ、ORB、SWV、YN、Taillard（1993, ta01–ta80）、DMU（Demirkol 1998）。大規模用に Da Col–Teppan の10万工程級</div></div>
-    <div class="fact"><div class="k">代表ソルバー</div><div class="v">IBM CP Optimizer、OR-Tools CP-SAT、MIP（Manne の離接定式化を Gurobi/CPLEX/SCIP で）、TSAB / i-TSAB、TS/PR、ディスパッチングルール、L2D 等のDRL</div></div>
-    <div class="fact"><div class="k">到達点</div><div class="v">15×15 程度までは汎用ソルバーで最適性を証明可能。Taillard の 20×20 以上や DMU には上界と下界の差が残るものもあります</div></div>
-  </div>
-  <h3>主要な比較研究</h3>
-  <div class="tbl"><table>
-    <thead><tr><th>文献</th><th>比較した手法</th><th>条件</th><th>主な結果</th></tr></thead>
-    <tbody>
-      <tr><td class="ref">Ku, Beck<span class="yr">Comput. Oper. Res. 2016</span></td>
-        <td><span class="tag t-mp">MIP 4定式化 × CPLEX / Gurobi / SCIP</span> <span class="tag t-mp">CP Optimizer</span> <span class="tag t-mh">iSTS-SGS</span></td>
-        <td>3×3〜20×20 の乱数（Taillard生成器）と ta01–ta20。<span class="num">3600 s</span>、1スレッド既定</td>
-        <td>MIPでは Manne の離接定式化が最良。CPLEX で10×10 は平均約 <span class="num">3 s</span>、15×15 は約 <span class="num">1569 s</span>。8スレッドとチューニングで約4.5倍速くなります。大規模ではCPがMIPを上回り、ta11–ta20 での最良既知解との差は MIP約 <span class="num">6.2%</span>、CP約 <span class="num">0.5%</span>。</td></tr>
-      <tr><td class="ref">Naderi, Ruiz, Roshanaei<span class="yr">INFORMS J. Comput. 2023</span></td>
-        <td><span class="tag t-mp">CPLEX 20.1</span> <span class="tag t-mp">Gurobi 9.1.2</span> <span class="tag t-mp">CP Optimizer 20.1</span></td>
-        <td>12種のショップ問題、17ベンチ集の約6,623インスタンス。<span class="num">3600 s</span>、既定設定</td>
-        <td>並列機械スケジューリング以外の11問題でCPが優位。実行可能解の発見率は CP <span class="num">100%</span>、CPLEX 約 <span class="num">73%</span>。加重平均ギャップは CP 約 <span class="num">28%</span>、CPLEX 約 <span class="num">46%</span>。JSSPではMIP同士ならGurobiが最適性証明で勝る場面あり。</td></tr>
-      <tr><td class="ref">Da Col, Teppan<span class="yr">arXiv 1909.08247 (2019)</span></td>
-        <td><span class="tag t-mp">CP Optimizer 12.8</span> 対 <span class="tag t-mp">OR-Tools CP-SAT 6.10</span></td>
-        <td>古典74件（<span class="num">1200 s</span>）と大規模24件（最大10万工程、<span class="num">6 h</span>）、1コアと4コア</td>
-        <td>古典では最適到達がCPO 59件、CP-SAT 58件とほぼ互角で、CPOが63.5%で速い。大規模1コアではCPOが16/24で最適、CP-SATは0件。4コアにするとCP-SATは7件まで伸びます。CP-SATは当時から大きく改良されているため、<b>現行版での再評価が必要</b>です。</td></tr>
-      <tr><td class="ref">Peng, Lü, Cheng<span class="yr">Comput. Oper. Res. 2015</span></td>
-        <td><span class="tag t-mh">タブーサーチ + パスリリンキング (TS/PR)</span></td>
-        <td>205件（FT, ORB, LA, ABZ, YN, SWV, TA, DMU）</td>
-        <td>49件で上界を更新（TA 5件、DMU 40件など）。LA は LA29 以外で最適値に平均約 <span class="num">13.9 s</span> で到達。近似解法の最前線は今もNowicki–SmutnickiのN5近傍に基づくタブーサーチ系です。</td></tr>
-      <tr><td class="ref">Zhang, Cao, Song, Wu, Zhang<span class="yr">ICLR 2024</span></td>
-        <td><span class="tag t-ml">DRL改善型</span> <span class="tag t-ml">L2D</span> 対 <span class="tag t-mp">CP-SAT</span></td>
-        <td>Taillard 15×15〜100×20。CP-SAT は <span class="num">3600 s</span></td>
-        <td>Taillard 30×20 での最良既知解との差は CP-SAT <span class="num">2.8%</span>、L2D <span class="num">32.9%</span>、提案法（5000ステップ）<span class="num">12.6%</span>。提案法がCP-SATを上回るのは100×20（<span class="num">3.0%</span> 対 <span class="num">3.9%</span>）だけ。</td></tr>
-      <tr><td class="ref">Reijnen ら<span class="yr">arXiv 2308.12794 (2023)</span></td>
-        <td><span class="tag t-mp">CP-SAT</span> <span class="tag t-mp">Gurobi MILP</span> <span class="tag t-sp">ディスパッチングルール</span> <span class="tag t-mh">GA</span> <span class="tag t-ml">L2D / FJSP-DRL / DANIEL</span></td>
-        <td>JSP・FSP・FJSP の公開ベンチ。共通の環境で実行するリポジトリ</td>
-        <td>JSPでの平均ギャップは CP-SAT <span class="num">0.75%</span>、MWRルール <span class="num">19.53%</span>、DANIEL <span class="num">14.42%</span>、GA <span class="num">34.50%</span>。MILPは多くのインスタンスで解を得られませんでした。GAについては著者自身が「探索予算・調整不足」と注記しています。</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section id="nrp">
-  <div class="eyebrow">Nurse Rostering / Nurse Scheduling Problem</div>
-  <h2>ナーススケジューリング</h2>
-  <div class="facts">
-    <div class="fact"><div class="k">標準インスタンス</div><div class="v">INRC-I（2010、sprint/medium/long の60件、4週間）、INRC-II（2015、多段階型、30〜120人・4/8週）、Curtois–Qu Shift Scheduling Benchmark（24件、最長1年）</div></div>
-    <div class="fact"><div class="k">代表ソルバー</div><div class="v">MIP（Gurobi/CPLEX、分解型）、分枝価格法（<a href="https://github.com/wssuite/NurseScheduler" target="_blank" rel="noopener">NurseScheduler</a> がオープンソース）、CP-SAT、SAT/SMT、焼きなまし法・タブーサーチ・VNS、ハイパーヒューリスティクス</div></div>
-    <div class="fact"><div class="k">特徴</div><div class="v">ソフト制約の重み付き和を最小化します。制約セットが病院ごとに異なるため、共通ベンチマーク以外での論文間比較はほぼ不可能です</div></div>
-  </div>
-  <h3>主要な比較研究と競技会</h3>
-  <div class="tbl"><table>
-    <thead><tr><th>文献</th><th>手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
-    <tbody>
-      <tr><td class="ref">Valouxis ら<span class="yr">EJOR 2012</span></td>
-        <td><span class="tag t-mp">MIPによる2段階分解</span></td>
-        <td>INRC-I（INRC2010）</td>
-        <td>大規模問題を部分問題に分け、整数計画で逐次解きます。INRC2010 の全トラックで1位。「時間制限つきの競技でもMIP分解は勝てる」ことを示しました。</td></tr>
-      <tr><td class="ref">Ceschia, Dang, De Causmaecker, Haspeslagh, Schaerf<span class="yr">Ann. Oper. Res. 2019</span></td>
-        <td>INRC-II の主催報告</td>
-        <td>INRC-II（多段階：週ごとに逐次決定）</td>
-        <td>問題定義、検証・シミュレータ、最終結果をまとめた報告。参加手法にはMILP状態拡張ネットワーク（Römer–Mellouli）、ローテーション分枝価格法（Legrain–Omer–Rosat）、重み付きタブーサーチ、選択型ハイパーヒューリスティクス（Kheiri ら）などがあり、手法族は分かれています。<span class="note">（最終順位は本文が有料のため本調査では未確認）</span></td></tr>
-      <tr><td class="ref">Legrain, Omer<span class="yr">INFORMS J. Comput. 2024</span></td>
-        <td><span class="tag t-mp">ロスター型 分枝価格法 + 専用プライシング</span></td>
-        <td>INRC-I 60件、静的INRC-II 4/8週、Curtois–Qu 24件</td>
-        <td>INRC-II 4週の全20件で初めて最適性を証明（多くは1時間未満）。INRC-I はほぼ全件最適で、未解決は1件。Curtois–Qu では24件中19件で最良既知上界と一致し、14件で最適性を証明。8週や最大規模はまだ難しく、従来のローテーション型より下界を平均4%以上改善しています。</td></tr>
-      <tr><td class="ref">Burke, Curtois<span class="yr">EJOR 2014</span></td>
-        <td><span class="tag t-mh">エジェクションチェーン</span> <span class="tag t-mp">分枝価格法</span></td>
-        <td>Curtois 系ベンチマーク、INRC-I</td>
-        <td>同じ著者がメタヒューリスティクスと厳密解法の両方を同じインスタンスで比べた例。規模や制約の性質で優劣が入れ替わります。<span class="note">（要旨レベルで確認）</span></td></tr>
-      <tr><td class="ref">Combrink ら<span class="yr">arXiv 2505.10328 (2025)</span></td>
-        <td><span class="tag t-mp">SMT (Z3)</span> 対 <span class="tag t-mp">MILP (Gurobi 9.1)</span></td>
-        <td>学術的な合成インスタンス、小児病院病棟を基にした実問題（29人）</td>
-        <td>制約がきつい問題や実行不能に近い問題ではGurobi、制約の緩い問題や実問題系ではZ3が速い結果でした。Z3は定式化の書き方に敏感です。実問題系では5時間で17日分は解けていません。</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section id="matrix">
-  <h2>手法×問題の現状</h2>
-  <p>上の文献に基づく定性的な整理です。<span class="lvl l3">◎</span> 最前線、<span class="lvl l2">○</span> 実用的に強い、<span class="lvl l1">△</span> 条件付きで有効、<span class="lvl l0">–</span> 現状では不利または実証が少ない。</p>
-  <div class="tbl"><table class="matrix">
-    <thead><tr><th>手法</th><th>TSP</th><th>ATSP</th><th>JSSP</th><th>ナース</th></tr></thead>
-    <tbody>
-      <tr><td><span class="tag t-mp">専用 分枝カット / 分枝価格法</span></td><td class="lvl l3">◎ Concorde</td><td class="lvl l3">◎ B&amp;B / B&amp;C</td><td class="lvl l1">△ 専用厳密法</td><td class="lvl l3">◎ B&amp;P</td></tr>
-      <tr><td><span class="tag t-mp">汎用MIP（そのまま定式化）</span></td><td class="lvl l1">△ 小中規模</td><td class="lvl l1">△ 小中規模</td><td class="lvl l1">△ 〜15×15</td><td class="lvl l2">○ 分解併用</td></tr>
-      <tr><td><span class="tag t-mp">CP / CP-SAT</span></td><td class="lvl l0">–</td><td class="lvl l0">–</td><td class="lvl l3">◎</td><td class="lvl l2">○</td></tr>
-      <tr><td><span class="tag t-sp">専用局所探索（LK / LKH / TSAB）</span></td><td class="lvl l3">◎ LKH</td><td class="lvl l2">○ LKH</td><td class="lvl l3">◎ TS系</td><td class="lvl l0">–</td></tr>
-      <tr><td><span class="tag t-mh">GA・焼きなまし法・タブーサーチ・VNS 等</span></td><td class="lvl l3">◎ EAX</td><td class="lvl l2">○</td><td class="lvl l2">○ ハイブリッド</td><td class="lvl l3">◎</td></tr>
-      <tr><td><span class="tag t-ml">ニューラル構築 / 改善型</span></td><td class="lvl l1">△ 小規模乱数</td><td class="lvl l0">–</td><td class="lvl l1">△</td><td class="lvl l0">–</td></tr>
-      <tr><td><span class="tag t-ml">ML + 古典の混合（NeuroLKH 等）</span></td><td class="lvl l2">○</td><td class="lvl l0">–</td><td class="lvl l1">△</td><td class="lvl l0">–</td></tr>
-    </tbody>
-  </table></div>
-  <p class="note">汎用GA（Reijnen らの実装など）は、JSSPでは専用近傍を持つタブーサーチに大きく劣ります。「メタヒューリスティクス」と一口に言っても、問題専用の近傍や交叉を使うかどうかで性能はまったく異なります。</p>
 </section>
 
 <section id="neutral">
@@ -308,50 +69,20 @@ html{scroll-behavior:smooth}
     <li><b>統計検定と集計</b>インスタンス単位の対応ありの検定（Wilcoxon 符号順位検定 + 多重比較補正）と、性能プロファイル（Dolan–Moré）を使います。平均ギャップだけでは少数の外れ値に引きずられます。</li>
     <li><b>定式化の影響</b>同じMIPソルバーでも定式化によって大差がつきます（JSSPのManne型と時間添字型、ATSPのDFJとMTZ）。「MIP対CP」は「定式化+ソルバー対定式化+ソルバー」の比較だと明示します。</li>
     <li><b>目的の違い</b>厳密解法は最適性の証明にほとんどの時間を使い、良い解は早く見つけていることが多いです。時間制限つきの品質比較では不当に不利になるため、可能なら「いつ見つけたか」も記録します。</li>
+    <li><b>QUBO 型解法の時間と定式化</b>アニーリング系は、埋め込み・QUBO 生成・通信を含めた合計時間と、アニーリング時間だけとで桁が変わります。また、古典ソルバーにも QUBO を解かせると古典側が不利になります。各解法に最良の定式化を使い、実行可能解の割合も報告します（<a href="annealing.html#neutral">詳細</a>）。</li>
     <li><b>商用ライセンスとベンチマーク公開</b>一部の商用ソルバーには、ベンチマーク結果の公開に制限がある場合があります。公開する前に各ライセンス条項を確認してください。</li>
   </ol>
 </section>
 
 <section id="plan">
-  <h2>手元ベンチマークへの示唆</h2>
-  <p>文献で手薄な部分と、再現しやすいソルバーを組み合わせた候補です。問題ごとに「厳密」「汎用ソルバー」「専用ヒューリスティクス / メタヒューリスティクス」「機械学習」から最低1つずつ選ぶと、文献の空白を埋めやすくなります。</p>
-  <div class="tbl"><table>
-    <thead><tr><th>問題</th><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
-    <tbody>
-      <tr><td><b>TSP</b></td><td>TSPLIB（〜1万都市）、National の一部、DIMACS 乱数</td><td>Concorde、LKH-3、GA-EAX、OR-Tools Routing、HiGHS/SCIP/Gurobi + 遅延制約、POMO 等</td><td>MIPソルバー最新版と Concorde の差、ニューラル解法の実問題での成績</td></tr>
-      <tr><td><b>ATSP</b></td><td>TSPLIB ATSP 19件、DIMACS ATSP 生成器</td><td>LKH-3、Concorde（変換）、MIP（DFJ遅延 / MTZ / 単一品種流量）、OR-Tools、MatNet</td><td>同じ条件での横断比較がほぼ存在しない</td></tr>
-      <tr><td><b>JSSP</b></td><td>LA、Taillard ta01–ta80、DMU の一部</td><td>CP-SAT（最新）、CP Optimizer（ライセンスがあれば）、Manne型MIP、タブーサーチ（N5近傍）、ディスパッチングルール、L2D</td><td>CP-SAT 最新版と CP Optimizer の再比較、スレッド数への感度</td></tr>
-      <tr><td><b>ナース</b></td><td>INRC-II 静的版（4週）、Curtois–Qu 24件</td><td>MIP（Gurobi / HiGHS）、CP-SAT、NurseScheduler（分枝価格法）、焼きなまし法 / LNS</td><td>CP-SAT の評価が少ない。汎用ソルバーと専用分枝価格法の差</td></tr>
-    </tbody>
-  </table></div>
+  <h2>手元ベンチマークの組み方</h2>
+  <p>文献で手薄な部分と、再現しやすいソルバーを組み合わせた候補です。問題ごとに「厳密」「汎用ソルバー」「専用ヒューリスティクス / メタヒューリスティクス」「機械学習」から最低1つずつ選ぶと、文献の空白を埋めやすくなります。 問題ごとの候補は、各問題のページの「手元ベンチマークへの示唆」にあります。</p>
 </section>
 
 <section id="refs">
-  <h2>文献</h2>
+  <h2>共通の文献</h2>
+  <p>比較の進め方に関する文献です。問題ごとの文献は、それぞれのページにあります。</p>
   <ol class="refs">
-    <li>S. Liu, Y. Zhang, K. Tang, X. Yao. How Good Is Neural Combinatorial Optimization? A Systematic Evaluation on the Traveling Salesman Problem. <a href="https://arxiv.org/pdf/2209.10913" target="_blank" rel="noopener">arXiv:2209.10913</a></li>
-    <li>Y. Nagata, S. Kobayashi. A Powerful Genetic Algorithm Using Edge Assembly Crossover for the TSP. INFORMS J. Comput. 25(2), 2013. <a href="https://pubsonline.informs.org/doi/suppl/10.1287/ijoc.1120.0506" target="_blank" rel="noopener">doi:10.1287/ijoc.1120.0506</a></li>
-    <li>D. Applegate, R. Bixby, V. Chvátal, W. Cook. The Traveling Salesman Problem: A Computational Study. Princeton Univ. Press, 2006.</li>
-    <li>L. Xin, W. Song, Z. Cao, J. Zhang. NeuroLKH: Combining Deep Learning Model with Lin-Kernighan-Helsgaun Heuristic. NeurIPS 2021. <a href="https://arxiv.org/pdf/2110.07983" target="_blank" rel="noopener">arXiv:2110.07983</a></li>
-    <li>W. Kool, H. van Hoof, M. Welling. Attention, Learn to Solve Routing Problems! ICLR 2019. <a href="https://arxiv.org/pdf/1803.08475" target="_blank" rel="noopener">arXiv:1803.08475</a></li>
-    <li>D. S. Johnson, L. A. McGeoch. Experimental Analysis of Heuristics for the STSP. In: The TSP and Its Variations, 2002（DIMACS TSP Challenge）.</li>
-    <li>R. Roberti, P. Toth. Models and algorithms for the ATSP: an experimental comparison. EURO J. Transp. Logist. 1, 113–133, 2012. <a href="https://cris.unibo.it/handle/11585/399140" target="_blank" rel="noopener">doi:10.1007/s13676-012-0010-0</a></li>
-    <li>J. Cirasella, D. S. Johnson, L. A. McGeoch, W. Zhang. The ATSP: Algorithms, Instance Generators, and Tests. ALENEX 2001, LNCS 2153. <a href="https://unpaywall.org/10.1007%2F3-540-44808-X_3" target="_blank" rel="noopener">doi:10.1007/3-540-44808-X_3</a></li>
-    <li>Y. Nagata, D. Soler. A new genetic algorithm for the asymmetric traveling salesman problem. Expert Syst. Appl. 39(10), 2012.</li>
-    <li>Y.-D. Kwon ら. Matrix Encoding Networks for Neural Combinatorial Optimization (MatNet). NeurIPS 2021.</li>
-    <li>W.-Y. Ku, J. C. Beck. Mixed Integer Programming models for job shop scheduling: A computational analysis. Comput. Oper. Res. 73, 2016. <a href="https://tidel.mie.utoronto.ca/pubs/JSP_CandOR_2016.pdf" target="_blank" rel="noopener">PDF</a></li>
-    <li>B. Naderi, R. Ruiz, V. Roshanaei. Mixed-Integer Programming vs. Constraint Programming for Shop Scheduling Problems: New Results and Outlook. INFORMS J. Comput. 35(4), 2023. <a href="https://cd-www.rotman.utoronto.ca/-/media/Files/Faculty-Bios/Vahid-Roshanaei/MixedIntegerProgrammingVersusConstraintProgrammingforShopSchedulingProblemsNewResultsandOutlookpdf.pdf" target="_blank" rel="noopener">PDF</a></li>
-    <li>G. Da Col, E. C. Teppan. Google vs IBM: A Constraint Solving Challenge on the Job-Shop Scheduling Problem. <a href="https://ar5iv.labs.arxiv.org/html/1909.08247" target="_blank" rel="noopener">arXiv:1909.08247</a></li>
-    <li>B. Peng, Z. Lü, T. C. E. Cheng. A tabu search/path relinking algorithm to solve the job shop scheduling problem. Comput. Oper. Res. 53, 2015. <a href="https://arxiv.org/pdf/1402.5613" target="_blank" rel="noopener">arXiv:1402.5613</a></li>
-    <li>C. Zhang, Z. Cao, W. Song, Y. Wu, J. Zhang. Deep Reinforcement Learning Guided Improvement Heuristic for Job Shop Scheduling. ICLR 2024. <a href="https://arxiv.org/pdf/2211.10936" target="_blank" rel="noopener">arXiv:2211.10936</a></li>
-    <li>C. Zhang ら. Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning (L2D). NeurIPS 2020.</li>
-    <li>R. Reijnen ら. Job Shop Scheduling Benchmark: Environments and Instances for Learning and Non-learning Methods. <a href="https://ar5iv.labs.arxiv.org/html/2308.12794" target="_blank" rel="noopener">arXiv:2308.12794</a></li>
-    <li>É. D. Taillard. Benchmarks for basic scheduling problems. EJOR 64(2), 1993.</li>
-    <li>C. Valouxis ら. A systematic two phase approach for the nurse rostering problem. EJOR 219(2), 425–433, 2012. <a href="https://ideas.repec.org/a/eee/ejores/v219y2012i2p425-433.html" target="_blank" rel="noopener">IDEAS</a></li>
-    <li>S. Ceschia, N. Dang, P. De Causmaecker, S. Haspeslagh, A. Schaerf. The Second International Nurse Rostering Competition. Ann. Oper. Res. 274(1), 171–186, 2019. <a href="https://link.springer.com/article/10.1007/s10479-018-2816-0" target="_blank" rel="noopener">doi:10.1007/s10479-018-2816-0</a>（問題定義：<a href="https://arxiv.org/pdf/1501.04177" target="_blank" rel="noopener">arXiv:1501.04177</a>）</li>
-    <li>A. Legrain, J. Omer. A dedicated pricing algorithm to solve a large family of nurse scheduling problems with branch-and-price. INFORMS J. Comput. 36(4), 2024. <a href="https://gerad.ca/fr/papers/G-2023-02.pdf" target="_blank" rel="noopener">GERAD G-2023-02</a></li>
-    <li>E. K. Burke, T. Curtois. New approaches to nurse rostering benchmark instances. EJOR 237(1), 71–81, 2014. <a href="https://ideas.repec.org/a/eee/ejores/v237y2014i1p71-81.html" target="_blank" rel="noopener">IDEAS</a></li>
-    <li>A. Combrink ら. A Comparative Study of SMT and MILP for the Nurse Rostering Problem. <a href="https://arxiv.org/pdf/2505.10328" target="_blank" rel="noopener">arXiv:2505.10328</a></li>
     <li>L. Accorsi, A. Lodi, D. Vigo. Guidelines for the Computational Testing of Machine Learning approaches to Vehicle Routing Problems. Oper. Res. Lett., 2022. <a href="https://ar5iv.arxiv.org/html/2109.13983" target="_blank" rel="noopener">arXiv:2109.13983</a></li>
     <li>E. D. Dolan, J. J. Moré. Benchmarking optimization software with performance profiles. Math. Program. 91, 2002.</li>
   </ol>
@@ -359,5 +90,6 @@ html{scroll-behavior:smooth}
 
 <footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
 </div>
+<script src="common.js"></script>
 </body>
 </html>

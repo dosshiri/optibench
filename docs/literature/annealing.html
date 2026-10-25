@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>アニーリング系解法の文献レビュー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+<!-- 量子アニーリング・疑似量子アニーリング（QUBO 型解法）の横断レビュー。問題ごとのページの「手法ごとの評価」からこのページの各節へリンクしている -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">文献レビューのトップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
+  <div class="eyebrow">文献レビュー · Quantum / Quantum-inspired Annealing (QUBO) · 2026-10-25 時点</div>
+  <h1>量子・疑似量子アニーリング</h1>
+  <p class="lead">量子アニーラ実機（D-Wave）と、GPU や専用回路で動く疑似量子アニーリング（富士通デジタルアニーラ、東芝 SQBM+、Fixstars Amplify AE、OpenJij など）を、このプロジェクトの 5 問題で古典解法と比べた文献を調べました。どの問題でも、実証されているのは数都市〜数十都市、数ジョブ程度の小規模に限られ、LKH・CP-SAT・MIP・分枝価格法を上回ったという中立的な報告は見つかりませんでした。主な理由は、問題を QUBO（0/1 変数の二次式）に直すときに変数が大きく増え、制約をペナルティ項でしか表せないことです。</p>
+  <div class="legend">
+    <span class="tag t-qa">アニーリング系 (QUBO)</span>
+    <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / B&amp;P)</span>
+    <span class="tag t-mh">メタヒューリスティクス</span>
+    <span class="tag t-sp">専用ヒューリスティクス</span>
+  </div>
+</header>
+
+<nav class="idx" aria-label="目次">
+  <a href="#overview">概要</a>
+  <a href="#size">QUBO化による規模</a>
+  <a href="#general">QUBO全般の比較研究</a>
+  <a href="#tsp">TSP・ATSP</a>
+  <a href="#atsptw">ATSP-TW</a>
+  <a href="#jssp">JSSP</a>
+  <a href="#nsp">勤務表</a>
+  <a href="#neutral">中立性の注意点</a>
+  <a href="#plan">手元ベンチマークへの示唆</a>
+  <a href="#refs">文献</a>
+</nav>
+
+<section id="overview">
+  <h2>概要</h2>
+  <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、ソルバー版）での結果です。論文間で直接比較することはできません。ベンダー自身による公開ベンチマークは、比較対象の設定が分からない場合が多いため、その旨を明記しています。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
+  <div class="facts">
+    <div class="fact"><div class="k">対象の解法</div><div class="v">量子アニーラ実機（D-Wave 2000Q / Advantage）、D-Wave のハイブリッドソルバー（BQM / DQM / CQM）、富士通デジタルアニーラ（DA）、東芝 SQBM+（シミュレーテッド分岐）、Fixstars Amplify AE（GPU）、OpenJij（SA / SQA）、dwave-samplers（旧 neal、SA）</div></div>
+    <div class="fact"><div class="k">共通の仕組み</div><div class="v">問題を QUBO に直し、エネルギー最小の 0/1 割当を探します。制約は「違反すると罰金」の二次のペナルティ項で表すので、罰金の重みの調整と、得られた解の実行可能性の確認が必要です</div></div>
+    <div class="fact"><div class="k">文献の到達点</div><div class="v">ルーティング・スケジューリングで、強い古典解法を同じ条件で上回った中立的な報告は見つかりませんでした。優位の報告は、QUBO にそのまま書ける問題（最大カット、スピングラスなど）と、ベンダー自身のベンチマークに集中しています</div></div>
+  </div>
+  <p class="note">D-Wave のハイブリッドソルバーは、古典計算機と QPU を組み合わせた非公開の仕組みで、中身が分かりません。実機（QPU 単体）の結果と区別して読む必要があります。</p>
+</section>
+
+<section id="size">
+  <h2>QUBO化による規模</h2>
+  <p>よく使われる定式化での 0/1 変数の数です。手元のインスタンスでの値は、論文の式に当てはめた本調査の概算です。制約のペナルティ項によって、変数どうしの結合はほぼ全結合になります。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>問題</th><th>定式化</th><th>変数の数</th><th>手元のインスタンスでの概算</th></tr></thead>
+    <tbody>
+      <tr><td>TSP・ATSP</td><td>都市 × 訪問順の one-hot（順列）</td><td><span class="num">n²</span>（出発都市を固定すると <span class="num">(n−1)²</span>）</td><td>berlin52 で約 <span class="num">2,700</span>、kroA100 で <span class="num">10,000</span>、rat783 で約 <span class="num">61万</span>、rbg443 で約 <span class="num">20万</span></td></tr>
+      <tr><td>ATSP-TW</td><td>Salehi らの 3 方式（訪問順の node-based、辺 × 順番の edge-based、ILP からの変換）。時刻は 2 進数で表し、δ を最大期限のビット数とする</td><td>node-based <span class="num">O(n² + nδ)</span>、edge-based <span class="num">O(n³ + nδ)</span>、ILP 変換 <span class="num">O(n² + n²δ)</span></td><td>rbg233 の node-based で <span class="num">5万</span> 超</td></tr>
+      <tr><td>JSSP</td><td>工程 × 開始時刻の時間添字型（Venturelli ら）</td><td>約 <span class="num">N·M·T</span>（T は計画期間。枝刈りで減らせる）</td><td>ft06 で約 <span class="num">2,000</span>、ft10 で約 <span class="num">9.3万</span>、ta21 で約 <span class="num">66万</span>（T を最適値程度とした場合）</td></tr>
+      <tr><td>勤務表</td><td>職員 × 日 × シフトの割当</td><td><span class="num">E·D·S</span> ＋ 人数の不等式制約ごとのスラック変数</td><td>nsp01 で <span class="num">112</span>、nsp04 で <span class="num">2,520</span>、nsp06 で <span class="num">8,400</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>ハードウェアの上限との関係も文献で繰り返し指摘されています。D-Wave の実機は結合の疎なグラフに変数を埋め込むため、密な QUBO では物理量子ビットが論理変数の数倍〜10 倍程度必要になります（Carugno ら）。デジタルアニーラは文献時点で <span class="num">8,192</span> 変数が上限でした（Şeker ら、Huang ら）。JSSP では、不等式制約のためのスラック変数と QUBO の生成そのものも重く、Carugno らでは一辺 26 の正方インスタンスの QUBO 生成に 8 時間以上かかっています。</p>
+  <p class="note">Koch ら（QOBLIB, 2025）は、MIP では 240 変数の問題が素朴な QUBO 化で 3,480 変数になり、係数が <span class="num">10⁴</span> から <span class="num">3×10¹⁰</span> 程度まで広がる例を示しています。係数の幅が広いと、精度の限られた実機やデジタル回路では扱いにくくなります。</p>
+</section>
+
+<section id="general">
+  <h2>QUBO全般の比較研究</h2>
+  <p>問題を特定しない、QUBO ソルバーどうし・古典ソルバーとの比較です。5 問題の結果を読むときの前提になります。</p>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Jünger ら<span class="yr">ACM J. Exp. Algorithmics 2021</span></td>
+        <td><span class="tag t-qa">D-Wave 2000Q</span> 対 <span class="tag t-mp">分枝カット</span> <span class="tag t-mp">SDP</span> <span class="tag t-mh">Selby ヒューリスティクス</span></td>
+        <td>Chimera グラフ上の Ising 問題（実機に最も有利な形）</td>
+        <td>分枝カットは複数の問題集を、D-Wave のサンプリング時間（約 <span class="num">1.6 s</span>）より短い数秒で最適に解きました。D-Wave が基底状態を見つけたのは mis 集合で 20 件中 4 件、k64ising で 80 件中 48 件。古典ヒューリスティクスは全 <span class="num">1,445</span> 件で最適値または最良既知値に到達しました。</td></tr>
+      <tr><td class="ref">Oshiyama, Ohzeki<span class="yr">Sci. Rep. 2022</span></td>
+        <td><span class="tag t-qa">D-Wave ハイブリッド</span> <span class="tag t-qa">東芝 SBM</span> <span class="tag t-qa">富士通 DA</span> <span class="tag t-qa">SA (neal)</span></td>
+        <td>MQLib の QUBO 45 件（1,000〜10,000 変数）、NAE 3-SAT、SK モデル（8,192 変数）</td>
+        <td>MQLib の勝ち数は ハイブリッド 22、DA 20、SBM 16、SA 7。差の多くはコストの <span class="num">0.01%</span> 未満。SK モデルでは SBM が明確に優位。試行は各 1 回で、時間の測り方もソルバーごとに異なると著者自身が注記しています。古典の MIP ソルバーは比較に含まれていません。</td></tr>
+      <tr><td class="ref">Şeker, Tanoumand, Bodur<span class="yr">arXiv 2012.12264</span></td>
+        <td><span class="tag t-qa">富士通 DA</span> 対 <span class="tag t-mp">Gurobi</span> <span class="tag t-mp">CPLEX</span></td>
+        <td>QUBO ベンチ 315 件、QAP 123 件、二次サイクル分割、選択的グラフ彩色</td>
+        <td>制約のない QUBO では DA が Gurobi・CPLEX を上回りました。一方、制約付きの QAP では整数計画の定式化で解いた Gurobi が最良で、<span class="num">120 s</span> での平均の差は Gurobi <span class="num">1.0%</span>、DA <span class="num">37.5%</span>。DA は罰金の重みと変数の順序に敏感でした。</td></tr>
+      <tr><td class="ref">Huang ら<span class="yr">arXiv 2203.02325</span></td>
+        <td><span class="tag t-qa">D-Wave 2000Q / Advantage</span> <span class="tag t-qa">富士通 DA</span> <span class="tag t-qa">SA</span> <span class="tag t-mp">Gurobi</span></td>
+        <td>最大カット、最小頂点被覆、QAP、倉庫割当</td>
+        <td>制約のない最大カットでは Advantage が速く高品質。制約付きの最小頂点被覆では、DA は Gurobi と同じ最適値でしたが、Advantage は次数が 11 を超えると実行可能解を得られませんでした。密な結合と制約は、実機で特に不利になります。罰金の重み 2 では実行可能解を得られない場合がありました。</td></tr>
+      <tr><td class="ref">Quinton ら<span class="yr">Sci. Rep. 2025</span></td>
+        <td><span class="tag t-qa">D-Wave ハイブリッド (CQM)</span> 対 <span class="tag t-mp">Gurobi</span> <span class="tag t-mp">CPLEX</span></td>
+        <td>2値線形・2値二次計画（最大 10 万変数）、発電機起動停止計画（MILP）</td>
+        <td>優位が見られたのは 2 値二次計画だけでした。線形制約を足すと品質が落ち、実問題の MILP では Gurobi が <span class="num">180 s</span> でギャップ <span class="num">0.05%</span> に達したのに対し、ハイブリッドは <span class="num">400 s</span> でも最適値の約 4.6 倍でした。</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="tsp">
+  <h2>TSP・ATSP</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>手法</th><th>規模</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Jain<span class="yr">Front. Phys. 2021</span></td>
+        <td><span class="tag t-qa">D-Wave Advantage 1.1</span> 対 古典ソルバー</td>
+        <td>8 都市以下</td>
+        <td>実機で扱えたのは 8 都市まで。精度・時間の両方で古典ソルバーに劣りました。<span class="note">（比較した古典ソルバーの種類と数値は要旨では未確認）</span></td></tr>
+      <tr><td class="ref">Si ら<span class="yr">Nat. Commun. 2024</span></td>
+        <td><span class="tag t-qa">超常磁性 MTJ による Ising マシン</span>（分割 + 制約付き TSP）</td>
+        <td>実機 9 都市・70 都市、シミュレーション 101・200 都市</td>
+        <td>70 都市をそのまま QUBO にすると <span class="num">4,761</span> スピン必要なため、グラフ分割で 80 スピンのハードに載せています。70 都市の解は最適値 675 に対して 700.71（差約 <span class="num">3.8%</span>）。消費電力の小ささが主な貢献で、LKH などとの品質比較はありません。</td></tr>
+      <tr><td class="ref">Hasumi（東芝 SBM 公式ブログ）<span class="yr">2020</span></td>
+        <td><span class="tag t-qa">東芝 SBM</span></td>
+        <td>TSPLIB burma14、gr24</td>
+        <td>burma14 では最適解に到達。gr24 ではパラメータ次第で実行可能解が得られない場合がありました。古典解法との比較はありません。<span class="note">（ベンダーによる報告）</span></td></tr>
+      <tr><td class="ref">Osaba, Villar-Rodriguez, Oregi<span class="yr">IEEE Access 2022</span></td>
+        <td>サーベイ（2004〜2021 年の 53 本）</td>
+        <td>ルーティング問題全般</td>
+        <td>量子計算によるルーティング研究の体系的レビュー。実機・ハイブリッドどちらの研究も小規模の概念実証が中心です。<span class="note">（本文の集計値は未確認）</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>ATSP は、距離行列が非対称でも同じ <span class="num">n²</span> 変数の定式化がそのまま使えます。ただし、ATSP に絞ってアニーリング系と古典解法を比べた研究は、本調査では見つかりませんでした。TSP について、TSPLIB の 100 都市級以上でアニーリング系を LKH・Concorde と同じ条件で比べた中立的な研究も見つかっていません。</p>
+</section>
+
+<section id="atsptw">
+  <h2>ATSP-TW（時間枠付き）</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>内容</th><th>規模</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Papalitsas ら<span class="yr">Algorithms 2019</span></td>
+        <td><span class="tag t-qa">TSPTW の QUBO 定式化</span></td>
+        <td>4〜5 点の例題</td>
+        <td>時間枠を含む QUBO を提案。実機での実験は含まれていません。</td></tr>
+      <tr><td class="ref">Salehi, Glos, Miszczak<span class="yr">Quantum Inf. Process. 2022</span></td>
+        <td><span class="tag t-qa">TSPTW の 3 方式の QUBO / HOBO</span>、D-Wave Advantage</td>
+        <td>3・4・5 都市の乱数 各 10 件</td>
+        <td>変数の数は node-based が最も少なく <span class="num">O(n² + nδ)</span>。実機で試したのは 5 都市までです。<span class="note">（実機での成功率の数値は未確認）</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>時間枠は「到着時刻」という整数を 2 進数のビットで表す必要があり、変数とペナルティ項がさらに増えます。手元の rbg 系（19〜233 点）に届く規模での実験は、本調査では見つかりませんでした。</p>
+</section>
+
+<section id="jssp">
+  <h2>JSSP</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>手法</th><th>規模</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Venturelli, Marchand, Rojo<span class="yr">arXiv 1506.08479</span></td>
+        <td><span class="tag t-qa">D-Wave Two</span>、時間添字型の QUBO</td>
+        <td>小規模の乱数インスタンス</td>
+        <td>JSSP を量子アニーラに載せる最初期の研究。変数は約 <span class="num">N·M·T</span> で、枝刈りと計画期間の絞り込みが必須だと整理しています。<span class="note">（実機で解けた規模の数値は未確認）</span></td></tr>
+      <tr><td class="ref">Kurowski ら<span class="yr">ICCS 2020</span></td>
+        <td><span class="tag t-qa">D-Wave 2000Q + 時間窓をずらすハイブリッド</span></td>
+        <td>ft06（6×6）</td>
+        <td>ft06 の makespan は 60 で、最適値 55 に届きませんでした。著者自身が「単純な古典ヒューリスティクスでも本手法を上回る」と書いています。</td></tr>
+      <tr><td class="ref">Carugno, Ferrari Dacrema, Cremonesi<span class="yr">Sci. Rep. 2022</span></td>
+        <td><span class="tag t-qa">D-Wave Advantage / 2000Q</span> <span class="tag t-qa">逆アニーリング</span> <span class="tag t-qa">ハイブリッド</span> 対 <span class="tag t-mh">SA</span> <span class="tag t-mh">タブーサーチ</span></td>
+        <td>ジョブ数 = 機械数 = 2〜26 の正方インスタンス（最適値が既知の人工問題）、4×4 の乱数 31 件</td>
+        <td>最適値が既知で制約のきつい人工問題では、実機が SA と同等以上で、SA が逃した最適解をいくつか見つけました。より現実的な 4×4 の乱数では、タブーサーチが良く、実機単体は最良にならないことが多い結果でした。比較対象に CP-SAT などの汎用ソルバーは含まれていません。</td></tr>
+      <tr><td class="ref">Schworm ら<span class="yr">Prod. Eng. 2023</span></td>
+        <td><span class="tag t-qa">D-Wave ハイブリッド（BQM / DQM / CQM）</span></td>
+        <td>フレキシブル JSSP、Brandimarte MK01–MK10</td>
+        <td>DQM が全件で解を返し、MK03・MK08 で最良既知値に一致、ほかも 19% 以内。比較は文献のメタヒューリスティクスの値とで、厳密解法・CP との比較はありません。</td></tr>
+      <tr><td class="ref">Safi ら<span class="yr">arXiv 2607.13325 (2026)</span></td>
+        <td><span class="tag t-qa">D-Wave 実機・ハイブリッド</span> <span class="tag t-qa">富士通 DA</span> QAOA 対 <span class="tag t-mp">分枝限定法</span> <span class="tag t-mp">MILP</span> <span class="tag t-sp">反復貪欲法</span></td>
+        <td>Siemens の実問題を元にした JSSP の変種（最大 256 ジョブ）</td>
+        <td>実機で有効な解が安定して得られたのは 100〜120 量子ビット程度まで。DA は 1 万変数超を扱えましたが、同じ数式でも QUBO の書き方（ライブラリ）で品質が変わりました。著者は、産業規模で古典解法を置き換えるものではなく、定式化の検討や概念実証に使うものと位置づけています。<span class="note">（古典解法との数値比較は図のみで未確認）</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">JSSP では CP-SAT が 15×15 程度まで最適性を証明できるため（<a href="jssp.html">JSSP のページ</a>）、アニーリング系が勝負になるのは、少なくとも文献上はそれより小さい規模に限られます。</p>
+</section>
+
+<section id="nsp">
+  <h2>勤務表（ナーススケジューリング）</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>手法</th><th>規模</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Ikeda, Nakamura, Humble<span class="yr">Sci. Rep. 2019</span></td>
+        <td><span class="tag t-qa">D-Wave 2000Q</span> <span class="tag t-qa">逆アニーリング</span> 対 <span class="tag t-mh">SA</span> <span class="tag t-mh">qbsolv（タブーサーチ）</span></td>
+        <td>看護師 3〜4 人 × 5〜14 日、2 交代</td>
+        <td>4 人 × 10〜14 日では、制約をすべて満たす解を実機は 1 件も得られませんでした。SA は全規模で制約を満たす解を得て、qbsolv は 4 人 × 160 日でも解けました。著者は、現行の実機は現実の規模には足りないとしています。</td></tr>
+      <tr><td class="ref">Fixstars（Amplify AE 公式ベンチマーク）<span class="yr">公開日未確認</span></td>
+        <td><span class="tag t-qa">Amplify AE</span> 対 他社ソルバー 2 種（社名非公開）</td>
+        <td>人員シフト計画 730 変数</td>
+        <td><span class="num">60 s</span> での目的値は Amplify AE 23.7、A 社 24.5、B 社は実行可能解なし。中央値 11 回。比較対象が匿名で、汎用 MIP・CP-SAT は含まれていません。<span class="note">（ベンダーによる報告）</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>INRC-I・INRC-II・Curtois–Qu の共通ベンチマークで、アニーリング系を MIP や分枝価格法と比べた研究は、本調査では見つかりませんでした。勤務表はソフト制約が多く、ペナルティ型の QUBO と相性がよい面はありますが、「各日の必要人数」のような不等式はスラック変数を必要とし、規模が膨らみます。</p>
+</section>
+
+<section id="neutral">
+  <h2>中立性の注意点</h2>
+  <p>アニーリング系の比較に特有の論点です。共通の論点は<a href="index.html#neutral">トップ</a>にあります。Bucher ら（2024）の整理と上記文献から抜き出しました。</p>
+  <ol class="pit">
+    <li><b>時間の数え方</b>実機の「アニーリング時間」は数十〜数百マイクロ秒ですが、埋め込み、QUBO の生成、通信、待ち行列を含めると秒〜分になります。Bucher らは、埋め込み時間を含めると D-Wave の目標解到達時間が大きく悪化する例を示しています。前処理・求解・後処理を分けて記録し、合計でも比べるべきです。</li>
+    <li><b>定式化を揃えない</b>アニーリング系は QUBO、MIP ソルバーは MIP、CP-SAT は区間変数、と各解法に最良の定式化を使うのが公平です。古典ソルバーに QUBO を解かせて比べると、古典側が不当に不利になります（Şeker らの QAP では、整数計画で解いた Gurobi が最良）。</li>
+    <li><b>比較対象の強さ</b>「SA より良い」「Gurobi を QUBO で解かせたより良い」という報告が多く、LKH・CP-SAT・分枝価格法のような問題専用の強い解法と比べた研究はほとんどありません。</li>
+    <li><b>実行可能性</b>制約はペナルティ項なので、出力が制約を破っていることがあります。品質の比較の前に、実行可能解の割合を報告する必要があります。</li>
+    <li><b>罰金の重みと調整</b>罰金の重みは品質を大きく左右します（Huang ら、Şeker ら）。重みやスケジュールの調整にかけた手間を、古典解法の調整と同程度にそろえます。</li>
+    <li><b>ベンダーのベンチマーク</b>ベンダー公式の比較は比較対象が匿名だったり、設定が非公開だったりします。参考値として扱い、手元で再現できるものを重視します。</li>
+    <li><b>実機とハイブリッドの区別</b>D-Wave のハイブリッドソルバーは古典計算が中心の非公開の仕組みです。「量子アニーリングの性能」と「ハイブリッドサービスの性能」は分けて報告します。</li>
+  </ol>
+</section>
+
+<section id="plan">
+  <h2>手元ベンチマークへの示唆</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
+    <tbody>
+      <tr><td>TSP・ATSP の 10〜50 都市程度の小規模（TSPLIB の burma14・ulysses22・berlin52 など、ATSP の ftv33 など）</td><td>OpenJij（SA / SQA）、dwave-samplers（SA）、Amplify AE（トークンがあれば）。比較対象に LKH-3、Concorde、OR-Tools、MIP</td><td>同じインスタンス・同じ時間で LKH と比べた中立的な研究がない。実行可能解の割合と、都市数に対する品質の落ち方</td></tr>
+      <tr><td>JSSP の ft06 と、それより小さい人工問題</td><td>上記のアニーリング系（時間添字型 QUBO）と CP-SAT</td><td>CP-SAT と同じ条件で比べた研究がない</td></tr>
+      <tr><td>勤務表 nsp01・nsp02（112〜392 変数）</td><td>上記のアニーリング系と CP-SAT・MIP</td><td>共通ベンチマークでの比較がない。スラック変数の入れ方による差</td></tr>
+    </tbody>
+  </table></div>
+  <p>記録は、QUBO の変数の数、実行可能解の割合、最良値と平均値、QUBO 生成を含む合計時間と求解だけの時間、の 4 点を推奨します。</p>
+</section>
+
+<section id="refs">
+  <h2>文献</h2>
+  <ol class="refs">
+    <li>M. Jünger, E. Lobe, P. Mutzel, G. Reinelt, F. Rendl, G. Rinaldi, T. Stollenwerk. Quantum Annealing versus Digital Computing: An Experimental Comparison. ACM J. Exp. Algorithmics 26, 2021. <a href="https://arxiv.org/abs/1904.11965" target="_blank" rel="noopener">arXiv:1904.11965</a></li>
+    <li>H. Oshiyama, M. Ohzeki. Benchmark of quantum-inspired heuristic solvers for quadratic unconstrained binary optimization. Sci. Rep. 12, 2022. <a href="https://arxiv.org/abs/2104.14096" target="_blank" rel="noopener">arXiv:2104.14096</a></li>
+    <li>O. Şeker, N. Tanoumand, M. Bodur. Digital Annealer for quadratic unconstrained binary optimization: a comparative performance analysis. <a href="https://arxiv.org/abs/2012.12264" target="_blank" rel="noopener">arXiv:2012.12264</a></li>
+    <li>T. Huang ら. Benchmarking Quantum(-inspired) Annealing Hardware on Practical Use Cases. <a href="https://arxiv.org/abs/2203.02325" target="_blank" rel="noopener">arXiv:2203.02325</a></li>
+    <li>F. A. Quinton ら. Quantum annealing applications, challenges and limitations for optimisation problems compared to classical solvers. Sci. Rep. 15, 12733, 2025. <a href="https://www.nature.com/articles/s41598-025-96220-2" target="_blank" rel="noopener">doi:10.1038/s41598-025-96220-2</a></li>
+    <li>S. Jain. Solving the Traveling Salesman Problem on the D-Wave Quantum Computer. Front. Phys. 9, 2021. <a href="https://www.frontiersin.org/articles/10.3389/fphy.2021.760783" target="_blank" rel="noopener">doi:10.3389/fphy.2021.760783</a></li>
+    <li>J. Si ら. Energy-efficient superparamagnetic Ising machine and its application to traveling salesman problems. Nat. Commun. 15, 3457, 2024. <a href="https://www.nature.com/articles/s41467-024-47818-z" target="_blank" rel="noopener">doi:10.1038/s41467-024-47818-z</a></li>
+    <li>I. Hasumi. Solving Traveling Salesman Problem with SBM (Simulated Bifurcation Machine). Toshiba SBM（Medium）, 2020. <a href="https://medium.com/toshiba-sbm/solving-traveling-salesman-problem-with-sbm-simulated-bifurcation-machine-89740c83ed37" target="_blank" rel="noopener">記事</a></li>
+    <li>E. Osaba, E. Villar-Rodriguez, I. Oregi. A Systematic Literature Review of Quantum Computing for Routing Problems. IEEE Access 10, 55805–55817, 2022. <a href="https://dsp.tecnalia.com/items/bce067eb-ee6f-426e-8a70-b09b020e9048" target="_blank" rel="noopener">リポジトリ</a></li>
+    <li>C. Papalitsas, T. Andronikos, K. Giannakis, G. Theocharopoulou, S. Fanarioti. A QUBO Model for the Traveling Salesman Problem with Time Windows. Algorithms 12(11), 224, 2019. <a href="https://www.mdpi.com/1999-4893/12/11/224" target="_blank" rel="noopener">MDPI</a></li>
+    <li>Ö. Salehi, A. Glos, J. A. Miszczak. Unconstrained binary models of the travelling salesman problem variants for quantum optimization. Quantum Inf. Process. 21, 67, 2022. <a href="https://arxiv.org/abs/2106.09056" target="_blank" rel="noopener">arXiv:2106.09056</a></li>
+    <li>D. Venturelli, D. J. J. Marchand, G. Rojo. Quantum Annealing Implementation of Job-Shop Scheduling. <a href="https://arxiv.org/abs/1506.08479" target="_blank" rel="noopener">arXiv:1506.08479</a></li>
+    <li>K. Kurowski, J. Węglarz, M. Subocz, R. Różycki, G. Waligóra. Hybrid Quantum Annealing Heuristic Method for Solving Job Shop Scheduling Problem. ICCS 2020, LNCS 12142. <a href="https://www.iccs-meeting.org/archive/iccs2020/papers/121420480.pdf" target="_blank" rel="noopener">PDF</a></li>
+    <li>C. Carugno, M. Ferrari Dacrema, P. Cremonesi. Evaluating the job shop scheduling problem on a D-wave quantum annealer. Sci. Rep. 12, 6539, 2022. <a href="https://www.nature.com/articles/s41598-022-10169-0" target="_blank" rel="noopener">doi:10.1038/s41598-022-10169-0</a></li>
+    <li>P. Schworm, X. Wu, M. Glatt, J. C. Aurich. Solving flexible job shop scheduling problems in manufacturing with Quantum Annealing. Prod. Eng. 17, 105–115, 2023. <a href="https://link.springer.com/article/10.1007/s11740-022-01145-8" target="_blank" rel="noopener">doi:10.1007/s11740-022-01145-8</a></li>
+    <li>H. Safi, K. Wintersperger, O. von Sicard, C. Niedermeier, W. Mauerer. A Reality Check on Quantum Optimisation: Evidence from an Industrial Case Study. <a href="https://arxiv.org/abs/2607.13325" target="_blank" rel="noopener">arXiv:2607.13325</a></li>
+    <li>K. Ikeda, Y. Nakamura, T. S. Humble. Application of Quantum Annealing to Nurse Scheduling Problem. Sci. Rep. 9, 2019. <a href="https://arxiv.org/abs/1904.12139" target="_blank" rel="noopener">arXiv:1904.12139</a></li>
+    <li>Fixstars. Performance of Amplify AE（公式ベンチマーク）. <a href="https://amplify.fixstars.com/en/docs/amplify/v1/amplify_ae/benchmark.html" target="_blank" rel="noopener">ページ</a></li>
+    <li>D. Bucher, N. Kraus, J. Blenninger, M. Lachner, J. Stein, C. Linnhoff-Popien. Towards Robust Benchmarking of Quantum Optimization Algorithms. <a href="https://arxiv.org/abs/2405.07624" target="_blank" rel="noopener">arXiv:2405.07624</a></li>
+    <li>T. Koch ら. Quantum Optimization Benchmarking Library: The Intractable Decathlon. <a href="https://arxiv.org/abs/2504.03832" target="_blank" rel="noopener">arXiv:2504.03832</a></li>
+  </ol>
+  <p class="note">比較の進め方に関する文献（Accorsi ら、Dolan–Moré）は<a href="index.html#refs">トップ</a>にあります。</p>
+</section>
+
+<footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>
