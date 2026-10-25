@@ -203,11 +203,13 @@ def lkh3(inst, tl, seed):
     lines += [" ".join(map(str, row)) for row in D.tolist()]
     lines += ["TIME_WINDOW_SECTION"] + [f"{i + 1} {r[i]} {d[i]}" for i in range(n)]
     lines += ["DEPOT_SECTION", "1", "-1", "EOF", ""]
-    fd, path = tempfile.mkstemp(suffix=".tsptw")
+    # elkai は問題を標準入力（:stdin:）から読むと時間枠を読めないので、一時ファイルを渡す.
+    # LKH はパラメータ中の空白でファイル名を区切るので、カレントディレクトリに置いて相対パスで渡す
+    fd, path = tempfile.mkstemp(prefix="_lkh3_", suffix=".tsptw", dir=".")
+    path = os.path.basename(path)
     try:
         with os.fdopen(fd, "w") as f:
             f.write("\n".join(lines))
-        # elkai は問題を標準入力（:stdin:）から読むと時間枠を読めないので、一時ファイルを渡す
         params = (f"PROBLEM_FILE = {path}\nRUNS = 1000000\nSEED = {seed}\n"
                   f"TIME_LIMIT = {tl:.1f}\nTOTAL_TIME_LIMIT = {tl:.1f}\n")
         tour = _elkai.solve_problem(params, "")
