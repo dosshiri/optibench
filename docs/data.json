@@ -1,11 +1,15 @@
 {
- "generated": "2026-10-25T19:30:52+00:00",
+ "generated": "2026-10-25T21:31:51+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
    "ref": "TSPLIB 公表最適値",
    "unit": "距離",
    "about": {
+    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
+    "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
+    "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
+    "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。",
     "nn+ls": "最近傍法（いちばん近い未訪問の都市へ順に進む）で巡回路を作り、2-opt（対称のときだけ）と Or-opt（1〜3 都市の区間の付け替え）で改善できなくなるまで局所探索する自作手法。始点を変えながら制限時間まで繰り返し、最良の巡回路を返す。実装が簡単で、他の手法を測る物差しになる。",
     "SA": "焼きなまし法（Simulated Annealing）。2-opt や Or-opt のランダムな変更を、悪くなる場合も「温度」に応じた確率で受け入れ、温度を徐々に下げることで局所最適から抜け出す自作手法。最後に局所探索で仕上げる。",
     "LKH(elkai)": "Lin–Kernighan 法を発展させた Helsgaun の LKH を elkai パッケージ経由で呼ぶ。複数の辺をまとめて入れ替える強力な局所探索で、TSP の近似解法では最強クラス。ここでは時間ではなく試行回数（runs=10）で止めている。",
@@ -19,11 +23,37 @@
     "20261025T075502Z-tiamat-tsp"
    ]
   },
+  "tsp_small": {
+   "label": "TSP 小規模（QUBO 比較用）",
+   "ref": "TSPLIB 公表最適値",
+   "unit": "距離",
+   "about": {
+    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
+    "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
+    "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
+    "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。",
+    "nn+ls": "最近傍法（いちばん近い未訪問の都市へ順に進む）で巡回路を作り、2-opt（対称のときだけ）と Or-opt（1〜3 都市の区間の付け替え）で改善できなくなるまで局所探索する自作手法。始点を変えながら制限時間まで繰り返し、最良の巡回路を返す。実装が簡単で、他の手法を測る物差しになる。",
+    "SA": "焼きなまし法（Simulated Annealing）。2-opt や Or-opt のランダムな変更を、悪くなる場合も「温度」に応じた確率で受け入れ、温度を徐々に下げることで局所最適から抜け出す自作手法。最後に局所探索で仕上げる。",
+    "LKH(elkai)": "Lin–Kernighan 法を発展させた Helsgaun の LKH を elkai パッケージ経由で呼ぶ。複数の辺をまとめて入れ替える強力な局所探索で、TSP の近似解法では最強クラス。ここでは時間ではなく試行回数（runs=10）で止めている。",
+    "ORTools-GLS": "Google OR-Tools の配送計画ソルバー（Routing）。安い弧から順につないで初期解を作り、誘導局所探索（GLS: 局所最適に何度も現れる辺にペナルティを課して別の解へ誘導する）で改善する。時間枠・容量・複数車両などの業務制約を足せる汎用性が強み。",
+    "CP-SAT": "OR-Tools の制約プログラミングソルバー CP-SAT。各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。下界も出すので、時間内に最適性を証明できることもある。",
+    "MIP-HiGHS": "混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。"
+   },
+   "run": "20261025T210045Z-tiamat-tsp_small",
+   "runs": [
+    "20261025T203242Z-cloud-tsp_small",
+    "20261025T210045Z-tiamat-tsp_small"
+   ]
+  },
   "atsp": {
    "label": "ATSP（非対称巡回セールスマン）",
    "ref": "TSPLIB 公表最適値",
    "unit": "距離",
    "about": {
+    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
+    "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
+    "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
+    "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。",
     "nn+ls": "最近傍法（いちばん近い未訪問の都市へ順に進む）で巡回路を作り、2-opt（対称のときだけ）と Or-opt（1〜3 都市の区間の付け替え）で改善できなくなるまで局所探索する自作手法。始点を変えながら制限時間まで繰り返し、最良の巡回路を返す。実装が簡単で、他の手法を測る物差しになる。",
     "SA": "焼きなまし法（Simulated Annealing）。2-opt や Or-opt のランダムな変更を、悪くなる場合も「温度」に応じた確率で受け入れ、温度を徐々に下げることで局所最適から抜け出す自作手法。最後に局所探索で仕上げる。",
     "LKH(elkai)": "Lin–Kernighan 法を発展させた Helsgaun の LKH を elkai パッケージ経由で呼ぶ。複数の辺をまとめて入れ替える強力な局所探索で、TSP の近似解法では最強クラス。ここでは時間ではなく試行回数（runs=10）で止めている。",
@@ -67,7 +97,11 @@
     "GA": "遺伝的アルゴリズム（BRKGA 型）。各作業に乱数のキーを持たせ、キーの小さい順を優先度として Giffler–Thompson 法でスケジュールに直す。成績の良い個体（エリート）の遺伝子を多めに受け継ぐ交叉で世代を進める。",
     "Tabu-N5": "タブーサーチ。最も長い作業の連鎖（クリティカルパス）上で同じ機械に続く作業ブロックの端の 2 つを入れ替える N5 近傍（Nowicki & Smutnicki 1996）を使い、直前の入れ替えを一定期間禁じて同じ解への逆戻りを防ぐ。JSSP 専用の強力な手法。",
     "CP-SAT": "各作業を区間変数で表し、同じ機械の作業は重ならない（NoOverlap）・ジョブ内の順序を守るという制約の下で、全作業の完了時刻（メイクスパン）を最小化する。スケジューリングは CP-SAT が最も得意とする分野。",
-    "MIP-HiGHS": "Manne の離接定式化を HiGHS で解く。同じ機械の作業の組ごとに「どちらが先か」の 0-1 変数を置き、big-M 制約で順序を表す。変数が多く緩和も弱いため、大きな問題は苦手。"
+    "MIP-HiGHS": "Manne の離接定式化を HiGHS で解く。同じ機械の作業の組ごとに「どちらが先か」の 0-1 変数を置き、big-M 制約で順序を表す。変数が多く緩和も弱いため、大きな問題は苦手。",
+    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
+    "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
+    "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
+    "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。"
    },
    "run": "20261025T082601Z-tiamat-jssp",
    "runs": [
@@ -615,7 +649,7 @@
    "run_id": "20261025T075502Z-tiamat-tsp",
    "problem": "tsp",
    "started_at": "2026-10-25T07:55:02+00:00",
-   "finished_at": "2026-10-25T08:13:22+00:00",
+   "finished_at": "2026-10-25T20:58:46+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -633,7 +667,11 @@
      "numba": "0.68.0",
      "numpy": "2.5.4",
      "pandas": "3.1.0",
-     "tsplib95": "0.7.1"
+     "tsplib95": "0.7.1",
+     "pyvrp": "0.14.1",
+     "amplify": "1.7.3",
+     "dwave-samplers": "1.8.0",
+     "openjij": "0.12.2"
     }
    },
    "git": {
@@ -652,7 +690,11 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 4
+    "MIP-HiGHS-4w": 4,
+    "OpenJij-SQA": 1,
+    "OpenJij-SA": 1,
+    "DWave-SA": 1,
+    "Amplify-AE": 1
    },
    "solvers": {
     "nn+ls": "nn+ls",
@@ -662,7 +704,11 @@
     "CP-SAT": "CP-SAT",
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
-    "MIP-HiGHS-4w": "MIP-HiGHS"
+    "MIP-HiGHS-4w": "MIP-HiGHS",
+    "OpenJij-SQA": "OpenJij-SQA",
+    "OpenJij-SA": "OpenJij-SA",
+    "DWave-SA": "DWave-SA",
+    "Amplify-AE": "Amplify-AE"
    },
    "seeds": {
     "nn+ls": 1,
@@ -672,7 +718,11 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 1
+    "MIP-HiGHS-4w": 1,
+    "OpenJij-SQA": 3,
+    "OpenJij-SA": 3,
+    "DWave-SA": 3,
+    "Amplify-AE": 1
    },
    "instance_sha256": {
     "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
@@ -682,8 +732,49 @@
     "pcb442": "9864cc281ded9fcc4b1c53f15085f2ff33d999847878704075da08e19c1cdaa6",
     "rat783": "05b321ca8c33122377ab6575400fbe4d78311dcda7500ed03cbd1bf5caa80712"
    },
-   "additions": [],
+   "additions": [
+    {
+     "at": "2026-10-25T20:44:45+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py tsp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
+    },
+    {
+     "at": "2026-10-25T20:57:50+00:00",
+     "methods": [
+      "Amplify-AE"
+     ],
+     "git": {
+      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py tsp 60 --run latest --only Amplify-AE"
+    }
+   ],
    "cells": [
+    {
+     "instance": "a280",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
     {
      "instance": "a280",
      "method": "CP-SAT",
@@ -707,6 +798,18 @@
      "time": 61.59,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "a280",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "a280",
@@ -758,6 +861,30 @@
     },
     {
      "instance": "a280",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "a280",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "a280",
      "method": "SA",
      "mean_gap": 0.0,
      "best": 2579.0,
@@ -777,6 +904,18 @@
      "ref": 2579.0,
      "lb": null,
      "time": 5.09,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "Amplify-AE",
+     "mean_gap": 3.792,
+     "best": 7828.0,
+     "mean_obj": 7828.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 55.05,
      "runs": 1,
      "fails": 0
     },
@@ -802,6 +941,18 @@
      "lb": 7542.0,
      "time": 4.53,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "DWave-SA",
+     "mean_gap": 72.514,
+     "best": 13011.0,
+     "mean_obj": 13011.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 58.6,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -854,6 +1005,30 @@
     },
     {
      "instance": "berlin52",
+     "method": "OpenJij-SA",
+     "mean_gap": 79.448,
+     "best": 13307.0,
+     "mean_obj": 13534.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 58.73,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "OpenJij-SQA",
+     "mean_gap": 120.401,
+     "best": 15613.0,
+     "mean_obj": 16622.67,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 52.23,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
      "method": "SA",
      "mean_gap": 0.0,
      "best": 7542.0,
@@ -878,6 +1053,18 @@
     },
     {
      "instance": "ch150",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "ch150",
      "method": "CP-SAT",
      "mean_gap": 31.756,
      "best": 8601.0,
@@ -899,6 +1086,18 @@
      "time": 61.45,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "ch150",
@@ -950,6 +1149,30 @@
     },
     {
      "instance": "ch150",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ch150",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ch150",
      "method": "SA",
      "mean_gap": 0.322,
      "best": 6549.0,
@@ -974,6 +1197,18 @@
     },
     {
      "instance": "kroA100",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "kroA100",
      "method": "CP-SAT",
      "mean_gap": 29.814,
      "best": 27627.0,
@@ -995,6 +1230,18 @@
      "time": 60.48,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "kroA100",
@@ -1046,6 +1293,30 @@
     },
     {
      "instance": "kroA100",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "kroA100",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "kroA100",
      "method": "SA",
      "mean_gap": 0.0,
      "best": 21282.0,
@@ -1070,6 +1341,18 @@
     },
     {
      "instance": "pcb442",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "pcb442",
      "method": "CP-SAT",
      "mean_gap": 20.338,
      "best": 61105.0,
@@ -1091,6 +1374,18 @@
      "time": 63.16,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "pcb442",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "pcb442",
@@ -1142,6 +1437,30 @@
     },
     {
      "instance": "pcb442",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "pcb442",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "pcb442",
      "method": "SA",
      "mean_gap": 1.033,
      "best": 51194.0,
@@ -1166,6 +1485,18 @@
     },
     {
      "instance": "rat783",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "rat783",
      "method": "CP-SAT",
      "mean_gap": null,
      "best": null,
@@ -1187,6 +1518,18 @@
      "time": 69.17,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "rat783",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "rat783",
@@ -1238,6 +1581,30 @@
     },
     {
      "instance": "rat783",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "rat783",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "rat783",
      "method": "SA",
      "mean_gap": 1.681,
      "best": 8888.0,
@@ -1270,6 +1637,2247 @@
     "rat783"
    ],
    "methods": [
+    "nn+ls",
+    "SA",
+    "LKH(elkai)",
+    "ORTools-GLS",
+    "CP-SAT",
+    "CP-SAT-4w",
+    "MIP-HiGHS",
+    "MIP-HiGHS-4w",
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA",
+    "Amplify-AE"
+   ]
+  },
+  "20261025T203242Z-cloud-tsp_small": {
+   "run_id": "20261025T203242Z-cloud-tsp_small",
+   "problem": "tsp_small",
+   "started_at": "2026-10-25T20:32:42+00:00",
+   "finished_at": "2026-10-25T20:59:50+00:00",
+   "status": "complete",
+   "note": "クラウドでの試走（量子・疑似量子アニーリング系の追加に合わせた小規模 TSP）",
+   "migrated": false,
+   "environment": {
+    "machine": "cloud",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cpu_count": 4,
+    "memory_gb": 15.7,
+    "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+    "python": "3.13.17",
+    "packages": {
+     "ortools": "9.15.6755",
+     "highspy": "1.15.1",
+     "elkai": "2.0.1",
+     "numba": "0.68.0",
+     "numpy": "2.5.3",
+     "pandas": "3.0.5",
+     "tsplib95": "0.7.1",
+     "pyvrp": "0.14.1",
+     "dwave-samplers": "1.8.0",
+     "openjij": "0.12.2"
+    }
+   },
+   "git": {
+    "commit": "cc0f5984f1833948ace7f76a7912c61f897e122e",
+    "branch": "claude/project-thread-wq8605",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "time_limit": 60.0,
+   "workers": 4,
+   "threads": {
+    "DWave-SA": 1,
+    "OpenJij-SQA": 1,
+    "OpenJij-SA": 1,
+    "nn+ls": 1,
+    "SA": 1,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "MIP-HiGHS": 1
+   },
+   "solvers": {
+    "DWave-SA": "DWave-SA",
+    "OpenJij-SQA": "OpenJij-SQA",
+    "OpenJij-SA": "OpenJij-SA",
+    "nn+ls": "nn+ls",
+    "SA": "SA",
+    "LKH(elkai)": "LKH(elkai)",
+    "ORTools-GLS": "ORTools-GLS",
+    "CP-SAT": "CP-SAT",
+    "MIP-HiGHS": "MIP-HiGHS"
+   },
+   "seeds": {
+    "DWave-SA": 3,
+    "OpenJij-SQA": 3,
+    "OpenJij-SA": 3,
+    "nn+ls": 1,
+    "SA": 3,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "MIP-HiGHS": 1
+   },
+   "instance_sha256": {
+    "burma14": "c2f10b100ad1a00bba19094e33ab3c05fb50203352151e23252eba6f85d5c3e7",
+    "ulysses16": "46064545dbb24b7f53b9b26802b422a903d92bc51ab835a73ec15733ab3cac46",
+    "ulysses22": "5d78d3131b51d4130c28495ecc558da9208fbb9a8f4f7d38535421371ba79898",
+    "bayg29": "6b6a501a2a4933e9b6614f905b79e1d3f9e5093a56ef0d3deaf8fbf440a17a3b",
+    "att48": "7a7b04423c4463e873ec5d1f0592ad4a5cba168018e3f4edfd7f7e541fde03ac",
+    "eil51": "66c05ad077ffd64d5778e358bbd16be049f8c8ae880cbd24f034487331d1ccce",
+    "berlin52": "8496a5838133e3c3eb25a9fa8893b1ac302593fc8dc325350643a0cabd8abadc",
+    "st70": "60c09e8886609bf22d6dc699fe7d7aa1924207d084578aad1a377ec65cf15b1b"
+   },
+   "additions": [],
+   "cells": [
+    {
+     "instance": "att48",
+     "method": "CP-SAT",
+     "mean_gap": 0.339,
+     "best": 10664.0,
+     "mean_obj": 10664.0,
+     "ref": 10628.0,
+     "lb": 8881.0,
+     "time": 60.26,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "DWave-SA",
+     "mean_gap": 61.372,
+     "best": 17076.0,
+     "mean_obj": 17150.67,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 58.65,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 0.03,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": 10628.0,
+     "time": 0.81,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 60.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "OpenJij-SA",
+     "mean_gap": 70.97,
+     "best": 17727.0,
+     "mean_obj": 18170.67,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 59.78,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "OpenJij-SQA",
+     "mean_gap": 102.475,
+     "best": 21081.0,
+     "mean_obj": 21519.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 56.16,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "nn+ls",
+     "mean_gap": 0.235,
+     "best": 10653.0,
+     "mean_obj": 10653.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 0.21,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": 1610.0,
+     "time": 0.66,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "DWave-SA",
+     "mean_gap": 22.733,
+     "best": 1976.0,
+     "mean_obj": 1976.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 59.61,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 0.02,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": 1610.0,
+     "time": 0.05,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "OpenJij-SA",
+     "mean_gap": 23.354,
+     "best": 1894.0,
+     "mean_obj": 1986.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 59.7,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "OpenJij-SQA",
+     "mean_gap": 48.261,
+     "best": 2320.0,
+     "mean_obj": 2387.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 59.09,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 0.19,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 13.52,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "DWave-SA",
+     "mean_gap": 72.514,
+     "best": 13011.0,
+     "mean_obj": 13011.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 59.05,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 0.01,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 60.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "OpenJij-SA",
+     "mean_gap": 80.81,
+     "best": 13423.0,
+     "mean_obj": 13636.67,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 58.95,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "OpenJij-SQA",
+     "mean_gap": 120.401,
+     "best": 15613.0,
+     "mean_obj": 16622.67,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 53.33,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 0.35,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": 3323.0,
+     "time": 0.86,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "DWave-SA",
+     "mean_gap": 0.692,
+     "best": 3346.0,
+     "mean_obj": 3346.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 59.96,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": 3323.0,
+     "time": 0.02,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 60.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "OpenJij-SA",
+     "mean_gap": 1.755,
+     "best": 3346.0,
+     "mean_obj": 3381.33,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 59.98,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "OpenJij-SQA",
+     "mean_gap": 4.273,
+     "best": 3394.0,
+     "mean_obj": 3465.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 59.89,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 3.89,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": 426.0,
+     "time": 21.62,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "DWave-SA",
+     "mean_gap": 65.884,
+     "best": 695.0,
+     "mean_obj": 706.67,
+     "ref": 426.0,
+     "lb": null,
+     "time": 58.6,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 0.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": 426.0,
+     "time": 0.43,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "OpenJij-SA",
+     "mean_gap": 78.638,
+     "best": 710.0,
+     "mean_obj": 761.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 59.34,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "OpenJij-SQA",
+     "mean_gap": 92.254,
+     "best": 790.0,
+     "mean_obj": 819.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 57.49,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "nn+ls",
+     "mean_gap": 0.469,
+     "best": 428.0,
+     "mean_obj": 428.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 0.21,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "CP-SAT",
+     "mean_gap": 6.074,
+     "best": 716.0,
+     "mean_obj": 716.0,
+     "ref": 675.0,
+     "lb": 519.0,
+     "time": 60.27,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "DWave-SA",
+     "mean_gap": 116.494,
+     "best": 1455.0,
+     "mean_obj": 1461.33,
+     "ref": 675.0,
+     "lb": null,
+     "time": 57.13,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 0.14,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": 675.0,
+     "time": 0.55,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "OpenJij-SA",
+     "mean_gap": 124.346,
+     "best": 1335.0,
+     "mean_obj": 1514.33,
+     "ref": 675.0,
+     "lb": null,
+     "time": 57.19,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "OpenJij-SQA",
+     "mean_gap": 199.111,
+     "best": 1842.0,
+     "mean_obj": 2019.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 44.63,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "nn+ls",
+     "mean_gap": 1.037,
+     "best": 682.0,
+     "mean_obj": 682.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 0.27,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": 6859.0,
+     "time": 0.29,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "DWave-SA",
+     "mean_gap": 2.581,
+     "best": 7036.0,
+     "mean_obj": 7036.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 59.97,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": 6859.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 60.08,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "OpenJij-SA",
+     "mean_gap": 5.769,
+     "best": 7142.0,
+     "mean_obj": 7254.67,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 59.96,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "OpenJij-SQA",
+     "mean_gap": 9.773,
+     "best": 7126.0,
+     "mean_obj": 7529.33,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 59.68,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 0.21,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": 7013.0,
+     "time": 2.62,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "DWave-SA",
+     "mean_gap": 11.792,
+     "best": 7840.0,
+     "mean_obj": 7840.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 59.82,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 0.01,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": 7013.0,
+     "time": 0.03,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "OpenJij-SA",
+     "mean_gap": 22.739,
+     "best": 8453.0,
+     "mean_obj": 8607.67,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 59.88,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "OpenJij-SQA",
+     "mean_gap": 38.457,
+     "best": 9471.0,
+     "mean_obj": 9710.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 59.72,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 0.2,
+     "runs": 1,
+     "fails": 0
+    }
+   ],
+   "instances": [
+    "burma14",
+    "ulysses16",
+    "ulysses22",
+    "bayg29",
+    "att48",
+    "eil51",
+    "berlin52",
+    "st70"
+   ],
+   "methods": [
+    "DWave-SA",
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "nn+ls",
+    "SA",
+    "LKH(elkai)",
+    "ORTools-GLS",
+    "CP-SAT",
+    "MIP-HiGHS"
+   ]
+  },
+  "20261025T210045Z-tiamat-tsp_small": {
+   "run_id": "20261025T210045Z-tiamat-tsp_small",
+   "problem": "tsp_small",
+   "started_at": "2026-10-25T21:00:45+00:00",
+   "finished_at": "2026-10-25T21:30:50+00:00",
+   "status": "complete",
+   "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。QUBO で扱える 14〜70 都市の TSP",
+   "migrated": false,
+   "environment": {
+    "machine": "tiamat",
+    "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+    "cpu_count": 16,
+    "memory_gb": 31.4,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.9",
+    "packages": {
+     "ortools": "9.15.6755",
+     "highspy": "1.15.1",
+     "elkai": "2.0.1",
+     "numba": "0.68.0",
+     "numpy": "2.5.4",
+     "pandas": "3.1.0",
+     "tsplib95": "0.7.1",
+     "pyvrp": "0.14.1",
+     "amplify": "1.7.3",
+     "dwave-samplers": "1.8.0",
+     "openjij": "0.12.2"
+    }
+   },
+   "git": {
+    "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+    "branch": "claude/project-thread-wq8605",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "time_limit": 60.0,
+   "workers": 4,
+   "threads": {
+    "Amplify-AE": 1,
+    "DWave-SA": 1,
+    "OpenJij-SQA": 1,
+    "OpenJij-SA": 1,
+    "nn+ls": 1,
+    "SA": 1,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "CP-SAT-4w": 4,
+    "MIP-HiGHS": 1,
+    "MIP-HiGHS-4w": 4
+   },
+   "solvers": {
+    "Amplify-AE": "Amplify-AE",
+    "DWave-SA": "DWave-SA",
+    "OpenJij-SQA": "OpenJij-SQA",
+    "OpenJij-SA": "OpenJij-SA",
+    "nn+ls": "nn+ls",
+    "SA": "SA",
+    "LKH(elkai)": "LKH(elkai)",
+    "ORTools-GLS": "ORTools-GLS",
+    "CP-SAT": "CP-SAT",
+    "CP-SAT-4w": "CP-SAT",
+    "MIP-HiGHS": "MIP-HiGHS",
+    "MIP-HiGHS-4w": "MIP-HiGHS"
+   },
+   "seeds": {
+    "Amplify-AE": 1,
+    "DWave-SA": 3,
+    "OpenJij-SQA": 3,
+    "OpenJij-SA": 3,
+    "nn+ls": 1,
+    "SA": 3,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "CP-SAT-4w": 1,
+    "MIP-HiGHS": 1,
+    "MIP-HiGHS-4w": 1
+   },
+   "instance_sha256": {
+    "burma14": "c01eafd6c2da17a1a0f4929413d2394863754502191a4001f524fbf05c820dc5",
+    "ulysses16": "c599e9c2014c751dd056a35ab2aa4bbc8dc5a837ac1f9564222501698c277f1f",
+    "ulysses22": "75ad6dde3e8336a2f26d2063bc3aaab30540bfb15db960d98bfe29dcf79cee1a",
+    "bayg29": "d59b0d704c493528662ca22fd8dad8a858087ffa312f5d3c69fb8f8dfccc22c9",
+    "att48": "b357ef436b9fe1ca08876e633adc6d266613b3f73362255abb97f7bc27b92e98",
+    "eil51": "2081d397a69ef55b88a50a9c96d96462bcb74a3367ca969fde71573b53779bc2",
+    "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
+    "st70": "1ed07159d9148d7d275815a8bd34828c4bff3bfd1b932b8415359e47ff07bee0"
+   },
+   "additions": [],
+   "cells": [
+    {
+     "instance": "att48",
+     "method": "Amplify-AE",
+     "mean_gap": 0.781,
+     "best": 10711.0,
+     "mean_obj": 10711.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 54.81,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": 8881.0,
+     "time": 60.39,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": 10628.0,
+     "time": 4.79,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "DWave-SA",
+     "mean_gap": 61.372,
+     "best": 17076.0,
+     "mean_obj": 17150.67,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 59.0,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 0.02,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": 10628.0,
+     "time": 0.77,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": 10628.0,
+     "time": 0.67,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "OpenJij-SA",
+     "mean_gap": 69.678,
+     "best": 17381.0,
+     "mean_obj": 18033.33,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 59.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "OpenJij-SQA",
+     "mean_gap": 88.505,
+     "best": 16740.0,
+     "mean_obj": 20034.33,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 54.68,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 10628.0,
+     "mean_obj": 10628.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "att48",
+     "method": "nn+ls",
+     "mean_gap": 0.235,
+     "best": 10653.0,
+     "mean_obj": 10653.0,
+     "ref": 10628.0,
+     "lb": null,
+     "time": 0.31,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "Amplify-AE",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 51.92,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": 1610.0,
+     "time": 1.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": 1610.0,
+     "time": 0.97,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "DWave-SA",
+     "mean_gap": 22.733,
+     "best": 1976.0,
+     "mean_obj": 1976.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 59.71,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 0.02,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": 1610.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": 1610.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "OpenJij-SA",
+     "mean_gap": 27.495,
+     "best": 1898.0,
+     "mean_obj": 2052.67,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 59.78,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "OpenJij-SQA",
+     "mean_gap": 48.261,
+     "best": 2320.0,
+     "mean_obj": 2387.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 59.02,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "bayg29",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 1610.0,
+     "mean_obj": 1610.0,
+     "ref": 1610.0,
+     "lb": null,
+     "time": 0.27,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "Amplify-AE",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 55.37,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 9.41,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 4.16,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "DWave-SA",
+     "mean_gap": 72.514,
+     "best": 13011.0,
+     "mean_obj": 13011.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 57.9,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 0.01,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 0.09,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 0.09,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "OpenJij-SA",
+     "mean_gap": 79.448,
+     "best": 13307.0,
+     "mean_obj": 13534.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 59.21,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "OpenJij-SQA",
+     "mean_gap": 120.401,
+     "best": 15613.0,
+     "mean_obj": 16622.67,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 56.57,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "mean_obj": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 0.33,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "Amplify-AE",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 51.16,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": 3323.0,
+     "time": 0.44,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": 3323.0,
+     "time": 0.37,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "DWave-SA",
+     "mean_gap": 0.692,
+     "best": 3346.0,
+     "mean_obj": 3346.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 59.97,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": 3323.0,
+     "time": 0.03,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": 3323.0,
+     "time": 0.04,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 60.14,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "OpenJij-SA",
+     "mean_gap": 2.979,
+     "best": 3381.0,
+     "mean_obj": 3422.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 59.97,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "OpenJij-SQA",
+     "mean_gap": 4.273,
+     "best": 3394.0,
+     "mean_obj": 3465.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 59.8,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 60.02,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "burma14",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 3323.0,
+     "mean_obj": 3323.0,
+     "ref": 3323.0,
+     "lb": null,
+     "time": 4.34,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "Amplify-AE",
+     "mean_gap": 0.704,
+     "best": 429.0,
+     "mean_obj": 429.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 55.44,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": 426.0,
+     "time": 19.91,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": 426.0,
+     "time": 4.55,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "DWave-SA",
+     "mean_gap": 63.146,
+     "best": 695.0,
+     "mean_obj": 695.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 58.37,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 0.04,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": 426.0,
+     "time": 0.54,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": 426.0,
+     "time": 0.48,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 60.05,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "OpenJij-SA",
+     "mean_gap": 55.634,
+     "best": 634.0,
+     "mean_obj": 663.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 58.49,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "OpenJij-SQA",
+     "mean_gap": 92.254,
+     "best": 790.0,
+     "mean_obj": 819.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 55.97,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 426.0,
+     "mean_obj": 426.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "eil51",
+     "method": "nn+ls",
+     "mean_gap": 0.469,
+     "best": 428.0,
+     "mean_obj": 428.0,
+     "ref": 426.0,
+     "lb": null,
+     "time": 0.34,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "Amplify-AE",
+     "mean_gap": 4.296,
+     "best": 704.0,
+     "mean_obj": 704.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 50.59,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "CP-SAT",
+     "mean_gap": 2.222,
+     "best": 690.0,
+     "mean_obj": 690.0,
+     "ref": 675.0,
+     "lb": 520.0,
+     "time": 60.43,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": 675.0,
+     "time": 22.11,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "DWave-SA",
+     "mean_gap": 116.494,
+     "best": 1455.0,
+     "mean_obj": 1461.33,
+     "ref": 675.0,
+     "lb": null,
+     "time": 55.27,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 0.08,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": 675.0,
+     "time": 0.7,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": 675.0,
+     "time": 0.59,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "OpenJij-SA",
+     "mean_gap": 117.531,
+     "best": 1397.0,
+     "mean_obj": 1468.33,
+     "ref": 675.0,
+     "lb": null,
+     "time": 56.93,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "OpenJij-SQA",
+     "mean_gap": 184.099,
+     "best": 1745.0,
+     "mean_obj": 1917.67,
+     "ref": 675.0,
+     "lb": null,
+     "time": 50.02,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 675.0,
+     "mean_obj": 675.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "st70",
+     "method": "nn+ls",
+     "mean_gap": 1.037,
+     "best": 682.0,
+     "mean_obj": 682.0,
+     "ref": 675.0,
+     "lb": null,
+     "time": 0.33,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "Amplify-AE",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 51.38,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": 6859.0,
+     "time": 0.53,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": 6859.0,
+     "time": 0.47,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "DWave-SA",
+     "mean_gap": 2.581,
+     "best": 7036.0,
+     "mean_obj": 7036.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 59.96,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": 6859.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": 6859.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "OpenJij-SA",
+     "mean_gap": 2.911,
+     "best": 6911.0,
+     "mean_obj": 7058.67,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 59.93,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "OpenJij-SQA",
+     "mean_gap": 11.197,
+     "best": 7126.0,
+     "mean_obj": 7627.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 59.68,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses16",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 6859.0,
+     "mean_obj": 6859.0,
+     "ref": 6859.0,
+     "lb": null,
+     "time": 0.26,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "Amplify-AE",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 51.41,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": 7013.0,
+     "time": 3.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "CP-SAT-4w",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": 7013.0,
+     "time": 3.1,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "DWave-SA",
+     "mean_gap": 11.792,
+     "best": 7840.0,
+     "mean_obj": 7840.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 59.94,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 0.01,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": 7013.0,
+     "time": 0.05,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "MIP-HiGHS-4w",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": 7013.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "OpenJij-SA",
+     "mean_gap": 21.341,
+     "best": 7996.0,
+     "mean_obj": 8509.67,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 59.92,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "OpenJij-SQA",
+     "mean_gap": 38.457,
+     "best": 9471.0,
+     "mean_obj": 9710.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 59.56,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ulysses22",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 7013.0,
+     "mean_obj": 7013.0,
+     "ref": 7013.0,
+     "lb": null,
+     "time": 0.26,
+     "runs": 1,
+     "fails": 0
+    }
+   ],
+   "instances": [
+    "burma14",
+    "ulysses16",
+    "ulysses22",
+    "bayg29",
+    "att48",
+    "eil51",
+    "berlin52",
+    "st70"
+   ],
+   "methods": [
+    "Amplify-AE",
+    "DWave-SA",
+    "OpenJij-SQA",
+    "OpenJij-SA",
     "nn+ls",
     "SA",
     "LKH(elkai)",
@@ -1801,7 +4409,7 @@
    "run_id": "20261025T081323Z-tiamat-atsp",
    "problem": "atsp",
    "started_at": "2026-10-25T08:13:23+00:00",
-   "finished_at": "2026-10-25T19:11:04+00:00",
+   "finished_at": "2026-10-25T20:59:50+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -1820,7 +4428,10 @@
      "numpy": "2.5.4",
      "pandas": "3.1.0",
      "tsplib95": "0.7.1",
-     "pyvrp": "0.14.1"
+     "pyvrp": "0.14.1",
+     "amplify": "1.7.3",
+     "dwave-samplers": "1.8.0",
+     "openjij": "0.12.2"
     }
    },
    "git": {
@@ -1840,7 +4451,11 @@
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
-    "PyVRP-HGS": 1
+    "PyVRP-HGS": 1,
+    "OpenJij-SQA": 1,
+    "OpenJij-SA": 1,
+    "DWave-SA": 1,
+    "Amplify-AE": 1
    },
    "solvers": {
     "nn+ls": "nn+ls",
@@ -1851,7 +4466,11 @@
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
-    "PyVRP-HGS": "PyVRP-HGS"
+    "PyVRP-HGS": "PyVRP-HGS",
+    "OpenJij-SQA": "OpenJij-SQA",
+    "OpenJij-SA": "OpenJij-SA",
+    "DWave-SA": "DWave-SA",
+    "Amplify-AE": "Amplify-AE"
    },
    "seeds": {
     "nn+ls": 1,
@@ -1862,7 +4481,11 @@
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
-    "PyVRP-HGS": 3
+    "PyVRP-HGS": 3,
+    "OpenJij-SQA": 3,
+    "OpenJij-SA": 3,
+    "DWave-SA": 3,
+    "Amplify-AE": 1
    },
    "instance_sha256": {
     "ftv33": "1ba8bdaf6e319ca9155b31e9fe5e2f235a2134fd89edb260223d08869abb8de9",
@@ -1885,9 +4508,49 @@
       "dirty_files": []
      },
      "command": "python.exe src/run_bench.py atsp 60 --run 20261025T081323Z-tiamat-atsp --only PyVRP-HGS"
+    },
+    {
+     "at": "2026-10-25T20:47:48+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py atsp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
+    },
+    {
+     "at": "2026-10-25T20:58:48+00:00",
+     "methods": [
+      "Amplify-AE"
+     ],
+     "git": {
+      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py atsp 60 --run latest --only Amplify-AE"
     }
    ],
    "cells": [
+    {
+     "instance": "ft70",
+     "method": "Amplify-AE",
+     "mean_gap": 13.498,
+     "best": 43893.0,
+     "mean_obj": 43893.0,
+     "ref": 38673.0,
+     "lb": null,
+     "time": 41.45,
+     "runs": 1,
+     "fails": 0
+    },
     {
      "instance": "ft70",
      "method": "CP-SAT",
@@ -1910,6 +4573,18 @@
      "lb": 38673.0,
      "time": 3.43,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ft70",
+     "method": "DWave-SA",
+     "mean_gap": 44.719,
+     "best": 53530.0,
+     "mean_obj": 55967.33,
+     "ref": 38673.0,
+     "lb": null,
+     "time": 56.35,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -1962,6 +4637,30 @@
     },
     {
      "instance": "ft70",
+     "method": "OpenJij-SA",
+     "mean_gap": 55.35,
+     "best": 57791.0,
+     "mean_obj": 60078.67,
+     "ref": 38673.0,
+     "lb": null,
+     "time": 54.75,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ft70",
+     "method": "OpenJij-SQA",
+     "mean_gap": 61.179,
+     "best": 60423.0,
+     "mean_obj": 62332.67,
+     "ref": 38673.0,
+     "lb": null,
+     "time": 52.84,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ft70",
      "method": "PyVRP-HGS",
      "mean_gap": 0.23,
      "best": 38753.0,
@@ -1998,6 +4697,18 @@
     },
     {
      "instance": "ftv33",
+     "method": "Amplify-AE",
+     "mean_gap": 0.0,
+     "best": 1286.0,
+     "mean_obj": 1286.0,
+     "ref": 1286.0,
+     "lb": null,
+     "time": 50.57,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ftv33",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1286.0,
@@ -2018,6 +4729,18 @@
      "lb": 1286.0,
      "time": 0.89,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ftv33",
+     "method": "DWave-SA",
+     "mean_gap": 40.591,
+     "best": 1808.0,
+     "mean_obj": 1808.0,
+     "ref": 1286.0,
+     "lb": null,
+     "time": 59.55,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -2070,6 +4793,30 @@
     },
     {
      "instance": "ftv33",
+     "method": "OpenJij-SA",
+     "mean_gap": 46.838,
+     "best": 1796.0,
+     "mean_obj": 1888.33,
+     "ref": 1286.0,
+     "lb": null,
+     "time": 59.71,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ftv33",
+     "method": "OpenJij-SQA",
+     "mean_gap": 69.44,
+     "best": 2020.0,
+     "mean_obj": 2179.0,
+     "ref": 1286.0,
+     "lb": null,
+     "time": 58.84,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ftv33",
      "method": "PyVRP-HGS",
      "mean_gap": 0.0,
      "best": 1286.0,
@@ -2106,6 +4853,18 @@
     },
     {
      "instance": "ftv70",
+     "method": "Amplify-AE",
+     "mean_gap": 6.615,
+     "best": 2079.0,
+     "mean_obj": 2079.0,
+     "ref": 1950.0,
+     "lb": null,
+     "time": 60.89,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ftv70",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1950.0,
@@ -2126,6 +4885,18 @@
      "lb": 1950.0,
      "time": 12.46,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ftv70",
+     "method": "DWave-SA",
+     "mean_gap": 117.504,
+     "best": 4189.0,
+     "mean_obj": 4241.33,
+     "ref": 1950.0,
+     "lb": null,
+     "time": 55.5,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -2178,6 +4949,30 @@
     },
     {
      "instance": "ftv70",
+     "method": "OpenJij-SA",
+     "mean_gap": 143.863,
+     "best": 4550.0,
+     "mean_obj": 4755.33,
+     "ref": 1950.0,
+     "lb": null,
+     "time": 55.04,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ftv70",
+     "method": "OpenJij-SQA",
+     "mean_gap": 224.308,
+     "best": 6021.0,
+     "mean_obj": 6324.0,
+     "ref": 1950.0,
+     "lb": null,
+     "time": 41.96,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ftv70",
      "method": "PyVRP-HGS",
      "mean_gap": 0.359,
      "best": 1950.0,
@@ -2214,6 +5009,18 @@
     },
     {
      "instance": "kro124p",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 36230.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "kro124p",
      "method": "CP-SAT",
      "mean_gap": 8.959,
      "best": 39476.0,
@@ -2235,6 +5042,18 @@
      "time": 32.8,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "kro124p",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 36230.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "kro124p",
@@ -2286,6 +5105,30 @@
     },
     {
      "instance": "kro124p",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 36230.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "kro124p",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 36230.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "kro124p",
      "method": "PyVRP-HGS",
      "mean_gap": 0.757,
      "best": 36230.0,
@@ -2322,6 +5165,18 @@
     },
     {
      "instance": "rbg323",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1326.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "rbg323",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1326.0,
@@ -2343,6 +5198,18 @@
      "time": 12.7,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "rbg323",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1326.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "rbg323",
@@ -2394,6 +5261,30 @@
     },
     {
      "instance": "rbg323",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1326.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "rbg323",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1326.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "rbg323",
      "method": "PyVRP-HGS",
      "mean_gap": 0.327,
      "best": 1330.0,
@@ -2430,6 +5321,18 @@
     },
     {
      "instance": "rbg443",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2720.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "rbg443",
      "method": "CP-SAT",
      "mean_gap": 104.338,
      "best": 5558.0,
@@ -2451,6 +5354,18 @@
      "time": 63.25,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "rbg443",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2720.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "rbg443",
@@ -2499,6 +5414,30 @@
      "time": 60.06,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "rbg443",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2720.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "rbg443",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 2720.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "rbg443",
@@ -2554,7 +5493,11 @@
     "CP-SAT-4w",
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
-    "PyVRP-HGS"
+    "PyVRP-HGS",
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA",
+    "Amplify-AE"
    ]
   },
   "20261025T104324Z-cloud-atsptw": {
@@ -5538,7 +8481,7 @@
    "run_id": "20261025T082601Z-tiamat-jssp",
    "problem": "jssp",
    "started_at": "2026-10-25T08:26:01+00:00",
-   "finished_at": "2026-10-25T09:14:50+00:00",
+   "finished_at": "2026-10-25T21:00:44+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -5556,7 +8499,11 @@
      "numba": "0.68.0",
      "numpy": "2.5.4",
      "pandas": "3.1.0",
-     "tsplib95": "0.7.1"
+     "tsplib95": "0.7.1",
+     "pyvrp": "0.14.1",
+     "amplify": "1.7.3",
+     "dwave-samplers": "1.8.0",
+     "openjij": "0.12.2"
     }
    },
    "git": {
@@ -5575,7 +8522,11 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 4
+    "MIP-HiGHS-4w": 4,
+    "OpenJij-SQA": 1,
+    "OpenJij-SA": 1,
+    "DWave-SA": 1,
+    "Amplify-AE": 1
    },
    "solvers": {
     "SPT": "SPT",
@@ -5585,7 +8536,11 @@
     "CP-SAT": "CP-SAT",
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
-    "MIP-HiGHS-4w": "MIP-HiGHS"
+    "MIP-HiGHS-4w": "MIP-HiGHS",
+    "OpenJij-SQA": "OpenJij-SQA",
+    "OpenJij-SA": "OpenJij-SA",
+    "DWave-SA": "DWave-SA",
+    "Amplify-AE": "Amplify-AE"
    },
    "seeds": {
     "SPT": 1,
@@ -5595,7 +8550,11 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 1
+    "MIP-HiGHS-4w": 1,
+    "OpenJij-SQA": 3,
+    "OpenJij-SA": 3,
+    "DWave-SA": 3,
+    "Amplify-AE": 1
    },
    "instance_sha256": {
     "ft06": "63dc6573bbfbd418dbb3bf6a2ad2062001b8d4fa0eae2c32e119b9e532e9f6f9",
@@ -5609,8 +8568,49 @@
     "ta11": "b35abe2d538c35facba5feb1908ffbc316ef7d3839962d34a1e7c316bcfa0a24",
     "ta21": "7b235984be1131995d471d19705ef2901a3fcf0ed214ebe164a3c045195814e7"
    },
-   "additions": [],
+   "additions": [
+    {
+     "at": "2026-10-25T20:54:34+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py jssp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
+    },
+    {
+     "at": "2026-10-25T20:59:51+00:00",
+     "methods": [
+      "Amplify-AE"
+     ],
+     "git": {
+      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py jssp 60 --run latest --only Amplify-AE"
+    }
+   ],
    "cells": [
+    {
+     "instance": "abz5",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1234.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
     {
      "instance": "abz5",
      "method": "CP-SAT",
@@ -5634,6 +8634,18 @@
      "time": 1.45,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "abz5",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1234.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "abz5",
@@ -5685,6 +8697,30 @@
     },
     {
      "instance": "abz5",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1234.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "abz5",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1234.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "abz5",
      "method": "SPT",
      "mean_gap": 40.438,
      "best": 1733.0,
@@ -5709,6 +8745,18 @@
     },
     {
      "instance": "ft06",
+     "method": "Amplify-AE",
+     "mean_gap": 1.818,
+     "best": 56.0,
+     "mean_obj": 56.0,
+     "ref": 55.0,
+     "lb": null,
+     "time": 51.51,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ft06",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 55.0,
@@ -5729,6 +8777,18 @@
      "lb": 55.0,
      "time": 0.35,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ft06",
+     "method": "DWave-SA",
+     "mean_gap": 16.364,
+     "best": 64.0,
+     "mean_obj": 64.0,
+     "ref": 55.0,
+     "lb": null,
+     "time": 59.43,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -5781,6 +8841,30 @@
     },
     {
      "instance": "ft06",
+     "method": "OpenJij-SA",
+     "mean_gap": 12.727,
+     "best": 62.0,
+     "mean_obj": 62.0,
+     "ref": 55.0,
+     "lb": null,
+     "time": 59.69,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ft06",
+     "method": "OpenJij-SQA",
+     "mean_gap": 23.636,
+     "best": 68.0,
+     "mean_obj": 68.0,
+     "ref": 55.0,
+     "lb": null,
+     "time": 58.48,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ft06",
      "method": "SPT",
      "mean_gap": 70.909,
      "best": 94.0,
@@ -5805,6 +8889,18 @@
     },
     {
      "instance": "ft10",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 930.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "ft10",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 930.0,
@@ -5826,6 +8922,18 @@
      "time": 2.99,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "ft10",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 930.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "ft10",
@@ -5877,6 +8985,30 @@
     },
     {
      "instance": "ft10",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 930.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ft10",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 930.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ft10",
      "method": "SPT",
      "mean_gap": 53.656,
      "best": 1429.0,
@@ -5901,6 +9033,18 @@
     },
     {
      "instance": "la16",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 945.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "la16",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 945.0,
@@ -5922,6 +9066,18 @@
      "time": 0.62,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "la16",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 945.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "la16",
@@ -5973,6 +9129,30 @@
     },
     {
      "instance": "la16",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 945.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "la16",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 945.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "la16",
      "method": "SPT",
      "mean_gap": 54.921,
      "best": 1464.0,
@@ -5997,6 +9177,18 @@
     },
     {
      "instance": "la21",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1046.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "la21",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1046.0,
@@ -6018,6 +9210,18 @@
      "time": 37.52,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "la21",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1046.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "la21",
@@ -6069,6 +9273,30 @@
     },
     {
      "instance": "la21",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1046.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "la21",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1046.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "la21",
      "method": "SPT",
      "mean_gap": 58.413,
      "best": 1657.0,
@@ -6093,6 +9321,18 @@
     },
     {
      "instance": "orb01",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1059.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "orb01",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1059.0,
@@ -6114,6 +9354,18 @@
      "time": 9.42,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "orb01",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1059.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "orb01",
@@ -6165,6 +9417,30 @@
     },
     {
      "instance": "orb01",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1059.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "orb01",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1059.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "orb01",
      "method": "SPT",
      "mean_gap": 39.849,
      "best": 1481.0,
@@ -6189,6 +9465,18 @@
     },
     {
      "instance": "swv01",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1407.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "swv01",
      "method": "CP-SAT",
      "mean_gap": 4.122,
      "best": 1465.0,
@@ -6210,6 +9498,18 @@
      "time": 60.37,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "swv01",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1407.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "swv01",
@@ -6261,6 +9561,30 @@
     },
     {
      "instance": "swv01",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1407.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "swv01",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1407.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "swv01",
      "method": "SPT",
      "mean_gap": 60.341,
      "best": 2256.0,
@@ -6285,6 +9609,18 @@
     },
     {
      "instance": "ta01",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1231.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "ta01",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1231.0,
@@ -6306,6 +9642,18 @@
      "time": 5.51,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "ta01",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1231.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "ta01",
@@ -6357,6 +9705,30 @@
     },
     {
      "instance": "ta01",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1231.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ta01",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1231.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ta01",
      "method": "SPT",
      "mean_gap": 59.708,
      "best": 1966.0,
@@ -6381,6 +9753,18 @@
     },
     {
      "instance": "ta11",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1357.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "ta11",
      "method": "CP-SAT",
      "mean_gap": 6.485,
      "best": 1445.0,
@@ -6402,6 +9786,18 @@
      "time": 60.36,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "ta11",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1357.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "ta11",
@@ -6453,6 +9849,30 @@
     },
     {
      "instance": "ta11",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1357.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ta11",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1357.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ta11",
      "method": "SPT",
      "mean_gap": 55.195,
      "best": 2106.0,
@@ -6477,6 +9897,18 @@
     },
     {
      "instance": "ta21",
+     "method": "Amplify-AE",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1642.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "ta21",
      "method": "CP-SAT",
      "mean_gap": 5.664,
      "best": 1735.0,
@@ -6498,6 +9930,18 @@
      "time": 60.41,
      "runs": 1,
      "fails": 0
+    },
+    {
+     "instance": "ta21",
+     "method": "DWave-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1642.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
     },
     {
      "instance": "ta21",
@@ -6549,6 +9993,30 @@
     },
     {
      "instance": "ta21",
+     "method": "OpenJij-SA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1642.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ta21",
+     "method": "OpenJij-SQA",
+     "mean_gap": null,
+     "best": null,
+     "mean_obj": null,
+     "ref": 1642.0,
+     "lb": null,
+     "time": 0.0,
+     "runs": 3,
+     "fails": 3
+    },
+    {
+     "instance": "ta21",
      "method": "SPT",
      "mean_gap": 58.222,
      "best": 2598.0,
@@ -6592,7 +10060,11 @@
     "CP-SAT",
     "CP-SAT-4w",
     "MIP-HiGHS",
-    "MIP-HiGHS-4w"
+    "MIP-HiGHS-4w",
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA",
+    "Amplify-AE"
    ]
   },
   "20261025T050501Z-cloud-nsp": {

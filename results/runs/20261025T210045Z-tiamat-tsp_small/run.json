@@ -1,0 +1,134 @@
+{
+ "run_id": "20261025T210045Z-tiamat-tsp_small",
+ "problem": "tsp_small",
+ "started_at": "2026-10-25T21:00:45+00:00",
+ "finished_at": "2026-10-25T21:30:50+00:00",
+ "status": "complete",
+ "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。QUBO で扱える 14〜70 都市の TSP",
+ "command": "python.exe src/run_bench.py tsp_small 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。QUBO で扱える 14〜70 都市の TSP",
+ "environment": {
+  "machine": "tiamat",
+  "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+  "cpu_count": 16,
+  "memory_gb": 31.4,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.9",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.4",
+   "pandas": "3.1.0",
+   "tsplib95": "0.7.1",
+   "pyvrp": "0.14.1",
+   "amplify": "1.7.3",
+   "dwave-samplers": "1.8.0",
+   "openjij": "0.12.2"
+  }
+ },
+ "git": {
+  "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+  "branch": "claude/project-thread-wq8605",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "Amplify-AE": 1,
+   "DWave-SA": 1,
+   "OpenJij-SQA": 1,
+   "OpenJij-SA": 1,
+   "nn+ls": 1,
+   "SA": 1,
+   "LKH(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1,
+   "MIP-HiGHS-4w": 4
+  },
+  "solvers": {
+   "Amplify-AE": "Amplify-AE",
+   "DWave-SA": "DWave-SA",
+   "OpenJij-SQA": "OpenJij-SQA",
+   "OpenJij-SA": "OpenJij-SA",
+   "nn+ls": "nn+ls",
+   "SA": "SA",
+   "LKH(elkai)": "LKH(elkai)",
+   "ORTools-GLS": "ORTools-GLS",
+   "CP-SAT": "CP-SAT",
+   "CP-SAT-4w": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS",
+   "MIP-HiGHS-4w": "MIP-HiGHS"
+  },
+  "instances": [
+   "burma14",
+   "ulysses16",
+   "ulysses22",
+   "bayg29",
+   "att48",
+   "eil51",
+   "berlin52",
+   "st70"
+  ],
+  "methods": {
+   "Amplify-AE": [
+    1
+   ],
+   "DWave-SA": [
+    1,
+    2,
+    3
+   ],
+   "OpenJij-SQA": [
+    1,
+    2,
+    3
+   ],
+   "OpenJij-SA": [
+    1,
+    2,
+    3
+   ],
+   "nn+ls": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "LKH(elkai)": [
+    1
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ],
+   "MIP-HiGHS-4w": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "burma14": "c01eafd6c2da17a1a0f4929413d2394863754502191a4001f524fbf05c820dc5",
+  "ulysses16": "c599e9c2014c751dd056a35ab2aa4bbc8dc5a837ac1f9564222501698c277f1f",
+  "ulysses22": "75ad6dde3e8336a2f26d2063bc3aaab30540bfb15db960d98bfe29dcf79cee1a",
+  "bayg29": "d59b0d704c493528662ca22fd8dad8a858087ffa312f5d3c69fb8f8dfccc22c9",
+  "att48": "b357ef436b9fe1ca08876e633adc6d266613b3f73362255abb97f7bc27b92e98",
+  "eil51": "2081d397a69ef55b88a50a9c96d96462bcb74a3367ca969fde71573b53779bc2",
+  "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
+  "st70": "1ed07159d9148d7d275815a8bd34828c4bff3bfd1b932b8415359e47ff07bee0"
+ }
+}
