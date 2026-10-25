@@ -86,6 +86,10 @@ table.envdiff th, table.envdiff td { text-align: left; white-space: normal; over
 table.envdiff th:first-child { width: 7em; }
 .better { color: var(--better); } .worse { color: var(--worse); }
 .legend i { display: inline-block; width: 22px; height: 12px; border-radius: 2px; }
+dl.about { margin: 0; font-size: 14px; }
+dl.about dt { font-weight: 600; margin-top: 10px; }
+dl.about dt:first-child { margin-top: 0; }
+dl.about dd { margin: 2px 0 0; color: var(--text-secondary); max-width: 52em; }
 </style>
 </head>
 <body>
@@ -123,6 +127,11 @@ table.envdiff th:first-child { width: 7em; }
     <h2 id="t1">手法別の平均ギャップ</h2>
     <p class="note" id="n1"></p>
     <div id="bars"></div>
+  </section>
+  <section class="card" id="aboutCard" hidden>
+    <h2>手法の解説</h2>
+    <p class="note">上のグラフの順に並べています。スレッド数だけが違う手法（<code>-4w</code> など）は 1 つにまとめています。</p>
+    <dl class="about" id="about"></dl>
   </section>
   <section class="card">
     <h2 id="t2">インスタンス × 手法のギャップ (%)</h2>
@@ -262,6 +271,14 @@ function drawHeat(P) {
   const names = ["最良値", "<0.5%", "<1%", "<2%", "<5%", "<10%", "≥10%"];
   lg.innerHTML = "ギャップ: " + names.map((n, i) => `<i style="background:var(--seq-${i})"></i>${n}`).join(" ") +
     ` <i style="background:var(--missing)"></i>解なし`;
+}
+
+// 解法の登録時に書いた解説（data.json の about）を、グラフと同じ順に並べる
+function drawAbout(P, R) {
+  const about = P.about || {};
+  const names = [...new Set(methodStats(P).map(s => ((R && R.solvers) || {})[s.method] ?? s.method))].filter(n => about[n]);
+  document.getElementById("aboutCard").hidden = !names.length;
+  document.getElementById("about").innerHTML = names.map(n => `<dt>${esc(n)}</dt><dd>${esc(about[n])}</dd>`).join("");
 }
 
 function drawTable(P) {
@@ -443,7 +460,7 @@ function render(key) {
     const keep = P.methods.filter(m => (R.threads[m] ?? 1) === Number(thrFilter[key]));
     V = Object.assign({}, P, { methods: keep, cells: P.cells.filter(c => keep.includes(c.method)) });
   }
-  drawBars(V); drawHeat(V); drawTable(V);
+  drawBars(V); drawAbout(V, R); drawHeat(V); drawTable(V);
   if (R) drawThreads(P, R);
   if (R) drawCompare(P, R, compare[key] ? DATA.runs[compare[key]] : null);
   try { localStorage.setItem("tab", key); } catch (e) {}

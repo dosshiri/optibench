@@ -140,14 +140,18 @@ def _greedy_start(inst):
     return A, R, cnt, ec, args
 
 
-@solver("Greedy", problems="nsp")
+@solver("Greedy", problems="nsp",
+        description=("空の勤務表から、1 マス（ある職員のある日の勤務）を変えたときにペナルティが最も減る変更を、減らなくなるまで繰り返す最急降下法。"
+                     "決定的で速い。"))
 def greedy(inst, tl, seed):
     _, R, _, _, _ = _greedy_start(inst)
     h, obj = evaluate(inst, R)
     return dict(obj=obj if h == 0 else None, hard=h, lb=None, solution=R.tolist())
 
 
-@solver("SA", problems="nsp", seeds=3)
+@solver("SA", problems="nsp", seeds=3,
+        description=("焼きなまし法。"
+                     "Greedy の勤務表から始め、1 マスの変更と、2 人の職員の連続 1〜4 日分の勤務の入れ替えをランダムに試し、悪くなる変更も温度に応じた確率で受け入れる。"))
 def simulated_annealing(inst, tl, seed):
     tm = Timer(tl)
     A, R, cnt, ec, args = _greedy_start(inst)
@@ -243,12 +247,16 @@ def _cpsat(inst, tl, seed, workers):
                 optimal=st == cp_model.OPTIMAL, solution=R.tolist())
 
 
-@solver("CP-SAT", problems="nsp", threads=[1, 4], packages=["ortools"])
+@solver("CP-SAT", problems="nsp", threads=[1, 4], packages=["ortools"],
+        description=("「職員 e が日 d に勤務 s に入るか」の 0-1 変数で、連続勤務の上限・禁止される勤務の並び・必要人数などを線形制約にしたモデルを CP-SAT で解く。"
+                     "モデルは MIP-HiGHS と同じ。"))
 def cpsat(inst, tl, seed, threads=1):
     return _cpsat(inst, tl, seed, threads)
 
 
-@solver("MIP-HiGHS", problems="nsp", parallel=True, packages=["highspy"])
+@solver("MIP-HiGHS", problems="nsp", parallel=True, packages=["highspy"],
+        description=("CP-SAT と同じ 0-1 線形モデルを MIP ソルバー HiGHS で解く。"
+                     "LP 緩和による下界を使って、最適性を証明することもできる。"))
 def mip(inst, tl, seed, threads=1):
     import highspy
     h = highspy.Highs()
