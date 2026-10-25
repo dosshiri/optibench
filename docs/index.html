@@ -94,10 +94,11 @@ summary { cursor: pointer; color: var(--text-secondary); }
       <div class="scroll" id="table"></div>
     </details>
   </section>
-  <p class="note"><a href="literature/" style="color:var(--accent)">関連論文の調査（文献レビュー）</a></p>
+  <p class="note"><a href="literature/index.html" style="color:var(--accent)">関連論文の調査（文献レビュー）</a></p>
   <p class="note" id="foot"></p>
 </main>
 <div class="tip" id="tip"></div>
+<script src="data.js"></script>
 <script>
 const NS = "http://www.w3.org/2000/svg";
 const BINS = [0.001, 0.5, 1, 2, 5, 10, 20];  // ギャップ (%) の段階
@@ -245,7 +246,8 @@ function render(key) {
   try { localStorage.setItem("tab", key); } catch (e) {}
 }
 
-fetch("data.json").then(r => r.json()).then(d => {
+// data.js があればそれを使う（ダブルクリックで file:// として開いた場合も表示できる）
+(window.OPTIBENCH_DATA ? Promise.resolve(window.OPTIBENCH_DATA) : fetch("data.json").then(r => r.json())).then(d => {
   DATA = d;
   const tabs = document.getElementById("tabs");
   Object.entries(d.problems).forEach(([k, P]) => {

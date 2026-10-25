@@ -1,5 +1,7 @@
-"""集計結果を GitHub Pages のビュー用 JSON (docs/data.json) に書き出す.
-python export_web.py <出力先 data.json>"""
+"""集計結果をビュー用データに書き出す.
+docs/data.json と docs/data.js（index.html をダブルクリックで開いても読めるようにするため）を書き、
+GitHub 上で読める results/README.md と results/figures/*.svg も更新する.
+python export_web.py [出力先 data.json]"""
 import datetime
 import json
 import os
@@ -8,6 +10,7 @@ import sys
 
 import pandas as pd
 
+import export_report
 from analyze import summarize
 from run_bench import PLAN
 
@@ -45,6 +48,10 @@ def main(out):
                                       cells=cells)
     with open(out, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
+    # file:// で開くと fetch がブロックされるため、同じ内容をスクリプトとしても書き出す
+    with open(os.path.splitext(out)[0] + ".js", "w", encoding="utf-8") as f:
+        f.write("window.OPTIBENCH_DATA = " + json.dumps(data, ensure_ascii=False) + ";\n")
+    export_report.main(data)
 
 
 if __name__ == "__main__":

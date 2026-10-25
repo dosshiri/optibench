@@ -4,7 +4,7 @@
 
 - 対象問題: TSP（対称巡回セールスマン）、ATSP（非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
 - 文献調査: `docs/literature/`（既存研究における解法比較のレビュー）
-- 結果ビュー: `docs/index.html`（GitHub Pages で公開すると、手法別ギャップ・ヒートマップ・数値表をブラウザで閲覧できます）
+- 結果: [`results/README.md`](results/README.md)（GitHub 上でそのまま読めるグラフと表）、`docs/index.html`（手元でダブルクリックすると開く対話型ビュー）
 
 ## 構成
 
@@ -18,10 +18,11 @@ src/            実行スクリプト
   run_one.py      1 ジョブ実行（JSON 1 行を出力）
   run_bench.py    一括実行（results/<problem>.jsonl に追記、完了済みはスキップ）
   analyze.py      集計（results/summary_<problem>.csv）
-  export_web.py   ビュー用 JSON（docs/data.json）の書き出し
+  export_web.py   ビュー用データ（docs/data.json, docs/data.js）と結果ページの書き出し
+  export_report.py 結果ページ（results/README.md, results/figures/*.svg）の生成
 instances/      ベンチマークインスタンス
-results/        実行結果の生データ（JSONL）と集計 CSV
-docs/           GitHub Pages 用のグラフビュー
+results/        実行結果の生データ（JSONL）・集計 CSV・結果ページ（README.md と figures/）
+docs/           対話型のグラフビュー（index.html）
 ```
 
 ## インスタンス
@@ -86,16 +87,18 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 ## 再現方法
 
 ```bash
-python -m venv .venv && . .venv/bin/activate
+python -m venv .venv && . .venv/bin/activate   # Windows (PowerShell) は .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python src/nsp_model.py              # NSP インスタンスを再生成（同一 seed で同じものが出ます）
 python src/run_bench.py tsp 60       # tsp / atsp / jssp / nsp
 python src/analyze.py                # 集計表を表示・CSV 出力
-python src/export_web.py             # docs/data.json を更新
+python src/export_web.py             # docs/data.json・data.js と results/README.md・figures を更新
 ```
 
 `results/<problem>.jsonl` に記録済みのジョブはスキップされるため、手法やインスタンスを追加して同じコマンドを実行すれば差分だけ実行されます。`--only` で手法を絞れます。
 
-## GitHub Pages での閲覧
+## 結果の閲覧
 
-Settings → Pages で「Deploy from a branch」、ブランチ `main`、フォルダ `/docs` を選ぶと、`https://<owner>.github.io/optibench/` でビューが開けます。ローカルでは `python -m http.server -d docs` で確認できます。
+- GitHub 上: [`results/README.md`](results/README.md) に問題ごとの棒グラフ・ヒートマップ（SVG）と数値表があります。リポジトリが非公開のままでも見られます。
+- 手元: `docs/index.html` をダブルクリックすると、マウスオーバーで詳細が出る対話型ビューが開きます（サーバー不要）。
+- GitHub Pages を使える場合は、Settings → Pages でブランチ `main`・フォルダ `/docs` を選ぶと同じビューを公開できます。
