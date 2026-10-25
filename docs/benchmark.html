@@ -299,6 +299,8 @@ function envRows(R) {
     ["並列", `${threadsText(R)}、同時 ${R.workers} ジョブ`],
     ["シード数", Object.entries(R.seeds).map(([m, n]) => `${esc(m)} ${n}`).join(", ")],
     ["コード", `commit <code>${esc(g.commit ?? "不明")}</code>（${esc(g.branch ?? "")}）` + (g.dirty ? `<br>未コミットの変更あり: ${g.dirty_files.map(esc).join(", ")}` : "")],
+    ...((R.additions || []).length ? [["後から追加", R.additions.map(x => `${esc(x.at)} ${x.methods.map(esc).join("・")}` +
+      `（commit <code>${esc(short(x.git.commit))}</code>${x.git.dirty ? "、未コミットの変更あり" : ""}）`).join("<br>")]] : []),
     ["メモ", esc(R.note) || "—"],
   ];
 }

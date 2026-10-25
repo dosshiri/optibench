@@ -100,6 +100,21 @@ def environment(machine=None):
                 packages=package_versions())
 
 
+def env_diff(old, new):
+    """2 つの実行環境の違いを「項目: 旧 → 新」の文字列の一覧で返す（同じなら空）.
+    マシン名は比べない. パッケージは両方に記録があるものだけ比べ、後から入れたパッケージは違いとしない."""
+    out = []
+    for k, name in [("cpu", "CPU"), ("cpu_count", "論理 CPU 数"), ("memory_gb", "メモリ"), ("os", "OS"),
+                    ("python", "Python")]:
+        if old.get(k) != new.get(k):
+            out.append(f"{name}: {old.get(k)} → {new.get(k)}")
+    for p, v in old.get("packages", {}).items():
+        w = new.get("packages", {}).get(p)
+        if v is not None and w is not None and v != w:
+            out.append(f"{p}: {v} → {w}")
+    return out
+
+
 def git_info():
     commit = _cmd(["git", "rev-parse", "HEAD"])
     # 計測結果に影響するファイル（コード・インスタンス・依存）の未コミット変更

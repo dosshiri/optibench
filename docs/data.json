@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T12:12:06+00:00",
+ "generated": "2026-10-25T18:59:29+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
@@ -119,6 +119,7 @@
     "pcb442": "0f58bc2f1aa0023764ebc14b3b0dcb6e765ffe173963fdc1cb8443d969842b51",
     "rat783": "b9535dc5e44549f613bf6e34ee8667eed6f7a13e6b74c0b0451de95a480cabde"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "a280",
@@ -641,6 +642,7 @@
     "pcb442": "9864cc281ded9fcc4b1c53f15085f2ff33d999847878704075da08e19c1cdaa6",
     "rat783": "05b321ca8c33122377ab6575400fbe4d78311dcda7500ed03cbd1bf5caa80712"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "a280",
@@ -1303,6 +1305,7 @@
     "rbg323": "8cbcdfdc69d873491d194d0d301ed0c6006a46ff0207082a2a801c469af421da",
     "rbg443": "f4ccd0adbb36f2a495601458fff0005856fa4c618aa68ff09b9913cc26f081cc"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "ft70",
@@ -1825,6 +1828,7 @@
     "rbg323": "86246b42b512c45745dd81c7bce7f430021e2166bcb02528c654a32d44b807d4",
     "rbg443": "ef8e170da01d8aadcb9f3bf0aa19ccaf89aceb8f0407c377e280cc99011b94d6"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "ft70",
@@ -2497,6 +2501,7 @@
     "rbg172a": "18911d39f071e8d90ec6529d4b80b12fdb5e86d5ddd73734a62abeaac57702fd",
     "rbg233": "6883e6a2c33d94a3a233d21a26c5732d5838c2cac7679fbb3fd19fea6f55321f"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "rbg019a",
@@ -3463,6 +3468,7 @@
     "rbg172a": "4725653351c7eb791726621499384da85c322702094cd44ef3035fec51b3f7d0",
     "rbg233": "a15bcb7a8e49fc78d5dfb7a9b59f3d74fbda747e08ce7e5e504c10702c99b531"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "rbg019a",
@@ -4532,6 +4538,7 @@
     "ta11": "1e55a9039437d95715a7f7d0f419585732e6a0fbc707bbdf3e5a554e30357072",
     "ta21": "7b3c36912f04636a01991787fd7cf29262fe2c3e46d2272cfc25e102677e6488"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "abz5",
@@ -5471,6 +5478,7 @@
     "ta11": "b35abe2d538c35facba5feb1908ffbc316ef7d3839962d34a1e7c316bcfa0a24",
     "ta21": "7b235984be1131995d471d19705ef2901a3fcf0ed214ebe164a3c045195814e7"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "abz5",
@@ -6518,6 +6526,7 @@
     "nsp05": "ee3bede4e4f7ec0df2f8cd93673587fac090d68eba8bea0fcc17e71efd818afd",
     "nsp06": "cbfda6b666c9de030cb7f9862c45f55c4c51b9ca9e25b66f2d2215d4997b7b2e"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "nsp01",
@@ -6961,6 +6970,7 @@
     "nsp05": "a98cc87a0d055fcfb8ad4d81310321c4612ce80999ca834f5713e5628a762afb",
     "nsp06": "ccb386be24e32283f3d5a5a4a7015e0a1ece055c79418ab8a9bde517df41b608"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "nsp01",

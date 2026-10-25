@@ -139,8 +139,9 @@ results/runs/<run_id>/
 | `git` | 実行時のコミットハッシュ・ブランチ、`src/`・`instances/`・`requirements.txt` に未コミットの変更があったか（`dirty`）とそのファイル |
 | `instance_sha256` | 各インスタンスファイルの SHA-256（同じ名前で中身が変わっていないかの確認用） |
 | `command`, `note` | 実行したコマンドと任意のメモ |
+| `additions` | 後から追加した手法ごとの日時・手法名・git コミット・コマンド（追加したときだけ） |
 
-結果を正しく紐づけるため、コードを変えたらコミットしてから実行してください（未コミットのまま実行すると警告が出て、`dirty: true` が記録されます）。途中で止まった run は `python src/run_bench.py <problem> <time_limit> --run <run_id>` で再開でき、記録済みのジョブはスキップされます。
+結果を正しく紐づけるため、コードを変えたらコミットしてから実行してください（未コミットのまま実行すると警告が出て、`dirty: true` が記録されます）。途中で止まった run は `python src/run_bench.py <problem> <time_limit> --run <run_id>` で再開でき、記録済みのジョブはスキップされます。実行環境が同じなら、`python src/run_bench.py <problem> <time_limit> --run latest --only <手法>` で既存の run に手法を後から追加できます（追加した手法とそのときのコミットは `run.json` の `additions` に記録。詳しくは [docs/extending.md](docs/extending.md)）。再開・追加は、実行環境やインスタンスが run 作成時と異なると止まります。
 
 `results/README.md` と `docs/` のビューは、問題ごとに最新の run を既定で表示します。ビューでは run を切り替えられ、「比較対象」に別の run を選ぶと、実行環境・条件の違いと手法別・インスタンス別の差が表示されます。NSP の参照値は、同じ内容のインスタンスを解いた全 run・全手法の最良値です。
 

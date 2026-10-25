@@ -1,7 +1,9 @@
 """ベンチマーク一括実行: python run_bench.py <problem> <time_limit> [--workers 4] [--only 手法,...] [--note "..."]
 問題・手法・既定のインスタンスとシード数は src/problems/, src/solvers/ の登録内容（registry.py）から決まる.
 実行ごとに results/runs/<run_id>/ を作り、run.json（実行日時・環境・条件・git コミット）と
-results.jsonl（生データ）を保存する. --run <run_id> で中断した run を再開する（完了済みジョブはスキップ）."""
+results.jsonl（生データ）を保存する. --run <run_id> で中断した run を再開する（完了済みジョブはスキップ）.
+--run <run_id> --only 手法 で既存の run に手法を後から追加する（--run latest はこの実行環境で作った最新の run）.
+再開・追加は、実行環境（CPU・メモリ・OS・Python・パッケージのバージョン）とインスタンスが run 作成時と同じときだけできる."""
 import argparse
 import json
 import os
@@ -49,7 +51,8 @@ def main():
                     help="カンマ区切りのスレッド数（例: 1,4）. 並列実行できる解法をそれぞれのスレッド数で実行する。"
                          "1 を含めない場合、1 スレッド専用の解法は実行しない（省略時は解法ごとの既定）")
     ap.add_argument("--instances", default=None, help="カンマ区切りのインスタンス名（省略時は問題の既定の一覧）")
-    ap.add_argument("--run", default=None, help="再開する run_id（省略時は新しい run を作る）")
+    ap.add_argument("--run", default=None, help="再開・追加する run_id。latest でこの実行環境で作った最新の run"
+                                                 "（省略時は新しい run を作る）")
     ap.add_argument("--machine", default=None, help="実行環境の名前（省略時はホスト名）。run_id にも使う")
     ap.add_argument("--note", default="", help="run に付けるメモ")
     a = ap.parse_args()
@@ -62,26 +65,52 @@ def main():
             print(f"警告: {m} のスレッド数 {p['threads']} が論理 CPU 数 {os.cpu_count()} を超えています", file=sys.stderr)
 
     if a.run:
+        env = runmeta.environment(a.machine)
+        if a.run == "latest":
+            # この実行環境・制限時間で作った最新の run
+            same = [m for m in runmeta.list_runs(a.problem) if m["conditions"]["time_limit"] == a.time_limit
+                    and not runmeta.env_diff(m["environment"], env)]
+            if not same:
+                sys.exit(f"この実行環境で作った {a.problem} / {a.time_limit:g} 秒の run がありません")
+            a.run = same[-1]["run_id"]
         meta = runmeta.read_meta(a.run)
         if meta["problem"] != a.problem or meta["conditions"]["time_limit"] != a.time_limit:
             sys.exit(f"run {a.run} は {meta['problem']} / {meta['conditions']['time_limit']} 秒の run です")
-        if meta["git"]["commit"] != runmeta.git_info()["commit"]:
-            print("警告: run 作成時と git コミットが異なります", file=sys.stderr)
+        # 結果を同じ表で比べられるよう、実行環境とインスタンスが run 作成時と同じときだけ追加・再開する
+        diff = runmeta.env_diff(meta["environment"], env)
+        if diff:
+            sys.exit(f"run {a.run} と実行環境が異なるため、この run には追加・再開できません"
+                     "（新しい run として実行してください）:\n  " + "\n  ".join(diff))
         if meta["instance_sha256"] != runmeta.instance_hashes(a.problem, meta["conditions"]["instances"]):
-            print("警告: run 作成時とインスタンスファイルの内容が異なります", file=sys.stderr)
+            sys.exit(f"run {a.run} の作成時とインスタンスファイルの内容が異なるため、追加・再開できません")
+        for p, v in env["packages"].items():  # 後から入れたパッケージのバージョンも記録する
+            if v is not None and meta["environment"]["packages"].get(p) is None:
+                meta["environment"]["packages"][p] = v
+        git = runmeta.git_info()
         insts = meta["conditions"]["instances"]
         c = meta["conditions"]
+        added = []
         if a.only or a.threads:
-            # 指定された手法だけを実行する。run に無い手法（新しいスレッド数など）は条件に追加する
+            # 指定された手法だけを実行する。run に無い手法（新しい解法やスレッド数）は条件に追加する
             for m, p in plan.items():
                 if m not in c["methods"]:
                     c["methods"][m] = p["seeds"]
                     c["threads"][m] = p["threads"]
                     c.setdefault("solvers", {})[m] = p["solver"]
+                    added.append(m)
                     print(f"run に {m} を追加します", file=sys.stderr)
             methods = {m: c["methods"][m] for m in plan}
         else:
             methods = c["methods"]
+        if added:
+            # 追加した手法は run 作成時と別のコミットで実行することがあるので、追加ごとにコミットを記録する
+            meta.setdefault("additions", []).append(dict(
+                at=runmeta.now(), methods=added, git=git,
+                command=" ".join([os.path.basename(sys.executable)] + sys.argv)))
+            if git["dirty"]:
+                print("警告: 未コミットの変更があります:", ", ".join(git["dirty_files"]), file=sys.stderr)
+        elif git["commit"] != meta["git"]["commit"]:
+            print("警告: run 作成時と git コミットが異なります", file=sys.stderr)
         meta.update(status="running", finished_at=None)
         meta.setdefault("resumed_at", []).append(runmeta.now())
     else:

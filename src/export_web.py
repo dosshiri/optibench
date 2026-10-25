@@ -34,7 +34,8 @@ def run_summary(meta):
                 finished_at=meta.get("finished_at"), status=meta.get("status"), note=meta.get("note", ""),
                 migrated=meta.get("migrated", False), environment=e, git=meta["git"],
                 time_limit=c["time_limit"], workers=c["workers"], threads=c["threads"], solvers=solver_names(c),
-                seeds={m: len(s) for m, s in c["methods"].items()}, instance_sha256=meta["instance_sha256"])
+                seeds={m: len(s) for m, s in c["methods"].items()}, instance_sha256=meta["instance_sha256"],
+                additions=meta.get("additions", []))
 
 
 def run_cells(run_id):
