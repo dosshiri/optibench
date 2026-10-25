@@ -86,6 +86,10 @@ table.envdiff th, table.envdiff td { text-align: left; white-space: normal; over
 table.envdiff th:first-child { width: 7em; }
 .better { color: var(--better); } .worse { color: var(--worse); }
 .legend i { display: inline-block; width: 22px; height: 12px; border-radius: 2px; }
+dl.about { margin: 0; font-size: 14px; }
+dl.about dt { font-weight: 600; margin-top: 10px; }
+dl.about dt:first-child { margin-top: 0; }
+dl.about dd { margin: 2px 0 0; color: var(--text-secondary); max-width: 52em; }
 </style>
 </head>
 <body>
@@ -104,6 +108,13 @@ table.envdiff th:first-child { width: 7em; }
       <div id="runmeta" style="margin-top:8px"></div>
     </details>
   </section>
+  <section class="card" id="aboutCard" hidden>
+    <details>
+      <summary>手法の解説を表示</summary>
+      <p class="note" style="margin-top:8px">手法別のグラフと同じ順に並べています。スレッド数だけが違う手法（<code>-4w</code> など）は 1 つにまとめています。</p>
+      <dl class="about" id="about"></dl>
+    </details>
+  </section>
   <section class="card" id="cmp" hidden>
     <h2 id="t3">run の比較</h2>
     <p class="note" id="n3"></p>
@@ -113,11 +124,6 @@ table.envdiff th:first-child { width: 7em; }
       <summary>インスタンス別の比較</summary>
       <div class="scroll" id="cmpcells"></div>
     </details>
-  </section>
-  <section class="card" id="thr" hidden>
-    <h2>スレッド数による違い</h2>
-    <p class="note" id="n4"></p>
-    <div id="thrtables"></div>
   </section>
   <section class="card">
     <h2 id="t1">手法別の平均ギャップ</h2>
@@ -129,6 +135,13 @@ table.envdiff th:first-child { width: 7em; }
     <p class="note" id="n2"></p>
     <div class="scroll" id="heat"></div>
     <div class="legend" id="legend"></div>
+  </section>
+  <section class="card" id="thr" hidden>
+    <details>
+      <summary>スレッド数による違いを表示</summary>
+      <p class="note" id="n4" style="margin-top:8px"></p>
+      <div id="thrtables"></div>
+    </details>
   </section>
   <section class="card">
     <details>
@@ -262,6 +275,14 @@ function drawHeat(P) {
   const names = ["最良値", "<0.5%", "<1%", "<2%", "<5%", "<10%", "≥10%"];
   lg.innerHTML = "ギャップ: " + names.map((n, i) => `<i style="background:var(--seq-${i})"></i>${n}`).join(" ") +
     ` <i style="background:var(--missing)"></i>解なし`;
+}
+
+// 解法の登録時に書いた解説（data.json の about）を、グラフと同じ順に並べる
+function drawAbout(P, R) {
+  const about = P.about || {};
+  const names = [...new Set(methodStats(P).map(s => ((R && R.solvers) || {})[s.method] ?? s.method))].filter(n => about[n]);
+  document.getElementById("aboutCard").hidden = !names.length;
+  document.getElementById("about").innerHTML = names.map(n => `<dt>${esc(n)}</dt><dd>${esc(about[n])}</dd>`).join("");
 }
 
 function drawTable(P) {
@@ -445,7 +466,7 @@ function render(key) {
     const keep = P.methods.filter(m => (R.threads[m] ?? 1) === Number(thrFilter[key]));
     V = Object.assign({}, P, { methods: keep, cells: P.cells.filter(c => keep.includes(c.method)) });
   }
-  drawBars(V); drawHeat(V); drawTable(V);
+  drawBars(V); drawAbout(V, R); drawHeat(V); drawTable(V);
   if (R) drawThreads(P, R);
   if (R) drawCompare(P, R, compare[key] ? DATA.runs[compare[key]] : null);
   try { localStorage.setItem("tab", key); } catch (e) {}

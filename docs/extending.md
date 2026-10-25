@@ -33,7 +33,9 @@ from problems.routing import tour_cost
 from registry import solver
 
 
-@solver("2opt-random", problems=["tsp", "atsp"], seeds=3)
+@solver("2opt-random", problems=["tsp", "atsp"], seeds=3,
+        description=("ランダムな巡回路から始め、2-opt で改善できなくなるまで局所探索する。"
+                     "始点を変えて制限時間まで繰り返す。"))
 def two_opt_random(D, tl, seed):
     tm = Timer(tl)            # 制限時間 tl 秒を守る
     ...
@@ -60,6 +62,7 @@ def two_opt_random(D, tl, seed):
 | `threads` | 既定で実行するスレッド数の一覧（既定 `1`）。`[1, 4]` なら 1 スレッドと 4 スレッドの両方を実行します |
 | `parallel` | スレッド数を変えて実行できるか。`threads` に 1 以外を含めると自動で `True`。既定は 1 スレッドだけにしつつ `--threads` で並列も試せるようにしたい場合は `parallel=True` とします |
 | `packages` | `run.json` にバージョンを記録したい追加パッケージ（例: `["pyvrp"]`）。新しい依存は `requirements.txt` にも追加してください |
+| `description` | 手法の簡単な解説（日本語 2〜3 文）。どんな考え方の手法か、この実装の特徴（初期解・近傍・定式化など）を書きます。結果ビューの「手法の解説」と `results/README.md` に表示されます。書き忘れると `python src/registry.py` の一覧に「解説なし」と出ます |
 
 追加したら、短い制限時間で動作を確かめてから本番の run を回します。
 

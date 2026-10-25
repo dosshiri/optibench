@@ -70,7 +70,8 @@ def main(out):
         if not ids:
             continue
         # run は既定で表示する最新の run（results/README.md もこれを使う）、runs は古い順の一覧
-        info = dict(label=p.label, ref=p.ref_label, unit=p.unit)
+        info = dict(label=p.label, ref=p.ref_label, unit=p.unit,
+                    about={s.name: s.description for s in registry.solvers(prob).values() if s.description})
         if p.display != "gap":
             info["display"] = p.display
         if p.sense != "min":

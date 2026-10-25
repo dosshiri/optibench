@@ -5,7 +5,10 @@ from problems.routing import tour_cost
 from registry import solver
 
 
-@solver("PyVRP-HGS", problems="atsp", seeds=3, packages=["pyvrp"])
+@solver("PyVRP-HGS", problems="atsp", seeds=3, packages=["pyvrp"],
+        description=("配送計画ライブラリ PyVRP のハイブリッド遺伝的探索（HGS）。"
+                     "解の集団を交叉させ、生まれた子を局所探索で磨く遺伝的アルゴリズムで、Vidal の HGS を基にした最先端の配送計画ソルバー。"
+                     "車両 1 台・容量なしの配送計画として、非対称の距離をそのまま使って解く。"))
 def pyvrp_hgs(D, tl, seed):
     """車両 1 台・容量なしの配送計画として解く. 都市 0 をデポ、残りを顧客にし、非対称の距離をそのまま辺に載せる."""
     from pyvrp import Model
