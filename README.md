@@ -3,7 +3,9 @@
 組合せ最適化ベンチマーク。実務で使われる代表的な組合せ最適化問題について、数理計画・制約プログラミング・メタヒューリスティクスなどの解法を、同じ条件で手元比較するためのリポジトリです。
 
 - 対象問題: TSP（対称巡回セールスマン）、ATSP（非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
+- 入口: `docs/portal.html`（文献調査・結果・考察の 3 ページへのリンク集。ダブルクリックで開きます）
 - 文献調査: `docs/literature/`（既存研究における解法比較のレビュー）
+- 考察: `docs/discussion/`（手元の結果と文献の突き合わせ、限界と次の一手）
 - 結果: [`results/README.md`](results/README.md)（GitHub 上でそのまま読めるグラフと表）、`docs/index.html`（手元でダブルクリックすると開く対話型ビュー）
 
 ## 構成
@@ -31,7 +33,7 @@ src/            実行スクリプト
   make_instances.py 合成インスタンスの（再）生成
 instances/      ベンチマークインスタンス
 results/        run ごとの実行結果（runs/）と結果ページ（README.md と figures/）
-docs/           対話型のグラフビュー（index.html）と追加手順（extending.md）
+docs/           入口（portal.html）、対話型のグラフビュー（index.html）、文献調査（literature/）、考察（discussion/）、追加手順（extending.md）
 ```
 
 ## インスタンス
@@ -138,4 +140,5 @@ results/runs/<run_id>/
 
 - GitHub 上: [`results/README.md`](results/README.md) に問題ごとの棒グラフ・ヒートマップ（SVG）と数値表があります。リポジトリが非公開のままでも見られます。
 - 手元: `docs/index.html` をダブルクリックすると、マウスオーバーで詳細が出る対話型ビューが開きます（サーバー不要）。
+- 手元: `docs/portal.html` から文献調査（`docs/literature/index.html`）と考察（`docs/discussion/index.html`）にも進めます。
 - GitHub Pages を使える場合は、Settings → Pages でブランチ `main`・フォルダ `/docs` を選ぶと同じビューを公開できます。
