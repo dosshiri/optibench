@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATSP の文献レビュー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+<!-- ATSP（非対称巡回セールスマン問題）の文献レビュー。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の「要点」に 1 項目足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">文献レビューのトップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
+  <div class="eyebrow">文献レビュー · Asymmetric Traveling Salesman Problem · 2026-10-25 時点</div>
+  <h1>ATSP（非対称巡回セールスマン問題）</h1>
+  <p class="lead">専用の比較研究は少なめです。厳密解は加法的限界の分枝限定法や分枝カット、近似解はサイクルカバー・パッチング系と、対称化変換したうえでの LKH が中心です。インスタンスの構造によって勝者が変わるのが特徴です。</p>
+  <div class="legend">
+    <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / B&amp;P)</span>
+    <span class="tag t-mh">メタヒューリスティクス</span>
+    <span class="tag t-sp">専用ヒューリスティクス</span>
+    <span class="tag t-ml">機械学習</span>
+  </div>
+</header>
+
+<nav class="idx" aria-label="目次">
+  <a href="#overview">概要</a>
+  <a href="#studies">主要な比較研究</a>
+  <a href="#matrix">手法ごとの評価</a>
+  <a href="#plan">手元ベンチマークへの示唆</a>
+  <a href="#refs">文献</a>
+</nav>
+
+<section id="overview">
+  <h2>概要</h2>
+  <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、スレッド数、ソルバー版）での結果です。論文間で直接比較することはできません。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
+  <div class="facts">
+    <div class="fact"><div class="k">標準インスタンス</div><div class="v">TSPLIB ATSP（ftv, kro124p, rbg, p43 など19件）、Cirasella ら（2001）の実問題を模した生成器（DIMACS ATSP）</div></div>
+    <div class="fact"><div class="k">代表ソルバー</div><div class="v">Fischetti–Toth 加法的限界の分枝限定法、Fischetti–Lodi–Toth 分枝カット、LKH-3（ATSP直接対応）、Concorde（2n点の対称問題に変換）、MIP（DFJ / MTZ / 流量定式化）</div></div>
+    <div class="fact"><div class="k">特徴</div><div class="v">割当緩和の強さが構造に依存します。rbg 系のように割当緩和がほぼ最適なものと、極端に弱いものが混在しています</div></div>
+  </div>
+</section>
+
+<section id="studies">
+  <h2>主要な比較研究</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Roberti, Toth<span class="yr">EURO J. Transp. Logist. 2012</span></td>
+        <td><span class="tag t-mp">分枝限定法</span> <span class="tag t-mp">分枝カット</span> <span class="tag t-mp">多項式サイズMIP定式化</span></td>
+        <td>TSPLIB ATSP ほかのベンチマーク</td>
+        <td>ATSP厳密解法と定式化を同じ条件で比べた代表的なレビュー兼実験。DFJ緩和に基づく分枝カットが総合的に強く、MTZのような多項式サイズの定式化はLP緩和が弱いと整理しています。<span class="note">（要旨で確認。詳細な数値は本文で確認が必要）</span></td></tr>
+      <tr><td class="ref">Cirasella, Johnson, McGeoch, Zhang<span class="yr">ALENEX 2001</span></td>
+        <td><span class="tag t-sp">最近傍 / 貪欲</span> <span class="tag t-sp">Kanellakis–Papadimitriou 局所探索</span> <span class="tag t-sp">Zhang のサイクルカバー・パッチング</span></td>
+        <td>実問題を模した複数の乱数生成クラス + TSPLIB</td>
+        <td>「全クラスで支配的な単一手法はない」という暫定的な結論。各クラスの最良解は Zhang 法か反復KP法のどちらかから得られました。インスタンス生成器はその後のATSP研究で広く使われています。</td></tr>
+      <tr><td class="ref">Nagata, Soler<span class="yr">Expert Syst. Appl. 2012</span></td>
+        <td><span class="tag t-mh">EAX の ATSP 版 GA</span></td>
+        <td>TSPLIB ATSP、DIMACS ATSP</td>
+        <td>EAXをATSPに拡張したもので、大規模ATSPで高品質な解を報告しています。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
+      <tr><td class="ref">Kwon ら（MatNet）<span class="yr">NeurIPS 2021</span></td>
+        <td><span class="tag t-ml">行列入力の強化学習</span> 対 MIP・LKH</td>
+        <td>乱数距離行列 20〜100点</td>
+        <td>座標を持たないATSPを直接扱える数少ないニューラル解法。評価は小規模の合成データに限られます。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="caveat"><b>ATSPの空白。</b> 汎用MIPソルバー、LKH-3、Concorde（変換）、メタヒューリスティクスを同じ条件で横並びにした最近の比較は、本調査では見つかりませんでした。手元ベンチマークで独自の知見を出しやすい領域です。</div>
+</section>
+
+<section id="matrix">
+  <h2>手法ごとの評価</h2>
+  <p>上の文献に基づく定性的な整理です。<span class="lvl l3">◎</span> 最前線、<span class="lvl l2">○</span> 実用的に強い、<span class="lvl l1">△</span> 条件付きで有効、<span class="lvl l0">–</span> 現状では不利または実証が少ない。</p>
+  <div class="tbl"><table class="matrix">
+    <thead><tr><th>手法</th><th>評価</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-mp">専用 分枝カット / 分枝価格法</span></td><td class="lvl l3">◎ B&amp;B / B&amp;C</td></tr>
+      <tr><td><span class="tag t-mp">汎用MIP（そのまま定式化）</span></td><td class="lvl l1">△ 小中規模</td></tr>
+      <tr><td><span class="tag t-mp">CP / CP-SAT</span></td><td class="lvl l0">–</td></tr>
+      <tr><td><span class="tag t-sp">専用局所探索（LK / LKH / TSAB）</span></td><td class="lvl l2">○ LKH</td></tr>
+      <tr><td><span class="tag t-mh">GA・焼きなまし法・タブーサーチ・VNS 等</span></td><td class="lvl l2">○</td></tr>
+      <tr><td><span class="tag t-ml">ニューラル構築 / 改善型</span></td><td class="lvl l0">–</td></tr>
+      <tr><td><span class="tag t-ml">ML + 古典の混合（NeuroLKH 等）</span></td><td class="lvl l0">–</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="plan">
+  <h2>手元ベンチマークへの示唆</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
+    <tbody>
+      <tr><td>TSPLIB ATSP 19件、DIMACS ATSP 生成器</td><td>LKH-3、Concorde（変換）、MIP（DFJ遅延 / MTZ / 単一品種流量）、OR-Tools、MatNet</td><td>同じ条件での横断比較がほぼ存在しない</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="refs">
+  <h2>文献</h2>
+  <ol class="refs">
+    <li>R. Roberti, P. Toth. Models and algorithms for the ATSP: an experimental comparison. EURO J. Transp. Logist. 1, 113–133, 2012. <a href="https://cris.unibo.it/handle/11585/399140" target="_blank" rel="noopener">doi:10.1007/s13676-012-0010-0</a></li>
+    <li>J. Cirasella, D. S. Johnson, L. A. McGeoch, W. Zhang. The ATSP: Algorithms, Instance Generators, and Tests. ALENEX 2001, LNCS 2153. <a href="https://unpaywall.org/10.1007%2F3-540-44808-X_3" target="_blank" rel="noopener">doi:10.1007/3-540-44808-X_3</a></li>
+    <li>Y. Nagata, D. Soler. A new genetic algorithm for the asymmetric traveling salesman problem. Expert Syst. Appl. 39(10), 2012.</li>
+    <li>Y.-D. Kwon ら. Matrix Encoding Networks for Neural Combinatorial Optimization (MatNet). NeurIPS 2021.</li>
+  </ol>
+  <p class="note">比較の進め方に関する文献（Accorsi ら、Dolan–Moré）は<a href="index.html#refs">トップ</a>にあります。</p>
+</section>
+
+<footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

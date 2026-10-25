@@ -8,87 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
-<style>
-/* レイアウト: 文献レビューと同じ 1 段組（約 62rem）。問題ごとに 1 章とし、上部の索引で章を移動。表はそれぞれの枠内で横スクロール */
-:root{
-  --bg:#f6f7f9; --surface:#ffffff; --ink:#1b2430; --muted:#5a6676; --line:#d9dee6;
-  --accent:#1f5f8b; --accent-soft:#e3eef6;
-  --ok:#2e6f4e; --ok-soft:#e2f1e8;        /* 文献と一致 */
-  --part:#9a5a12; --part-soft:#f8ecdc;    /* 一部一致・条件つき */
-  --new:#6b3fa0; --new-soft:#efe6f8;      /* 文献にない知見 */
-  --warn:#a33a2a; --warn-soft:#f8e3df;    /* 相違・未対応 */
-  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
-  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
-  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#12171e; --surface:#1a212b; --ink:#e4e9f0; --muted:#9aa6b6; --line:#2d3743;
-  --accent:#7cb8e2; --accent-soft:#1c2f40;
-  --ok:#7fcfa2; --ok-soft:#183126; --part:#e7b06a; --part-soft:#352715;
-  --new:#c4a3ee; --new-soft:#2b2140; --warn:#f09583; --warn-soft:#3a201b; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#12171e; --surface:#1a212b; --ink:#e4e9f0; --muted:#9aa6b6; --line:#2d3743;
-  --accent:#7cb8e2; --accent-soft:#1c2f40;
-  --ok:#7fcfa2; --ok-soft:#183126; --part:#e7b06a; --part-soft:#352715;
-  --new:#c4a3ee; --new-soft:#2b2140; --warn:#f09583; --warn-soft:#3a201b; color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.85;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-[hidden]{display:none!important}
-html{scroll-padding-top:56px}
-.wrap{max-width:62rem;margin:0 auto}
-a{color:var(--accent)}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
-header.top{padding-block:40px 24px;border-bottom:1px solid var(--line)}
-.crumb{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px;margin-bottom:20px}
-.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
-h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1.3;margin:8px 0 12px;text-wrap:balance}
-h2{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.4;margin:0 0 4px;text-wrap:balance}
-h2 .code{font-family:var(--f-mono);font-size:14px;font-weight:600;color:var(--muted);letter-spacing:.06em;margin-right:10px;vertical-align:3px}
-h3{font-size:16.5px;margin:28px 0 6px;line-height:1.5}
-p{margin:0 0 12px;max-width:44em}
-.lede{font-size:16px;max-width:44em}
-.meta{font-size:13px;color:var(--muted)}
-.sub{font-size:13.5px;color:var(--muted);margin-bottom:16px}
-nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
-  display:flex;gap:4px 18px;flex-wrap:wrap;padding-block:10px;font-size:13.5px}
-nav.toc a{text-decoration:none;color:var(--muted)}
-nav.toc a b{font-family:var(--f-mono);font-weight:600;color:var(--ink);margin-right:4px}
-nav.toc a:hover,nav.toc a:hover b{color:var(--accent)}
-section{padding-block:40px 12px;border-bottom:1px solid var(--line)}
-section:last-of-type{border-bottom:0}
-.verdict{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:14px 18px;margin:12px 0 8px}
-.verdict .k{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:700}
-.verdict p{margin:4px 0 0;font-size:15.5px}
-.frame{overflow-x:auto;margin:10px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.65}
-th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-tr:last-child td{border-bottom:0}
-th{font-weight:700;color:var(--muted);font-size:12.5px;white-space:nowrap;background:var(--bg)}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--f-mono);font-size:12.5px}
-td.m{white-space:nowrap}
-td.claim{min-width:14em}
-td.ours{min-width:16em}
-tr.top1 td{background:var(--ok-soft)}
-code,.mono{font-family:var(--f-mono);font-size:.88em}
-.v{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
-.v.ok{color:var(--ok);background:var(--ok-soft)}
-.v.part{color:var(--part);background:var(--part-soft)}
-.v.new{color:var(--new);background:var(--new-soft)}
-.v.warn{color:var(--warn);background:var(--warn-soft)}
-.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted);margin:8px 0}
-.note{font-size:13px;color:var(--muted)}
-ul.pts{padding-left:1.3em;margin:6px 0 14px}
-ul.pts li{margin-bottom:6px;max-width:44em}
-.up{color:var(--ok)}
-footer{padding-block:24px;font-size:13px;color:var(--muted)}
-@media (max-width:520px){h2{font-size:22px} th,td{padding:7px 9px}}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
-
 <header class="top">
   <div class="crumb">
     <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
@@ -98,16 +21,13 @@ footer{padding-block:24px;font-size:13px;color:var(--muted)}
   <div class="eyebrow">考察 · 2026-10-25 時点</div>
   <h1>解法比較の考察</h1>
   <p class="lede">巡回セールスマン問題（TSP・ATSP）、ジョブショップスケジューリング（JSSP）、ナーススケジューリングの 4 種類の問題について、実務でどの最適化手法を使えばよいかをまとめました。根拠は 2 つあります。同じ条件で各手法を手元のPCで実際に動かした計測結果と、これまでの論文で報告されている結果です。</p>
-  <p class="lede">章は問題ごとに分かれています。各章では最初に手法の選び方を示し、続けてその根拠となる計測結果、論文との比較、注意点を載せています。まず下の早見表で目的の問題を探し、詳しく知りたい章へ進んでください。</p>
+  <p class="lede">問題ごとにページを分けています。各ページでは最初に手法の選び方を示し、続けてその根拠となる計測結果、論文との比較、注意点を載せています。まず下の早見表で目的の問題を探し、詳しく知りたい問題のページへ進んでください。</p>
   <p class="meta">計測環境は AMD Ryzen 9 5900HX（8 コア 16 スレッド）、Windows 11、OR-Tools 9.15、HiGHS 1.15 です（commit <code>bffb27c</code>）。各手法の制限時間は 60 秒で、1 スレッドと 4 スレッドの両方で計測しました。4 スレッドの結果は手法名の末尾に <code>-4w</code> を付けています。結果のばらつきを確かめるため、クラウド環境（Xeon 4 vCPU）で計測した結果とも比べています。</p>
 </header>
 
 <nav class="toc" aria-label="目次">
   <a href="#overview">手法選びの早見表</a>
-  <a href="#tsp"><b>TSP</b>対称巡回セールスマン</a>
-  <a href="#atsp"><b>ATSP</b>非対称巡回セールスマン</a>
-  <a href="#jssp"><b>JSSP</b>ジョブショップ</a>
-  <a href="#nsp"><b>NSP</b>ナーススケジューリング</a>
+  <a href="#pages">問題別の考察</a>
   <a href="#common">全問題に共通する前提</a>
 </nav>
 
@@ -118,342 +38,37 @@ footer{padding-block:24px;font-size:13px;color:var(--muted)}
   <table>
     <thead><tr><th>問題</th><th>まず使う</th><th>条件によって切り替える</th><th>避けたい使い方</th></tr></thead>
     <tbody>
-      <tr><td><a href="#tsp">TSP</a></td><td>LKH</td><td>業務制約があれば OR-Tools Routing。数百ノードまでで証明が要れば MIP（初期解つき）</td><td>大規模での CP-SAT、初期解なしの MIP</td></tr>
-      <tr><td><a href="#atsp">ATSP</a></td><td>LKH</td><td>証明が要れば MIP と CP-SAT の両方を試す。自作するなら向きを保つ局所探索</td><td>2-opt 中心の自作局所探索</td></tr>
-      <tr><td><a href="#jssp">JSSP</a></td><td>CP-SAT（複数スレッド）</td><td>専用近傍を実装できればタブーサーチ。即答が必要ならディスパッチングルール</td><td>big-M の MIP、1 スレッドの CP-SAT</td></tr>
-      <tr><td><a href="#nsp">ナース</a></td><td>MIP</td><td>大規模で MIP が解を出せなければ CP-SAT（複数スレッド）</td><td>調整なしの汎用 SA、1 スレッドの CP-SAT</td></tr>
+      <tr><td><a href="tsp.html">TSP</a></td><td>LKH</td><td>業務制約があれば OR-Tools Routing。数百ノードまでで証明が要れば MIP（初期解つき）</td><td>大規模での CP-SAT、初期解なしの MIP</td></tr>
+      <tr><td><a href="atsp.html">ATSP</a></td><td>LKH</td><td>証明が要れば MIP と CP-SAT の両方を試す。自作するなら向きを保つ局所探索</td><td>2-opt 中心の自作局所探索</td></tr>
+      <tr><td><a href="jssp.html">JSSP</a></td><td>CP-SAT（複数スレッド）</td><td>専用近傍を実装できればタブーサーチ。即答が必要ならディスパッチングルール</td><td>big-M の MIP、1 スレッドの CP-SAT</td></tr>
+      <tr><td><a href="nsp.html">ナース</a></td><td>MIP</td><td>大規模で MIP が解を出せなければ CP-SAT（複数スレッド）</td><td>調整なしの汎用 SA、1 スレッドの CP-SAT</td></tr>
     </tbody>
   </table>
   </div>
-  <p class="note">制限時間 60 秒、問題ごとに 6〜10 個のベンチマーク問題で計測した結果にもとづく目安です。扱う問題の規模や使える計算時間が大きく異なる場合は、各章の「限界」もあわせて確認してください。</p>
+  <p class="note">制限時間 60 秒、問題ごとに 6〜10 個のベンチマーク問題で計測した結果にもとづく目安です。扱う問題の規模や使える計算時間が大きく異なる場合は、各ページの「限界」もあわせて確認してください。</p>
   <div class="legend">
-    <span>各章の判定:</span>
+    <span>判定:</span>
     <span><span class="v ok">一致</span> 文献と同じ傾向</span>
     <span><span class="v part">条件つき</span> 一部だけ一致、または条件が違いすぎて比べにくい</span>
     <span><span class="v new">新規</span> 文献に比較がなかった点</span>
   </div>
 </section>
 
-<!-- ===================== TSP ===================== -->
-<section id="tsp">
-  <h2><span class="code">TSP</span>対称巡回セールスマン</h2>
-  <p class="sub">TSPLIB 6 問（berlin52〜rat783）。参照値は公表最適値。</p>
-  <div class="verdict"><div class="k">結論</div>
-    <p>専用ヒューリスティクスの LKH が圧倒的で、783 都市までは品質で競う余地がほぼありません。厳密解法の MIP は 280 都市付近に「解が何も出なくなる崖」があり、CP-SAT はこの問題には向きません。</p></div>
-
-  <h3>手法の選び方</h3>
-  <p>業務制約のない巡回路なら、まず LKH を使います。時間枠・容量・複数車両などの制約があるなら OR-Tools Routing が現実的です。数百ノードまでで最適性の証明が必要な場合だけ MIP を使い、そのときはヒューリスティクスの解を初期解として渡します。CP-SAT の AddCircuit を大規模な TSP に使うのは避けます。</p>
-  <h3>手元の結果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">解あり</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
-    <tbody>
-      <tr class="top1"><td class="m"><code>LKH(elkai)</code></td><td class="num">0.00%</td><td class="num">6/6</td><td class="num">–</td><td class="num">5.5 秒</td></tr>
-      <tr><td class="m"><code>SA</code>（自作）</td><td class="num">0.51%</td><td class="num">6/6</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
-      <tr><td class="m"><code>nn+ls</code>（自作）</td><td class="num">0.83%</td><td class="num">6/6</td><td class="num">–</td><td class="num">15.4 秒</td></tr>
-      <tr><td class="m"><code>ORTools-GLS</code></td><td class="num">1.06%</td><td class="num">6/6</td><td class="num">–</td><td class="num">60.1 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.00%*</td><td class="num">4/6</td><td class="num">4</td><td class="num">33.6 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.00%*</td><td class="num">3/6</td><td class="num">3</td><td class="num">35.0 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">291.62%</td><td class="num">6/6</td><td class="num">1</td><td class="num">53.4 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT</code></td><td class="num">20.33%*</td><td class="num">5/6</td><td class="num">1</td><td class="num">53.9 秒</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p class="note">* 解が得られた問題だけの平均。CP-SAT-4w の 291.62% は rat783 の 1721% 1 問による値で、残り 5 問の平均は 5.72%。</p>
-
-  <h3>文献との突き合わせ</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
-    <tbody>
-      <tr><td class="claim">近似解では LKH が最強クラス（Liu ら 2022、Nagata–Kobayashi 2013）</td><td class="ours">LKH が全 6 問で最適値に、最長 15 秒で到達</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">汎用 MIP に部分巡回路除去を足す定式化は Concorde に桁違いで劣る（Applegate ら 2006）</td><td class="ours">MIP は ch150 まで（4 スレッドで a280 まで）証明。pcb442 以上は巡回路が得られず。Concorde は未計測</td><td><span class="v part">条件つき</span></td></tr>
-      <tr><td class="claim">CP は TSP では不利（手法×問題の整理で「–」）</td><td class="ours">CP-SAT は 1 スレッドで 20.3%、4 スレッドでも pcb442 で 18.6%</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">平均ギャップだけでは少数の外れ値に引きずられる（中立性の注意点）</td><td class="ours">CP-SAT-4w の平均が rat783 1 問で 5.7% から 291.6% に跳ねた</td><td><span class="v ok">一致</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h3>考察</h3>
-  <p>LKH は 783 都市までのすべての問題で最適値に到達しました。この規模で比べる意味があるのは「LKH が何秒で最適値に着くか」と「他の手法が同じ時間で何 % まで寄るか」です。自作の <code>nn+ls</code>（多始点の最近傍法 + 2-opt/Or-opt）は 0.83% で、OR-Tools の誘導局所探索（1.06%）より良い結果でした。OR-Tools Routing の強みは時間枠や容量などの業務制約を足せる汎用性なので、制約のない純粋な TSP で劣るのは自然です。</p>
-  <p>MIP は小さいうちは最適性まで出せますが、ある規模で急に何も出なくなります。今回は 280 都市付近が境目で、a280 は 1 スレッドで時間切れ、4 スレッドで 56 秒で証明できました。部分巡回路除去制約を逐次足す実装は途中で巡回路を持たないため、時間切れになると答えが空になります。実務では初期解を渡すのが普通なので、この「解なし」は実装の仕方による部分もあります。</p>
-
-  <h3>スレッド数の効果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
-    <tbody>
-      <tr><td>CP-SAT（5 問平均）</td><td class="num">20.33%</td><td class="num up">5.72%</td><td>kroA100 が 29.8% → 0%。rat783 は解なし → 1721%</td></tr>
-      <tr><td>MIP-HiGHS</td><td class="num">3 問証明</td><td class="num up">4 問証明</td><td>境目の a280 だけが解けるようになった</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p>CP-SAT は 4 スレッドで大きく改善しますが、それでも LKH との差は埋まりません。MIP の改善は境目の 1 問だけです。</p>
-
-  <h3>再現性（クラウドと手元PC）</h3>
-  <ul class="pts">
-    <li>決定的な <code>nn+ls</code>・<code>LKH</code> は解の値が全問で一致。LKH の時間は rat783 で 22.7 秒 → 14.3 秒と手元PCが速い。</li>
-    <li><code>MIP-HiGHS</code>（1 スレッド）の a280 は、クラウドでは 50.4 秒で証明、手元PCでは 60 秒で解なし。境目の問題は計算機が速くても入れ替わる。</li>
-    <li><code>SA</code> の pcb442 は 0.60% と 1.03%、<code>CP-SAT</code> の kroA100 は 20.9% と 29.8% で、時間で打ち切る手法は揺れる。</li>
-  </ul>
-
-  <h3>この問題での限界</h3>
-  <ul class="pts">
-    <li>最大 783 都市までで、文献が扱う 1 万都市超の規模はない。</li>
-    <li>文献の主役である Concorde（厳密）と GA-EAX（近似）がいない。</li>
-    <li>LKH は試行回数（runs=10）で止めており、60 秒を使い切らない。品質では LKH に不利な側の条件。</li>
-    <li>MIP は DFJ の逐次追加 1 通りだけで、初期解も渡していない。</li>
-  </ul>
-
-
-  <h3>次の一手</h3>
-  <ul class="pts">
-    <li>TSPLIB の 1,000〜10,000 都市級を追加し、LKH 以外の手法がどこで崩れるかを見る。</li>
-    <li>Concorde と GA-EAX を加え、LKH は時間制限で止める版も用意する。</li>
-    <li>MIP に <code>nn+ls</code> の解を初期解として渡す版を作り、「解なし」が定式化と実装のどちらの限界かを切り分ける。</li>
+<section id="pages">
+  <h2>問題別の考察</h2>
+  <p class="sub">各ページの結論です。手法の選び方と根拠は、それぞれのページにあります。</p>
+  <!-- 問題を追加したら、ここに 1 項目足す -->
+  <ul class="pages">
+    <li><a href="tsp.html"><b>TSP</b>対称巡回セールスマン</a><p>専用ヒューリスティクスの LKH が圧倒的で、783 都市までは品質で競う余地がほぼありません。厳密解法の MIP は 280 都市付近に「解が何も出なくなる崖」があり、CP-SAT はこの問題には向きません。</p></li>
+    <li><a href="atsp.html"><b>ATSP</b>非対称巡回セールスマン</a><p>LKH が全問で最適値に到達しました。厳密系の勝者はインスタンスの構造で入れ替わり、2-opt 系の単純な局所探索は効きにくい問題です。文献で同条件の横並び比較が見つからなかった問題なので、このページの結果はそれ自体が新しい知見です。</p></li>
+    <li><a href="jssp.html"><b>JSSP</b>ジョブショップスケジューリング</a><p>CP-SAT が最も強く、4 スレッドで 10 問中 7 問の最適性を証明しました。自作のタブーサーチ（N5 近傍）がそれに迫り、MIP は大きく劣ります。文献の主張はすべて手元でも確認できました。</p></li>
+    <li><a href="nsp.html"><b>NSP</b>ナーススケジューリング</a><p>小〜中規模では MIP が最も強く、3 問で最適性を証明しました。最大規模では MIP が解を出せず、CP-SAT（4 スレッド）が最良でした。</p></li>
   </ul>
 </section>
 
-<!-- ===================== ATSP ===================== -->
-<section id="atsp">
-  <h2><span class="code">ATSP</span>非対称巡回セールスマン</h2>
-  <p class="sub">TSPLIB ATSP 6 問（ftv33〜rbg443）。参照値は公表最適値。</p>
-  <div class="verdict"><div class="k">結論</div>
-    <p>LKH が全問で最適値に到達しました。厳密系の勝者はインスタンスの構造で入れ替わり、2-opt 系の単純な局所探索は効きにくい問題です。文献で同条件の横並び比較が見つからなかった問題なので、この章の結果はそれ自体が新しい知見です。</p></div>
-
-  <h3>手法の選び方</h3>
-  <p>一方通行や上り下りで所要時間が違う経路は ATSP になります。近似解なら LKH が第一候補で、局所探索を自作するなら 2-opt ではなく向きを保つ移動（Or-opt など）を中心にします。最適性の証明が必要なら、MIP と CP-SAT の両方を試して速い方を使います。どちらが速いかはインスタンスの構造で変わります。</p>
-  <h3>手元の結果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">解あり</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
-    <tbody>
-      <tr class="top1"><td class="m"><code>LKH(elkai)</code></td><td class="num">0.00%</td><td class="num">6/6</td><td class="num">–</td><td class="num">8.0 秒</td></tr>
-      <tr><td class="m"><code>SA</code>（自作）</td><td class="num">0.08%</td><td class="num">6/6</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
-      <tr><td class="m"><code>ORTools-GLS</code></td><td class="num">0.96%</td><td class="num">6/6</td><td class="num">–</td><td class="num">60.1 秒</td></tr>
-      <tr><td class="m"><code>nn+ls</code>（自作）</td><td class="num">3.03%</td><td class="num">6/6</td><td class="num">–</td><td class="num">6.4 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">9.83%</td><td class="num">6/6</td><td class="num">5</td><td class="num">20.9 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT</code></td><td class="num">18.88%</td><td class="num">6/6</td><td class="num">4</td><td class="num">26.3 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.00%*</td><td class="num">4/6</td><td class="num">4</td><td class="num">22.9 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.00%*</td><td class="num">4/6</td><td class="num">4</td><td class="num">23.0 秒</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p class="note">* 解が得られた問題だけの平均。CP-SAT の平均は rbg443（1 スレッド 104%、4 スレッド 59%）の影響が大きい。</p>
-
-  <h3>文献との突き合わせ</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
-    <tbody>
-      <tr><td class="claim">汎用 MIP・LKH・メタヒューリスティクスを同じ条件で並べた最近の比較は見つからない</td><td class="ours">8 手法 × 6 問を同条件で比較。LKH 0.00% ＞ SA 0.08% ＞ GLS 0.96% ＞ nn+ls 3.03%</td><td><span class="v new">新規</span></td></tr>
-      <tr><td class="claim">rbg 系は割当緩和がほぼ最適で、インスタンスの構造で勝者が変わる（Cirasella ら 2001、Roberti–Toth 2012）</td><td class="ours">MIP は rbg323・rbg443 で下界が最適値に一致したのに巡回路を得られず。CP-SAT は rbg323 を 9 秒で証明、rbg443 は 104%</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">全クラスで支配的な単一手法はない（Cirasella ら 2001）</td><td class="ours">近似では LKH が全問で支配的。厳密系では MIP と CP-SAT が問題ごとに入れ替わる</td><td><span class="v part">条件つき</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h3>考察</h3>
-  <p>自作の <code>nn+ls</code> は 3.03% で、近似解法の中で最も劣りました。2-opt は経路の一部の向きを反転させるため、行きと帰りで距離が違う非対称な問題では近傍として使いにくいことが効いていると考えられます（推測）。向きを変えない移動を持つ SA は 0.08% まで寄っています。</p>
-  <p>厳密系では、MIP は kro124p まで約 10 秒で証明しますが、rbg323・rbg443 は下界が最適値に達していたにもかかわらず巡回路が得られていません。文献にある「rbg 系は割当緩和がほぼ最適」という性質と合っており、この 2 問では下界ではなく、部分巡回路を除いて巡回路にたどり着く部分が時間切れの原因だと考えられます。CP-SAT は逆に rbg323 を 9 秒で証明しました。一方、rbg443 は 1 スレッドで 104%、4 スレッドで 59% と不安定です。</p>
-
-  <h3>スレッド数の効果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
-    <tbody>
-      <tr><td>CP-SAT</td><td class="num">18.88%</td><td class="num up">9.83%</td><td>kro124p を証明（8.96% → 0%）。rbg443 は 104% → 59%</td></tr>
-      <tr><td>MIP-HiGHS</td><td class="num">3.7 秒</td><td class="num">3.2 秒</td><td>結果は同じで、わずかに速い（解けた 4 問の平均時間）</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h3>再現性（クラウドと手元PC）</h3>
-  <ul class="pts">
-    <li>決定的な <code>nn+ls</code>・<code>LKH</code> は解の値が全問で一致。</li>
-    <li><code>ORTools-GLS</code> の kro124p はクラウドで 0%、手元PCで 2.02%。時間で打ち切る局所探索は、計算機が変わると到達点が変わる。</li>
-    <li><code>CP-SAT</code> の rbg443 は両方で 104.3% と同じ値で、悪さは偶然ではなく安定している。</li>
-  </ul>
-
-  <h3>この問題での限界</h3>
-  <ul class="pts">
-    <li>TSPLIB ATSP 19 件のうち 6 件だけで、Cirasella らの生成器による構造の違うクラスがない。</li>
-    <li>MIP は DFJ の逐次追加だけで、MTZ や流量定式化との比較がない。</li>
-    <li>LKH は elkai 経由で、LKH-3 の ATSP 用の設定や対称化変換の違いは見ていない。</li>
-  </ul>
-
-
-  <h3>次の一手</h3>
-  <ul class="pts">
-    <li>TSPLIB ATSP の 19 件すべてと、Cirasella らの生成器の各クラスに広げる。文献の空白を埋める比較として価値が高い。</li>
-    <li>MIP に MTZ・流量定式化を足し、定式化による差を測る。</li>
-    <li>rbg 系で MIP に初期解を渡し、下界は最適なのに巡回路が出ない問題が解消するか確かめる。</li>
-  </ul>
-</section>
-
-<!-- ===================== JSSP ===================== -->
-<section id="jssp">
-  <h2><span class="code">JSSP</span>ジョブショップスケジューリング</h2>
-  <p class="sub">JSPLIB 10 問（ft06〜ta21、6×6〜20×20）。参照値は既知最適値（ta11・ta21 は文献値）。</p>
-  <div class="verdict"><div class="k">結論</div>
-    <p>CP-SAT が最も強く、4 スレッドで 10 問中 7 問の最適性を証明しました。自作のタブーサーチ（N5 近傍）がそれに迫り、MIP は大きく劣ります。文献の主張はすべて手元でも確認できました。</p></div>
-
-  <h3>手法の選び方</h3>
-  <p>工程の順序づけには、まず CP-SAT を使えるだけのコアで動かします。最適性の証明が要らず、問題専用の近傍を実装できるならタブーサーチも有力です。すぐ答えが必要な再スケジュールにはディスパッチングルールを使い、その解を CP-SAT やタブーサーチの初期解にします。big-M の MIP は小さな問題以外では使いません。</p>
-  <h3>手元の結果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">解あり</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
-    <tbody>
-      <tr class="top1"><td class="m"><code>CP-SAT-4w</code></td><td class="num">0.70%</td><td class="num">10/10</td><td class="num">7</td><td class="num">23.9 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT</code></td><td class="num">1.63%</td><td class="num">10/10</td><td class="num">5</td><td class="num">38.8 秒</td></tr>
-      <tr><td class="m"><code>Tabu-N5</code>（自作）</td><td class="num">2.03%</td><td class="num">10/10</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
-      <tr><td class="m"><code>GA</code>（自作）</td><td class="num">10.71%</td><td class="num">10/10</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">24.05%</td><td class="num">10/10</td><td class="num">1</td><td class="num">54.2 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">26.74%</td><td class="num">10/10</td><td class="num">1</td><td class="num">54.3 秒</td></tr>
-      <tr><td class="m"><code>MWKR</code></td><td class="num">29.45%</td><td class="num">10/10</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
-      <tr><td class="m"><code>SPT</code></td><td class="num">55.17%</td><td class="num">10/10</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h3>文献との突き合わせ</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
-    <tbody>
-      <tr><td class="claim">汎用ソルバーでは CP が MIP を明確に上回る（Ku–Beck 2016、Naderi ら 2023）</td><td class="ours">CP-SAT-4w 0.70% に対し MIP（Manne の big-M）26.7%。ta11 では 3.6% 対 51%</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">近似解の最前線は N5 近傍のタブーサーチ系（Peng ら 2015）</td><td class="ours">Tabu-N5 は平均 2.03% で、ta11 では CP-SAT-4w と同じ 3.61%</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">汎用 GA は専用近傍のタブーサーチに大きく劣る（Reijnen ら 2023 で GA 34.5%）</td><td class="ours">乱数キー GA は 10.7% で、Tabu-N5 の約 5 倍のギャップ</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">CP-SAT は 1 コアから 4 コアで最適到達が大きく増える（Da Col–Teppan 2019）</td><td class="ours">証明が 5 → 7 問、平均時間 38.8 → 23.9 秒</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">ディスパッチングルールは CP-SAT に大差で劣る（Reijnen ら 2023 で MWR 19.5%）</td><td class="ours">MWKR 29.5%、SPT 55.2%</td><td><span class="v ok">一致</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h3>考察</h3>
-  <p>CP-SAT は未証明の swv01・ta11・ta21 でも 1.6〜3.6% でした。自作の <code>Tabu-N5</code> は最適性を証明できませんが、平均 2.03% と CP-SAT の 1 スレッド（1.63%）に近く、問題専用の近傍の強さがよく出ています。同じメタヒューリスティクスでも、汎用の乱数キー GA は 10.7% で、手法族の名前より近傍の設計が効くという文献の指摘どおりです。</p>
-  <p>MIP（Manne の離接定式化、big-M）は ft06（6×6）以外で最適性を証明できず、ta21（20×20）では 81% でした。Ku–Beck は 3600 秒・CPLEX で ta11–ta20 の MIP を約 6.2% と報告しており、手元はそれより大きく劣ります。ただし時間は 60 分の 1、ソルバーも違うため、数値の差よりも「CP との差が規模とともに広がる」という傾向の一致を見るべきです。ディスパッチングルールは 0.2 秒で終わるので、初期解やリアルタイムの再スケジュール用です。</p>
-
-  <h3>スレッド数の効果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
-    <tbody>
-      <tr><td>CP-SAT</td><td class="num">1.63%</td><td class="num up">0.70%</td><td>証明 5 → 7 問。ft10 は 36 秒 → 3 秒、orb01 は時間切れ → 9 秒</td></tr>
-      <tr><td>MIP-HiGHS</td><td class="num">26.74%</td><td class="num">24.05%</td><td>証明は ft06 の 1 問のまま</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p>4 スレッド化の効果は大きく、ft10 の証明は 10 倍以上速くなりました。CP-SAT は複数のワーカーが異なる探索戦略を同時に走らせる設計で、1 スレッドではその一部しか動きません。CP-SAT を 1 スレッドで評価すると、実力を大きく見誤ります。</p>
-
-  <h3>再現性（クラウドと手元PC）</h3>
-  <ul class="pts">
-    <li>決定的な <code>SPT</code>・<code>MWKR</code> は全問で一致。</li>
-    <li><code>CP-SAT-4w</code> の ta11 はクラウドで 1.47%、手元PCで 3.61%。並列の CP-SAT はスレッドの進み具合で探索の経路が変わり、同じ設定でも結果がぶれる。</li>
-    <li><code>CP-SAT</code>（1 スレッド）は証明できた問題の結果が両方で一致し、未証明の問題だけが揺れる（swv01 で 4.62% と 4.12%）。</li>
-  </ul>
-
-  <h3>この問題での限界</h3>
-  <ul class="pts">
-    <li>制限時間 60 秒で、文献の多く（3600 秒）より大幅に短い。</li>
-    <li>MIP は big-M の離接定式化だけで、時間添字型などとの比較がない。</li>
-    <li>最大 20×20 で、Taillard の 30×20 以上や DMU がない。</li>
-    <li>文献で CP-SAT と並ぶ CP Optimizer（商用）がいない。</li>
-  </ul>
-
-
-  <h3>次の一手</h3>
-  <ul class="pts">
-    <li>CP-SAT を 8・16 スレッドでも測る（手元PCは 16 論理 CPU、<code>--threads 1,4,8,16</code>）。伸びがどこで頭打ちになるかが分かる。</li>
-    <li>制限時間 600 秒・3600 秒の run を追加し、Ku–Beck など文献の条件に近づける。</li>
-    <li>Taillard の 30×20・50×20 や DMU を加え、CP-SAT とタブーサーチの差が規模でどう変わるかを見る。</li>
-    <li>MIP に時間添字型の定式化を足す。</li>
-  </ul>
-</section>
-
-<!-- ===================== NSP ===================== -->
-<section id="nsp">
-  <h2><span class="code">NSP</span>ナーススケジューリング</h2>
-  <p class="sub">Curtois–Qu と同じ制約体系の合成 6 問（8〜50 人、14〜42 日）。参照値は全 run・全手法の最良値で、最適値ではない。</p>
-  <div class="verdict"><div class="k">結論</div>
-    <p>小〜中規模では MIP が最も強く、3 問で最適性を証明しました。最大規模では MIP が解を出せず、CP-SAT（4 スレッド）が最良でした。</p></div>
-
-  <h3>手法の選び方</h3>
-  <p>病棟単位の勤務表のような中規模までなら、まず MIP で解き、最適性の証明か下界との差を確認します。規模が大きい、制約がきつくて MIP が解を出せない、という場合は CP-SAT を複数スレッドで使います。調整していない汎用の SA で品質を判断するのは避けます。</p>
-  <h3>手元の結果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>手法</th><th class="num">最良値との差</th><th class="num">解あり</th><th class="num">最良値到達</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
-    <tbody>
-      <tr class="top1"><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.00%*</td><td class="num">5/6</td><td class="num">5</td><td class="num">3</td><td class="num">31.5 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">2.53%</td><td class="num">6/6</td><td class="num">3</td><td class="num">2</td><td class="num">40.7 秒</td></tr>
-      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.78%*</td><td class="num">5/6</td><td class="num">3</td><td class="num">3</td><td class="num">31.7 秒</td></tr>
-      <tr><td class="m"><code>SA</code>（自作）</td><td class="num">42.09%</td><td class="num">6/6</td><td class="num">1</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
-      <tr><td class="m"><code>CP-SAT</code></td><td class="num">2568%*</td><td class="num">4/6</td><td class="num">2</td><td class="num">2</td><td class="num">40.9 秒</td></tr>
-      <tr><td class="m"><code>Greedy</code></td><td class="num">18117%*</td><td class="num">2/6</td><td class="num">0</td><td class="num">–</td><td class="num">0.9 秒</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p class="note">* 実行可能解が得られた問題だけの平均。CP-SAT（1 スレッド）の 2568% は nsp04 のペナルティ 4242（最良 41）による。</p>
-
-  <h3>文献との突き合わせ</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
-    <tbody>
-      <tr><td class="claim">MIP 系（分解・分枝価格法）が強い（Valouxis ら 2012、Legrain–Omer 2024）</td><td class="ours">MIP-HiGHS-4w が 6 問中 5 問で最良、3 問で証明。最大の nsp06 は解なし</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">メタヒューリスティクスは MIP と拮抗する</td><td class="ours">自作 SA は全問で実行可能解を得たが、最良値より平均 42% 悪い</td><td><span class="v part">条件つき</span></td></tr>
-      <tr><td class="claim">CP-SAT の評価が少ない（文献の空白）</td><td class="ours">汎用ソルバーで 6 問すべてに解を出せたのは CP-SAT-4w だけ（nsp06 で最良）。1 スレッドでは 2 問で解なし</td><td><span class="v new">新規</span></td></tr>
-      <tr><td class="claim">制約がきつい問題では MILP が強い（Combrink ら 2025）</td><td class="ours">制約体系が同じなので直接は比べられないが、中規模まで MIP が最良という点は整合</td><td><span class="v part">条件つき</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h3>考察</h3>
-  <p>ナーススケジューリングは 0-1 変数と線形制約で素直に書け、LP 緩和が効くため、MIP が強いのは文献どおりです。規模が大きくなると話が変わり、最大の nsp06（50 人 × 42 日）では MIP は 1・4 スレッドとも解なしで、解を出したのは CP-SAT-4w（171）と SA（230）だけでした。手元の結果からは、CP-SAT は「MIP の代わり」より「大規模側の保険」という位置づけが見えます。</p>
-  <p>自作 SA の 42% は、文献の「メタヒューリスティクスは MIP と拮抗」より明らかに悪い値です。文献で拮抗しているのは、問題専用の近傍と長い調整を持つ実装です。手元の SA は 1 マス変更と職員間の区間交換だけで、重みの調整もしていません。この差は手法族の限界ではなく、作り込みの差と読むべきです。<code>Greedy</code> は 4 問でハード制約を満たせず、構築法だけでは実用になりません。</p>
-
-  <h3>スレッド数の効果</h3>
-  <div class="frame">
-  <table>
-    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
-    <tbody>
-      <tr><td>CP-SAT</td><td class="num">4/6 問で解</td><td class="num up">6/6 問で解</td><td>nsp04 が 4242 → 44。nsp05・nsp06 で解が出るようになった</td></tr>
-      <tr><td>MIP-HiGHS</td><td class="num">0.78%</td><td class="num">0.00%</td><td>nsp04・nsp05 で 1 ずつ改善。nsp06 は解なしのまま</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p>CP-SAT は 1 スレッドでは大規模の 2 問で解が出ず、この問題では実用にならないと言ってよい水準です。</p>
-
-  <h3>再現性（クラウドと手元PC）</h3>
-  <ul class="pts">
-    <li><code>CP-SAT-4w</code> の nsp05 はクラウドで最良値より 11.4%、手元PCで 5.8%。</li>
-    <li><code>CP-SAT</code>（1 スレッド）の nsp03 は 70.8% と 27.1% で、1 スレッドの方が大きく揺れる。</li>
-    <li><code>MIP-HiGHS</code> は最適性を証明した nsp01〜03 で一致し、時間切れの nsp04・nsp05 だけ 1〜2 点ずれる。</li>
-  </ul>
-
-  <h3>この問題での限界</h3>
-  <ul class="pts">
-    <li>合成インスタンスだけで、参照値は最良値であり最適値ではない。公式インスタンス（Curtois–Qu、INRC-II）での文献値と直接比べられない。</li>
-    <li>文献で最も強い分枝価格法（NurseScheduler）がいない。</li>
-    <li>SA は近傍も重みも調整しておらず、メタヒューリスティクスの実力を代表していない。</li>
-  </ul>
-
-
-  <h3>次の一手</h3>
-  <ul class="pts">
-    <li>Curtois–Qu の 24 件か INRC-II 静的版に差し替え、Legrain–Omer（2024）の結果と直接比べる。</li>
-    <li>分枝価格法の NurseScheduler を加える。</li>
-    <li>SA に LNS（一部の職員・日を MIP や CP-SAT で解き直す）を組み合わせた版を作り、メタヒューリスティクス側を文献の水準に近づける。</li>
-    <li>MIP に CP-SAT や SA の解を初期解として渡し、nsp06 で解が出るか確かめる。</li>
-  </ul>
-</section>
-
-<!-- ===================== 共通 ===================== -->
 <section id="common">
   <h2>全問題に共通する前提</h2>
-  <p>各章の手法選びは、次の条件と限界のうえに立っています。</p>
+  <p>各ページの手法選びは、次の条件と限界のうえに立っています。</p>
   <div class="frame">
   <table>
     <thead><tr><th>論点</th><th>状況</th><th>内容</th></tr></thead>
@@ -475,16 +90,7 @@ footer{padding-block:24px;font-size:13px;color:var(--muted)}
   <p>出典: 手元ベンチマークの数値は <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">結果ビュー</a> と <code>results/runs/*-tiamat-*</code>、文献の数値は <a href="../literature/index.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a> によります。「推測」と書いた箇所は、ログや追加実験で確かめていない解釈です。</p>
   <p><a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータルに戻る</a></p>
 </footer>
-
 </div>
-<script>
-// Claude のページとして開いたときは、リンク先を同じシリーズの Claude ページに切り替える（ファイルとして開いたときは相対パスのまま）
-(function () {
-  if (location.protocol === "file:" || /github\.io$|^localhost$|^127\./.test(location.hostname)) return;
-  document.querySelectorAll("a[data-web]").forEach(function (a) {
-    if (/^https:/.test(a.dataset.web)) { a.href = a.dataset.web; a.target = "_blank"; a.rel = "noopener"; }
-  });
-})();
-</script>
+<script src="common.js"></script>
 </body>
 </html>

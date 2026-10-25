@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NSP の文献レビュー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+<!-- ナーススケジューリングの文献レビュー。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の「要点」に 1 項目足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">文献レビューのトップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
+  <div class="eyebrow">文献レビュー · Nurse Rostering / Nurse Scheduling Problem · 2026-10-25 時点</div>
+  <h1>ナーススケジューリング</h1>
+  <p class="lead">問題定義が研究ごとに異なるため、INRC-I / INRC-II / Curtois–Qu の共通ベンチマークが比較の基盤です。MIPベース（分解・分枝価格法）とメタヒューリスティクスが拮抗しており、最近は分枝価格法が最適性を証明できる範囲を広げています。</p>
+  <div class="legend">
+    <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / B&amp;P)</span>
+    <span class="tag t-mh">メタヒューリスティクス</span>
+    <span class="tag t-sp">専用ヒューリスティクス</span>
+    <span class="tag t-ml">機械学習</span>
+  </div>
+</header>
+
+<nav class="idx" aria-label="目次">
+  <a href="#overview">概要</a>
+  <a href="#studies">主要な比較研究</a>
+  <a href="#matrix">手法ごとの評価</a>
+  <a href="#plan">手元ベンチマークへの示唆</a>
+  <a href="#refs">文献</a>
+</nav>
+
+<section id="overview">
+  <h2>概要</h2>
+  <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、スレッド数、ソルバー版）での結果です。論文間で直接比較することはできません。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
+  <div class="facts">
+    <div class="fact"><div class="k">標準インスタンス</div><div class="v">INRC-I（2010、sprint/medium/long の60件、4週間）、INRC-II（2015、多段階型、30〜120人・4/8週）、Curtois–Qu Shift Scheduling Benchmark（24件、最長1年）</div></div>
+    <div class="fact"><div class="k">代表ソルバー</div><div class="v">MIP（Gurobi/CPLEX、分解型）、分枝価格法（<a href="https://github.com/wssuite/NurseScheduler" target="_blank" rel="noopener">NurseScheduler</a> がオープンソース）、CP-SAT、SAT/SMT、焼きなまし法・タブーサーチ・VNS、ハイパーヒューリスティクス</div></div>
+    <div class="fact"><div class="k">特徴</div><div class="v">ソフト制約の重み付き和を最小化します。制約セットが病院ごとに異なるため、共通ベンチマーク以外での論文間比較はほぼ不可能です</div></div>
+  </div>
+</section>
+
+<section id="studies">
+  <h2>主要な比較研究と競技会</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Valouxis ら<span class="yr">EJOR 2012</span></td>
+        <td><span class="tag t-mp">MIPによる2段階分解</span></td>
+        <td>INRC-I（INRC2010）</td>
+        <td>大規模問題を部分問題に分け、整数計画で逐次解きます。INRC2010 の全トラックで1位。「時間制限つきの競技でもMIP分解は勝てる」ことを示しました。</td></tr>
+      <tr><td class="ref">Ceschia, Dang, De Causmaecker, Haspeslagh, Schaerf<span class="yr">Ann. Oper. Res. 2019</span></td>
+        <td>INRC-II の主催報告</td>
+        <td>INRC-II（多段階：週ごとに逐次決定）</td>
+        <td>問題定義、検証・シミュレータ、最終結果をまとめた報告。参加手法にはMILP状態拡張ネットワーク（Römer–Mellouli）、ローテーション分枝価格法（Legrain–Omer–Rosat）、重み付きタブーサーチ、選択型ハイパーヒューリスティクス（Kheiri ら）などがあり、手法族は分かれています。<span class="note">（最終順位は本文が有料のため本調査では未確認）</span></td></tr>
+      <tr><td class="ref">Legrain, Omer<span class="yr">INFORMS J. Comput. 2024</span></td>
+        <td><span class="tag t-mp">ロスター型 分枝価格法 + 専用プライシング</span></td>
+        <td>INRC-I 60件、静的INRC-II 4/8週、Curtois–Qu 24件</td>
+        <td>INRC-II 4週の全20件で初めて最適性を証明（多くは1時間未満）。INRC-I はほぼ全件最適で、未解決は1件。Curtois–Qu では24件中19件で最良既知上界と一致し、14件で最適性を証明。8週や最大規模はまだ難しく、従来のローテーション型より下界を平均4%以上改善しています。</td></tr>
+      <tr><td class="ref">Burke, Curtois<span class="yr">EJOR 2014</span></td>
+        <td><span class="tag t-mh">エジェクションチェーン</span> <span class="tag t-mp">分枝価格法</span></td>
+        <td>Curtois 系ベンチマーク、INRC-I</td>
+        <td>同じ著者がメタヒューリスティクスと厳密解法の両方を同じインスタンスで比べた例。規模や制約の性質で優劣が入れ替わります。<span class="note">（要旨レベルで確認）</span></td></tr>
+      <tr><td class="ref">Combrink ら<span class="yr">arXiv 2505.10328 (2025)</span></td>
+        <td><span class="tag t-mp">SMT (Z3)</span> 対 <span class="tag t-mp">MILP (Gurobi 9.1)</span></td>
+        <td>学術的な合成インスタンス、小児病院病棟を基にした実問題（29人）</td>
+        <td>制約がきつい問題や実行不能に近い問題ではGurobi、制約の緩い問題や実問題系ではZ3が速い結果でした。Z3は定式化の書き方に敏感です。実問題系では5時間で17日分は解けていません。</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="matrix">
+  <h2>手法ごとの評価</h2>
+  <p>上の文献に基づく定性的な整理です。<span class="lvl l3">◎</span> 最前線、<span class="lvl l2">○</span> 実用的に強い、<span class="lvl l1">△</span> 条件付きで有効、<span class="lvl l0">–</span> 現状では不利または実証が少ない。</p>
+  <div class="tbl"><table class="matrix">
+    <thead><tr><th>手法</th><th>評価</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-mp">専用 分枝カット / 分枝価格法</span></td><td class="lvl l3">◎ B&amp;P</td></tr>
+      <tr><td><span class="tag t-mp">汎用MIP（そのまま定式化）</span></td><td class="lvl l2">○ 分解併用</td></tr>
+      <tr><td><span class="tag t-mp">CP / CP-SAT</span></td><td class="lvl l2">○</td></tr>
+      <tr><td><span class="tag t-sp">専用局所探索（LK / LKH / TSAB）</span></td><td class="lvl l0">–</td></tr>
+      <tr><td><span class="tag t-mh">GA・焼きなまし法・タブーサーチ・VNS 等</span></td><td class="lvl l3">◎</td></tr>
+      <tr><td><span class="tag t-ml">ニューラル構築 / 改善型</span></td><td class="lvl l0">–</td></tr>
+      <tr><td><span class="tag t-ml">ML + 古典の混合（NeuroLKH 等）</span></td><td class="lvl l0">–</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="plan">
+  <h2>手元ベンチマークへの示唆</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
+    <tbody>
+      <tr><td>INRC-II 静的版（4週）、Curtois–Qu 24件</td><td>MIP（Gurobi / HiGHS）、CP-SAT、NurseScheduler（分枝価格法）、焼きなまし法 / LNS</td><td>CP-SAT の評価が少ない。汎用ソルバーと専用分枝価格法の差</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="refs">
+  <h2>文献</h2>
+  <ol class="refs">
+    <li>C. Valouxis ら. A systematic two phase approach for the nurse rostering problem. EJOR 219(2), 425–433, 2012. <a href="https://ideas.repec.org/a/eee/ejores/v219y2012i2p425-433.html" target="_blank" rel="noopener">IDEAS</a></li>
+    <li>S. Ceschia, N. Dang, P. De Causmaecker, S. Haspeslagh, A. Schaerf. The Second International Nurse Rostering Competition. Ann. Oper. Res. 274(1), 171–186, 2019. <a href="https://link.springer.com/article/10.1007/s10479-018-2816-0" target="_blank" rel="noopener">doi:10.1007/s10479-018-2816-0</a>（問題定義：<a href="https://arxiv.org/pdf/1501.04177" target="_blank" rel="noopener">arXiv:1501.04177</a>）</li>
+    <li>A. Legrain, J. Omer. A dedicated pricing algorithm to solve a large family of nurse scheduling problems with branch-and-price. INFORMS J. Comput. 36(4), 2024. <a href="https://gerad.ca/fr/papers/G-2023-02.pdf" target="_blank" rel="noopener">GERAD G-2023-02</a></li>
+    <li>E. K. Burke, T. Curtois. New approaches to nurse rostering benchmark instances. EJOR 237(1), 71–81, 2014. <a href="https://ideas.repec.org/a/eee/ejores/v237y2014i1p71-81.html" target="_blank" rel="noopener">IDEAS</a></li>
+    <li>A. Combrink ら. A Comparative Study of SMT and MILP for the Nurse Rostering Problem. <a href="https://arxiv.org/pdf/2505.10328" target="_blank" rel="noopener">arXiv:2505.10328</a></li>
+  </ol>
+  <p class="note">比較の進め方に関する文献（Accorsi ら、Dolan–Moré）は<a href="index.html#refs">トップ</a>にあります。</p>
+</section>
+
+<footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

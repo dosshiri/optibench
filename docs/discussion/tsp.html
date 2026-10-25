@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TSP の手法選び</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<!-- 対称巡回セールスマン（TSP）の考察。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の早見表と「問題別の考察」に 1 行ずつ足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">考察トップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../literature/tsp.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a>
+  </div>
+  <div class="eyebrow">考察 · TSP · 2026-10-25 時点</div>
+  <h1>対称巡回セールスマンの手法選び</h1>
+  <p class="lede">TSPLIB 6 問（berlin52〜rat783）。参照値は公表最適値。</p>
+  <p class="meta">計測環境と、全問題に共通する前提・限界は<a href="index.html#common">考察トップ</a>にまとめています。</p>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <a href="#choose">手法の選び方</a>
+  <a href="#results">手元の結果</a>
+  <a href="#literature">文献との突き合わせ</a>
+  <a href="#discussion">考察</a>
+  <a href="#threads">スレッド数</a>
+  <a href="#repro">再現性</a>
+  <a href="#limits">限界</a>
+  <a href="#next">次の一手</a>
+</nav>
+
+<section>
+  <div class="verdict"><div class="k">結論</div>
+    <p>専用ヒューリスティクスの LKH が圧倒的で、783 都市までは品質で競う余地がほぼありません。厳密解法の MIP は 280 都市付近に「解が何も出なくなる崖」があり、CP-SAT はこの問題には向きません。</p></div>
+
+  <h3 id="choose">手法の選び方</h3>
+  <p>業務制約のない巡回路なら、まず LKH を使います。時間枠・容量・複数車両などの制約があるなら OR-Tools Routing が現実的です。数百ノードまでで最適性の証明が必要な場合だけ MIP を使い、そのときはヒューリスティクスの解を初期解として渡します。CP-SAT の AddCircuit を大規模な TSP に使うのは避けます。</p>
+  <h3 id="results">手元の結果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">解あり</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
+    <tbody>
+      <tr class="top1"><td class="m"><code>LKH(elkai)</code></td><td class="num">0.00%</td><td class="num">6/6</td><td class="num">–</td><td class="num">5.5 秒</td></tr>
+      <tr><td class="m"><code>SA</code>（自作）</td><td class="num">0.51%</td><td class="num">6/6</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>nn+ls</code>（自作）</td><td class="num">0.83%</td><td class="num">6/6</td><td class="num">–</td><td class="num">15.4 秒</td></tr>
+      <tr><td class="m"><code>ORTools-GLS</code></td><td class="num">1.06%</td><td class="num">6/6</td><td class="num">–</td><td class="num">60.1 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.00%*</td><td class="num">4/6</td><td class="num">4</td><td class="num">33.6 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.00%*</td><td class="num">3/6</td><td class="num">3</td><td class="num">35.0 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">291.62%</td><td class="num">6/6</td><td class="num">1</td><td class="num">53.4 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT</code></td><td class="num">20.33%*</td><td class="num">5/6</td><td class="num">1</td><td class="num">53.9 秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">* 解が得られた問題だけの平均。CP-SAT-4w の 291.62% は rat783 の 1721% 1 問による値で、残り 5 問の平均は 5.72%。</p>
+
+  <h3 id="literature">文献との突き合わせ</h3>
+  <div class="legend">
+    <span>判定:</span>
+    <span><span class="v ok">一致</span> 文献と同じ傾向</span>
+    <span><span class="v part">条件つき</span> 一部だけ一致、または条件が違いすぎて比べにくい</span>
+    <span><span class="v new">新規</span> 文献に比較がなかった点</span>
+  </div>
+  <div class="frame">
+  <table>
+    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">近似解では LKH が最強クラス（Liu ら 2022、Nagata–Kobayashi 2013）</td><td class="ours">LKH が全 6 問で最適値に、最長 15 秒で到達</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">汎用 MIP に部分巡回路除去を足す定式化は Concorde に桁違いで劣る（Applegate ら 2006）</td><td class="ours">MIP は ch150 まで（4 スレッドで a280 まで）証明。pcb442 以上は巡回路が得られず。Concorde は未計測</td><td><span class="v part">条件つき</span></td></tr>
+      <tr><td class="claim">CP は TSP では不利（手法×問題の整理で「–」）</td><td class="ours">CP-SAT は 1 スレッドで 20.3%、4 スレッドでも pcb442 で 18.6%</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">平均ギャップだけでは少数の外れ値に引きずられる（中立性の注意点）</td><td class="ours">CP-SAT-4w の平均が rat783 1 問で 5.7% から 291.6% に跳ねた</td><td><span class="v ok">一致</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="discussion">考察</h3>
+  <p>LKH は 783 都市までのすべての問題で最適値に到達しました。この規模で比べる意味があるのは「LKH が何秒で最適値に着くか」と「他の手法が同じ時間で何 % まで寄るか」です。自作の <code>nn+ls</code>（多始点の最近傍法 + 2-opt/Or-opt）は 0.83% で、OR-Tools の誘導局所探索（1.06%）より良い結果でした。OR-Tools Routing の強みは時間枠や容量などの業務制約を足せる汎用性なので、制約のない純粋な TSP で劣るのは自然です。</p>
+  <p>MIP は小さいうちは最適性まで出せますが、ある規模で急に何も出なくなります。今回は 280 都市付近が境目で、a280 は 1 スレッドで時間切れ、4 スレッドで 56 秒で証明できました。部分巡回路除去制約を逐次足す実装は途中で巡回路を持たないため、時間切れになると答えが空になります。実務では初期解を渡すのが普通なので、この「解なし」は実装の仕方による部分もあります。</p>
+
+  <h3 id="threads">スレッド数の効果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
+    <tbody>
+      <tr><td>CP-SAT（5 問平均）</td><td class="num">20.33%</td><td class="num up">5.72%</td><td>kroA100 が 29.8% → 0%。rat783 は解なし → 1721%</td></tr>
+      <tr><td>MIP-HiGHS</td><td class="num">3 問証明</td><td class="num up">4 問証明</td><td>境目の a280 だけが解けるようになった</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>CP-SAT は 4 スレッドで大きく改善しますが、それでも LKH との差は埋まりません。MIP の改善は境目の 1 問だけです。</p>
+
+  <h3 id="repro">再現性（クラウドと手元PC）</h3>
+  <ul class="pts">
+    <li>決定的な <code>nn+ls</code>・<code>LKH</code> は解の値が全問で一致。LKH の時間は rat783 で 22.7 秒 → 14.3 秒と手元PCが速い。</li>
+    <li><code>MIP-HiGHS</code>（1 スレッド）の a280 は、クラウドでは 50.4 秒で証明、手元PCでは 60 秒で解なし。境目の問題は計算機が速くても入れ替わる。</li>
+    <li><code>SA</code> の pcb442 は 0.60% と 1.03%、<code>CP-SAT</code> の kroA100 は 20.9% と 29.8% で、時間で打ち切る手法は揺れる。</li>
+  </ul>
+
+  <h3 id="limits">この問題での限界</h3>
+  <ul class="pts">
+    <li>最大 783 都市までで、文献が扱う 1 万都市超の規模はない。</li>
+    <li>文献の主役である Concorde（厳密）と GA-EAX（近似）がいない。</li>
+    <li>LKH は試行回数（runs=10）で止めており、60 秒を使い切らない。品質では LKH に不利な側の条件。</li>
+    <li>MIP は DFJ の逐次追加 1 通りだけで、初期解も渡していない。</li>
+  </ul>
+
+
+  <h3 id="next">次の一手</h3>
+  <ul class="pts">
+    <li>TSPLIB の 1,000〜10,000 都市級を追加し、LKH 以外の手法がどこで崩れるかを見る。</li>
+    <li>Concorde と GA-EAX を加え、LKH は時間制限で止める版も用意する。</li>
+    <li>MIP に <code>nn+ls</code> の解を初期解として渡す版を作り、「解なし」が定式化と実装のどちらの限界かを切り分ける。</li>
+  </ul>
+</section>
+
+<footer>
+  <p>出典: 手元ベンチマークの数値は <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">結果ビュー</a> と <code>results/runs/*-tiamat-*</code>、文献の数値は <a href="../literature/tsp.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a> によります。「推測」と書いた箇所は、ログや追加実験で確かめていない解釈です。</p>
+  <p><a href="index.html">考察トップに戻る</a> · <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータルに戻る</a></p>
+</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

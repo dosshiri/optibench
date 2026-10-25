@@ -4,8 +4,8 @@
 
 - 対象問題: TSP（対称巡回セールスマン）、ATSP（非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
 - 入口: `docs/index.html`（文献調査・結果・考察の 3 ページへのリンク集。ダブルクリックで開きます）
-- 文献調査: `docs/literature/`（既存研究における解法比較のレビュー）
-- 考察: `docs/discussion/`（手元の結果と文献の突き合わせ、限界と次の一手）
+- 文献調査: `docs/literature/`（既存研究における解法比較のレビュー。`index.html` が全体の要点、`<問題>.html` が問題ごとのページ）
+- 考察: `docs/discussion/`（問題ごとの手法の選び方と、その根拠・限界・次の一手。`index.html` が早見表、`<問題>.html` が問題ごとのページ）
 - 結果: [`results/README.md`](results/README.md)（GitHub 上でそのまま読めるグラフと表）、`docs/benchmark.html`（手元でダブルクリックすると開く対話型ビュー）
 
 ## 構成
