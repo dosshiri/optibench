@@ -1,0 +1,83 @@
+{
+ "run_id": "20261025T050501Z-cloud-tsp",
+ "problem": "tsp",
+ "started_at": "2026-10-25T05:05:01+00:00",
+ "finished_at": "2026-10-25T05:05:01+00:00",
+ "status": "complete",
+ "note": "既存結果（results/tsp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。pcb442・rat783 は 460373e で計測（ソルバーのコードは 99b5f2e と同一で、差分は文字コード指定のみ）。",
+ "command": "python src/run_bench.py tsp 60",
+ "migrated": true,
+ "environment": {
+  "machine": "cloud",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpu_count": 4,
+  "memory_gb": 15.7,
+  "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "python": "3.13.17",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.3",
+   "pandas": "3.0.5",
+   "tsplib95": "0.7.1"
+  }
+ },
+ "git": {
+  "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+  "branch": "claude/initial-benchmark",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "nn+ls": 1,
+   "SA": 1,
+   "LKH(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "MIP-HiGHS": 1
+  },
+  "instances": [
+   "berlin52",
+   "kroA100",
+   "ch150",
+   "a280",
+   "pcb442",
+   "rat783"
+  ],
+  "methods": {
+   "nn+ls": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "LKH(elkai)": [
+    1
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "berlin52": "8496a5838133e3c3eb25a9fa8893b1ac302593fc8dc325350643a0cabd8abadc",
+  "kroA100": "e103100c1cf31dfc06be95a9d04011b5a8753bb65a3339594ca34404e574bdf5",
+  "ch150": "05abd424f773269b13477d367e534797aac080fb536a28074a72a9c0ba8064f5",
+  "a280": "3fb489af4be6d04f2e84e73ec8302c32c65e6d344187b2347685fb311416e7bf",
+  "pcb442": "0f58bc2f1aa0023764ebc14b3b0dcb6e765ffe173963fdc1cb8443d969842b51",
+  "rat783": "b9535dc5e44549f613bf6e34ee8667eed6f7a13e6b74c0b0451de95a480cabde"
+ }
+}

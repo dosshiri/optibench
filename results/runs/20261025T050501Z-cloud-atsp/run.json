@@ -1,0 +1,83 @@
+{
+ "run_id": "20261025T050501Z-cloud-atsp",
+ "problem": "atsp",
+ "started_at": "2026-10-25T05:05:01+00:00",
+ "finished_at": "2026-10-25T05:05:01+00:00",
+ "status": "complete",
+ "note": "既存結果（results/atsp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。",
+ "command": "python src/run_bench.py atsp 60",
+ "migrated": true,
+ "environment": {
+  "machine": "cloud",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpu_count": 4,
+  "memory_gb": 15.7,
+  "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "python": "3.13.17",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.3",
+   "pandas": "3.0.5",
+   "tsplib95": "0.7.1"
+  }
+ },
+ "git": {
+  "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+  "branch": "claude/initial-benchmark",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "nn+ls": 1,
+   "SA": 1,
+   "LKH(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "MIP-HiGHS": 1
+  },
+  "instances": [
+   "ftv33",
+   "ftv70",
+   "kro124p",
+   "ft70",
+   "rbg323",
+   "rbg443"
+  ],
+  "methods": {
+   "nn+ls": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "LKH(elkai)": [
+    1
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "ftv33": "4d23e2b99043503fa7325bdd69d8ce5e6f7f55df33c63533ed993d460332171d",
+  "ftv70": "b88527b48a669eaf92c2ed426f664b393733fbd59dc62225986afc2a058f3bf6",
+  "kro124p": "3912ee6e649329ac4798a94d5197ddd34c38132397f84b31beb9362aae73e910",
+  "ft70": "2cec2439b11f76d7de850d752c2f1636af0bee396f08674ce5d95c0785bede7b",
+  "rbg323": "8cbcdfdc69d873491d194d0d301ed0c6006a46ff0207082a2a801c469af421da",
+  "rbg443": "f4ccd0adbb36f2a495601458fff0005856fa4c618aa68ff09b9913cc26f081cc"
+ }
+}

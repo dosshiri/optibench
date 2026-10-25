@@ -1,0 +1,79 @@
+{
+ "run_id": "20261025T050501Z-cloud-nsp",
+ "problem": "nsp",
+ "started_at": "2026-10-25T05:05:01+00:00",
+ "finished_at": "2026-10-25T05:05:01+00:00",
+ "status": "complete",
+ "note": "既存結果（results/nsp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。",
+ "command": "python src/run_bench.py nsp 60",
+ "migrated": true,
+ "environment": {
+  "machine": "cloud",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpu_count": 4,
+  "memory_gb": 15.7,
+  "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "python": "3.13.17",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.3",
+   "pandas": "3.0.5",
+   "tsplib95": "0.7.1"
+  }
+ },
+ "git": {
+  "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+  "branch": "claude/initial-benchmark",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "Greedy": 1,
+   "SA": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1
+  },
+  "instances": [
+   "nsp01",
+   "nsp02",
+   "nsp03",
+   "nsp04",
+   "nsp05",
+   "nsp06"
+  ],
+  "methods": {
+   "Greedy": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "nsp01": "de82abdc448aa7192b82142d66e8cd9764b3f5a147c5af3bc572772f60a02f2e",
+  "nsp02": "e4186f2068cee1fc0906ccf3fe316f2f5ed294e6acbb2504cc950c65039e54b5",
+  "nsp03": "1ac2e6119d73c0c77dc7687e0e819f5fe716f5673689d956920341227a61e100",
+  "nsp04": "951b2cc3e886b34b1a5702c7aef1caa2031d7f52cb8d918f4543241fa2677909",
+  "nsp05": "ee3bede4e4f7ec0df2f8cd93673587fac090d68eba8bea0fcc17e71efd818afd",
+  "nsp06": "cbfda6b666c9de030cb7f9862c45f55c4c51b9ca9e25b66f2d2215d4997b7b2e"
+ }
+}
