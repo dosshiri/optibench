@@ -108,6 +108,13 @@ dl.about dd { margin: 2px 0 0; color: var(--text-secondary); max-width: 52em; }
       <div id="runmeta" style="margin-top:8px"></div>
     </details>
   </section>
+  <section class="card" id="aboutCard" hidden>
+    <details>
+      <summary>手法の解説を表示</summary>
+      <p class="note" style="margin-top:8px">手法別のグラフと同じ順に並べています。スレッド数だけが違う手法（<code>-4w</code> など）は 1 つにまとめています。</p>
+      <dl class="about" id="about"></dl>
+    </details>
+  </section>
   <section class="card" id="cmp" hidden>
     <h2 id="t3">run の比較</h2>
     <p class="note" id="n3"></p>
@@ -122,11 +129,6 @@ dl.about dd { margin: 2px 0 0; color: var(--text-secondary); max-width: 52em; }
     <h2 id="t1">手法別の平均ギャップ</h2>
     <p class="note" id="n1"></p>
     <div id="bars"></div>
-  </section>
-  <section class="card" id="aboutCard" hidden>
-    <h2>手法の解説</h2>
-    <p class="note">上のグラフの順に並べています。スレッド数だけが違う手法（<code>-4w</code> など）は 1 つにまとめています。</p>
-    <dl class="about" id="about"></dl>
   </section>
   <section class="card">
     <h2 id="t2">インスタンス × 手法のギャップ (%)</h2>
