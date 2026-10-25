@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 import registry
@@ -111,6 +112,8 @@ def main():
     single = [j for j in jobs if threads.get(j[0], 1) <= 1]
     multi = [j for j in jobs if threads.get(j[0], 1) > 1]
 
+    write_lock = threading.Lock()
+
     def run(job):
         m, i, s = job
         env = dict(os.environ, OMP_NUM_THREADS="1", NUMBA_NUM_THREADS="1")
@@ -123,9 +126,11 @@ def main():
         except subprocess.TimeoutExpired:
             r = dict(error="timeout")
         r.update(problem=a.problem, method=m, instance=i, seed=s, time_limit=a.time_limit)
-        with open(out, "a", encoding="utf-8") as f:
-            f.write(json.dumps(r) + "\n")
-        print(m, i, s, r.get("obj"), r.get("lb"), round(r.get("time", -1), 1), r.get("error", ""), flush=True)
+        # 並列ジョブが同時に追記すると行が失われることがある（Windows で確認）ため、書き込みを排他する
+        with write_lock:
+            with open(out, "a", encoding="utf-8") as f:
+                f.write(json.dumps(r) + "\n")
+            print(m, i, s, r.get("obj"), r.get("lb"), round(r.get("time", -1), 1), r.get("error", ""), flush=True)
 
     with ThreadPoolExecutor(a.workers) as ex:
         list(ex.map(run, single))
