@@ -97,8 +97,9 @@ footer{padding-block:24px;font-size:13px;color:var(--muted)}
   </div>
   <div class="eyebrow">考察 · 2026-10-25 時点</div>
   <h1>解法比較の考察</h1>
-  <p class="lede">手元PCで実行したベンチマークの結果を、文献レビューで整理した既存研究と突き合わせました。目的は、実務で最適化手法を使うときに、問題に合った手法を選べるようにすることです。そのため考察は問題ごとに独立した章にし、各章の先頭に「手法の選び方」を置きました。その後に、根拠となる手元の結果、文献との突き合わせ、スレッド数の効果、再現性、限界、次の一手が続きます。</p>
-  <p class="meta">対象データ: 手元PC（AMD Ryzen 9 5900HX、8 コア 16 論理 CPU、Windows 11、OR-Tools 9.15、HiGHS 1.15）の 4 つの run（commit <code>bffb27c</code>）。制限時間 60 秒、1 スレッドと 4 スレッド（<code>-4w</code>）。再現性の確認にクラウドコンテナ（Xeon 4 vCPU）の初回 run も使っています。</p>
+  <p class="lede">巡回セールスマン問題（TSP・ATSP）、ジョブショップスケジューリング（JSSP）、ナーススケジューリングの 4 種類の問題について、実務でどの最適化手法を使えばよいかをまとめました。根拠は 2 つあります。同じ条件で各手法を手元のPCで実際に動かした計測結果と、これまでの論文で報告されている結果です。</p>
+  <p class="lede">章は問題ごとに分かれています。各章では最初に手法の選び方を示し、続けてその根拠となる計測結果、論文との比較、注意点を載せています。まず下の早見表で目的の問題を探し、詳しく知りたい章へ進んでください。</p>
+  <p class="meta">計測環境は AMD Ryzen 9 5900HX（8 コア 16 スレッド）、Windows 11、OR-Tools 9.15、HiGHS 1.15 です（commit <code>bffb27c</code>）。各手法の制限時間は 60 秒で、1 スレッドと 4 スレッドの両方で計測しました。4 スレッドの結果は手法名の末尾に <code>-4w</code> を付けています。結果のばらつきを確かめるため、クラウド環境（Xeon 4 vCPU）で計測した結果とも比べています。</p>
 </header>
 
 <nav class="toc" aria-label="目次">
@@ -112,7 +113,7 @@ footer{padding-block:24px;font-size:13px;color:var(--muted)}
 
 <section id="overview">
   <h2>手法選びの早見表</h2>
-  <p class="sub">各問題で最初に試す手法と、条件によって切り替える候補です。根拠と注意点は各章にあります。</p>
+  <p class="sub">目的の問題の行を見て、「まず使う」手法から試してください。右の列の条件に当てはまるときは、そちらの手法に切り替えます。</p>
   <div class="frame">
   <table>
     <thead><tr><th>問題</th><th>まず使う</th><th>条件によって切り替える</th><th>避けたい使い方</th></tr></thead>
@@ -124,7 +125,7 @@ footer{padding-block:24px;font-size:13px;color:var(--muted)}
     </tbody>
   </table>
   </div>
-  <p class="note">手元PC・制限時間 60 秒・各問題 6〜10 インスタンスでの結果に基づく暫定の指針です。規模や制限時間が大きく違う場合は、各章の「限界」を確認してください。</p>
+  <p class="note">制限時間 60 秒、問題ごとに 6〜10 個のベンチマーク問題で計測した結果にもとづく目安です。扱う問題の規模や使える計算時間が大きく異なる場合は、各章の「限界」もあわせて確認してください。</p>
   <div class="legend">
     <span>各章の判定:</span>
     <span><span class="v ok">一致</span> 文献と同じ傾向</span>
