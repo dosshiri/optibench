@@ -1,5 +1,5 @@
 """集計結果をビュー用データに書き出す.
-docs/data.json と docs/data.js（index.html をダブルクリックで開いても読めるようにするため）を書き、
+docs/data.json と docs/data.js（benchmark.html をダブルクリックで開いても読めるようにするため）を書き、
 GitHub 上で読める results/README.md と results/figures/*.svg も更新する.
 results/runs/ の全 run を含め、問題ごとに最新の run を既定の表示にする.
 python export_web.py [出力先 data.json]"""
