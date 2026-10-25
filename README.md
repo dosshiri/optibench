@@ -99,7 +99,7 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 | 問題 | 1 位 | 主な結果 |
 |---|---|---|
 | TSP（6 問） | `LKH(elkai)` 0.00% | LKH は全問で最適値に平均 8.5 秒で到達。`MIP-HiGHS` は a280 まで最適性を証明したが、pcb442 以上は 60 秒で巡回路が得られず。自作 `SA` 0.42%、`nn+ls` 0.83%、`ORTools-GLS` 0.97%。`CP-SAT`（1 ワーカー）は 15.4% と苦手 |
-| TSP 小規模（8 問, 手元PC） | `LKH(elkai)` ほか 6 手法 0.00% | QUBO 系は `Amplify-AE` 0.72%（GPU クラウド）、`DWave-SA` 45.3%、`OpenJij-SA` 47.3%、`OpenJij-SQA` 74.3%。QUBO 系は 14 都市で数%差だが 50 都市前後から大きく崩れる。既存の TSP・ATSP・JSSP で QUBO に載るのは berlin52・ftv33・ftv70・ft70・ft06 だけ |
+| TSP 小規模（8 問, 手元PC） | `LKH(elkai)` ほか 6 手法 0.00% | QUBO 系は `DWave-SA` 45.3%、`OpenJij-SA` 47.3%、`OpenJij-SQA` 74.3%。QUBO 系は 14 都市で数%差だが 50 都市前後から大きく崩れる。既存の TSP・ATSP・JSSP で QUBO に載るのは berlin52・ftv33・ftv70・ft70・ft06 だけ。`Amplify-AE` は計測したが公開可否が未確認のため載せていない |
 | ATSP（6 問） | `LKH(elkai)` 0.00% | `MIP-HiGHS` は 124 都市まで最適性を証明、rbg323/443 は時間切れ。`SA` 0.04%、`ORTools-GLS` 0.47%、`nn+ls` 3.03%。`CP-SAT` は rbg323 で最適性を証明する一方、rbg443 で 104% と不安定 |
 | JSSP（10 問） | `CP-SAT-4w` 0.55% | `CP-SAT` は 1 ワーカーでも 1.68%（10 問中 5 問で最適性を証明、4 ワーカーで 7 問）。自作 `Tabu-N5` 2.00% が肉薄。`GA` 10.7%、`MIP-HiGHS`（big-M）26.6%、ディスパッチ則 29〜55% |
 | NSP（合成 6 問） | `MIP-HiGHS`（5 問で最良） | `MIP-HiGHS` は nsp01〜05 で最良値（3 問で最適性を証明）だが、最大の nsp06 は解なし。`CP-SAT-4w` は全問で解を得て平均 2.7%。`CP-SAT`（1 ワーカー）は大規模 2 問で解なし。`SA` は全問で実行可能解を得るが 0〜84% 劣る。`Greedy` は 4 問でハード制約違反 |

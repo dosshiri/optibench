@@ -58,7 +58,6 @@
     <dt><code>OpenJij-SQA</code></dt><dd>疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。</dd>
     <dt><code>OpenJij-SA</code></dt><dd>QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。</dd>
     <dt><code>DWave-SA</code></dt><dd>D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。</dd>
-    <dt><code>Amplify-AE</code></dt><dd>Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。</dd>
   </dl>
 
   <h3 id="results">手元の結果</h3>
@@ -75,14 +74,13 @@
       <tr><td class="m"><code>CP-SAT</code></td><td class="num">18.88%</td><td class="num">6/6</td><td class="num">4</td><td class="num">26.3 秒</td></tr>
       <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.00%*</td><td class="num">4/6</td><td class="num">4</td><td class="num">22.9 秒</td></tr>
       <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.00%*</td><td class="num">4/6</td><td class="num">4</td><td class="num">23.0 秒</td></tr>
-      <tr><td class="m"><code>Amplify-AE</code></td><td class="num">6.70%*</td><td class="num">3/6</td><td class="num">–</td><td class="num">25.5 秒</td></tr>
       <tr><td class="m"><code>DWave-SA</code></td><td class="num">62.22%*</td><td class="num">3/6</td><td class="num">–</td><td class="num">28.0 秒</td></tr>
       <tr><td class="m"><code>OpenJij-SA</code></td><td class="num">80.37%*</td><td class="num">3/6</td><td class="num">–</td><td class="num">29.6 秒</td></tr>
       <tr><td class="m"><code>OpenJij-SQA</code></td><td class="num">112.63%*</td><td class="num">3/6</td><td class="num">–</td><td class="num">27.2 秒</td></tr>
     </tbody>
   </table>
   </div>
-  <p class="note">PyVRP-HGS は同じ PC・同じ環境で、あとから同じ run に追加した結果（3 シードの平均）。* 解が得られた問題だけの平均。CP-SAT の平均は rbg443（1 スレッド 104%、4 スレッド 59%）の影響が大きい。QUBO 系 4 手法は ftv33・ftv70・ft70 の 3 問だけの平均（ほかは QUBO が大きすぎて解いていない）。</p>
+  <p class="note">PyVRP-HGS は同じ PC・同じ環境で、あとから同じ run に追加した結果（3 シードの平均）。* 解が得られた問題だけの平均。CP-SAT の平均は rbg443（1 スレッド 104%、4 スレッド 59%）の影響が大きい。QUBO 系 3 手法は ftv33・ftv70・ft70 の 3 問だけの平均（ほかは QUBO が大きすぎて解いていない）。</p>
 
   <h3 id="literature">文献との突き合わせ</h3>
   <div class="legend">
@@ -107,7 +105,7 @@
   <p><code>PyVRP-HGS</code> は平均 0.29% で、ftv33 は 3 シードとも最適、rbg443 も 1 シードで最適に届きました。一方で kro124p はシード 1 だけ 2.3%、ftv70 はシード 3 だけ 1.1% 外れ、シードによるばらつきが目立ちます。ATSP-TW では全 27 回で最適値に届いたのと対照的です。時間枠が実行可能な順序を大きく絞るため HGS の探索が効きやすく、時間枠の無い純粋な ATSP では、長い k-opt 移動を持つ LKH の方が有利になると考えられます（推測）。</p>
   <p>厳密系では、MIP は kro124p まで約 10 秒で証明しますが、rbg323・rbg443 は下界が最適値に達していたにもかかわらず巡回路が得られていません。文献にある「rbg 系は割当緩和がほぼ最適」という性質と合っており、この 2 問では下界ではなく、部分巡回路を除いて巡回路にたどり着く部分が時間切れの原因だと考えられます。CP-SAT は逆に rbg323 を 9 秒で証明しました。一方、rbg443 は 1 スレッドで 104%、4 スレッドで 59% と不安定です。</p>
 
-  <p>量子・疑似量子アニーリング系の 4 手法が解けたのは、QUBO が 5,000 変数に収まる ftv33・ftv70・ft70 の 3 問だけです。Amplify AE は ftv33 で最適値に届きましたが、ftv70 で 6.6%、ft70 で 13.5% 劣り、CPU で動く 3 手法は 35〜200% でした。同じ 3 問を LKH・CP-SAT・MIP は最適に解いています。詳しくは<a href="qubo.html">量子・疑似量子アニーリングのページ</a>にあります。</p>
+  <p>量子・疑似量子アニーリング系の 3 手法が解けたのは、QUBO が 5,000 変数に収まる ftv33・ftv70・ft70 の 3 問だけです。CPU で動く 3 手法は 35〜200% でした。同じ 3 問を LKH・CP-SAT・MIP は最適に解いています。詳しくは<a href="qubo.html">量子・疑似量子アニーリングのページ</a>にあります。Amplify AE の結果は、公開可否を確認できていないため載せていません。</p>
 
   <h3 id="threads">スレッド数の効果</h3>
   <div class="frame">

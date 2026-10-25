@@ -1,12 +1,11 @@
 {
- "generated": "2026-10-25T22:05:32+00:00",
+ "generated": "2026-10-25T22:21:44+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
    "ref": "TSPLIB 公表最適値",
    "unit": "距離",
    "about": {
-    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
     "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
     "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
     "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。",
@@ -16,6 +15,9 @@
     "ORTools-GLS": "Google OR-Tools の配送計画ソルバー（Routing）。安い弧から順につないで初期解を作り、誘導局所探索（GLS: 局所最適に何度も現れる辺にペナルティを課して別の解へ誘導する）で改善する。時間枠・容量・複数車両などの業務制約を足せる汎用性が強み。",
     "CP-SAT": "OR-Tools の制約プログラミングソルバー CP-SAT。各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。下界も出すので、時間内に最適性を証明できることもある。",
     "MIP-HiGHS": "混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。"
+   },
+   "hidden": {
+    "Amplify-AE": "Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため"
    },
    "run": "20261025T075502Z-tiamat-tsp",
    "runs": [
@@ -28,7 +30,6 @@
    "ref": "TSPLIB 公表最適値",
    "unit": "距離",
    "about": {
-    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
     "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
     "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
     "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。",
@@ -38,6 +39,9 @@
     "ORTools-GLS": "Google OR-Tools の配送計画ソルバー（Routing）。安い弧から順につないで初期解を作り、誘導局所探索（GLS: 局所最適に何度も現れる辺にペナルティを課して別の解へ誘導する）で改善する。時間枠・容量・複数車両などの業務制約を足せる汎用性が強み。",
     "CP-SAT": "OR-Tools の制約プログラミングソルバー CP-SAT。各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。下界も出すので、時間内に最適性を証明できることもある。",
     "MIP-HiGHS": "混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。"
+   },
+   "hidden": {
+    "Amplify-AE": "Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため"
    },
    "run": "20261025T210045Z-tiamat-tsp_small",
    "runs": [
@@ -50,7 +54,6 @@
    "ref": "TSPLIB 公表最適値",
    "unit": "距離",
    "about": {
-    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
     "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
     "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
     "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。",
@@ -61,6 +64,9 @@
     "CP-SAT": "OR-Tools の制約プログラミングソルバー CP-SAT。各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。下界も出すので、時間内に最適性を証明できることもある。",
     "MIP-HiGHS": "混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。",
     "PyVRP-HGS": "配送計画ライブラリ PyVRP のハイブリッド遺伝的探索（HGS）。解の集団を交叉させ、生まれた子を局所探索で磨く遺伝的アルゴリズムで、Vidal の HGS を基にした最先端の配送計画ソルバー。車両 1 台・容量なしの配送計画として、非対称の距離をそのまま使って解く。"
+   },
+   "hidden": {
+    "Amplify-AE": "Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため"
    },
    "run": "20261025T081323Z-tiamat-atsp",
    "runs": [
@@ -98,10 +104,12 @@
     "Tabu-N5": "タブーサーチ。最も長い作業の連鎖（クリティカルパス）上で同じ機械に続く作業ブロックの端の 2 つを入れ替える N5 近傍（Nowicki & Smutnicki 1996）を使い、直前の入れ替えを一定期間禁じて同じ解への逆戻りを防ぐ。JSSP 専用の強力な手法。",
     "CP-SAT": "各作業を区間変数で表し、同じ機械の作業は重ならない（NoOverlap）・ジョブ内の順序を守るという制約の下で、全作業の完了時刻（メイクスパン）を最小化する。スケジューリングは CP-SAT が最も得意とする分野。",
     "MIP-HiGHS": "Manne の離接定式化を HiGHS で解く。同じ機械の作業の組ごとに「どちらが先か」の 0-1 変数を置き、big-M 制約で順序を表す。変数が多く緩和も弱いため、大きな問題は苦手。",
-    "Amplify-AE": "Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。",
     "DWave-SA": "D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。",
     "OpenJij-SQA": "疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。",
     "OpenJij-SA": "QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。"
+   },
+   "hidden": {
+    "Amplify-AE": "Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため"
    },
    "run": "20261025T082601Z-tiamat-jssp",
    "runs": [
@@ -691,7 +699,6 @@
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
-    "Amplify-AE": 1,
     "OpenJij-SQA": 1,
     "OpenJij-SA": 1,
     "DWave-SA": 1
@@ -705,7 +712,6 @@
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
-    "Amplify-AE": "Amplify-AE",
     "OpenJij-SQA": "OpenJij-SQA",
     "OpenJij-SA": "OpenJij-SA",
     "DWave-SA": "DWave-SA"
@@ -719,7 +725,6 @@
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
-    "Amplify-AE": 1,
     "OpenJij-SQA": 3,
     "OpenJij-SA": 3,
     "DWave-SA": 3
@@ -733,19 +738,6 @@
     "rat783": "05b321ca8c33122377ab6575400fbe4d78311dcda7500ed03cbd1bf5caa80712"
    },
    "additions": [
-    {
-     "at": "2026-10-25T20:57:50+00:00",
-     "methods": [
-      "Amplify-AE"
-     ],
-     "git": {
-      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-      "branch": "claude/project-thread-wq8605",
-      "dirty": false,
-      "dirty_files": []
-     },
-     "command": "python.exe src/run_bench.py tsp 60 --run latest --only Amplify-AE"
-    },
     {
      "at": "2026-10-25T21:34:07+00:00",
      "methods": [
@@ -763,18 +755,6 @@
     }
    ],
    "cells": [
-    {
-     "instance": "a280",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 2579.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
     {
      "instance": "a280",
      "method": "CP-SAT",
@@ -904,18 +884,6 @@
      "ref": 2579.0,
      "lb": null,
      "time": 5.09,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "berlin52",
-     "method": "Amplify-AE",
-     "mean_gap": 3.792,
-     "best": 7828.0,
-     "mean_obj": 7828.0,
-     "ref": 7542.0,
-     "lb": null,
-     "time": 55.05,
      "runs": 1,
      "fails": 0
     },
@@ -1053,18 +1021,6 @@
     },
     {
      "instance": "ch150",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 6528.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "ch150",
      "method": "CP-SAT",
      "mean_gap": 31.756,
      "best": 8601.0,
@@ -1194,18 +1150,6 @@
      "time": 0.82,
      "runs": 1,
      "fails": 0
-    },
-    {
-     "instance": "kroA100",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 21282.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "kroA100",
@@ -1341,18 +1285,6 @@
     },
     {
      "instance": "pcb442",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 50778.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "pcb442",
      "method": "CP-SAT",
      "mean_gap": 20.338,
      "best": 61105.0,
@@ -1482,18 +1414,6 @@
      "time": 26.36,
      "runs": 1,
      "fails": 0
-    },
-    {
-     "instance": "rat783",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 8806.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "rat783",
@@ -1645,7 +1565,6 @@
     "CP-SAT-4w",
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
-    "Amplify-AE",
     "OpenJij-SQA",
     "OpenJij-SA",
     "DWave-SA"
@@ -2657,7 +2576,6 @@
    "time_limit": 60.0,
    "workers": 4,
    "threads": {
-    "Amplify-AE": 1,
     "nn+ls": 1,
     "SA": 1,
     "LKH(elkai)": 1,
@@ -2671,7 +2589,6 @@
     "DWave-SA": 1
    },
    "solvers": {
-    "Amplify-AE": "Amplify-AE",
     "nn+ls": "nn+ls",
     "SA": "SA",
     "LKH(elkai)": "LKH(elkai)",
@@ -2685,7 +2602,6 @@
     "DWave-SA": "DWave-SA"
    },
    "seeds": {
-    "Amplify-AE": 1,
     "nn+ls": 1,
     "SA": 3,
     "LKH(elkai)": 1,
@@ -2726,18 +2642,6 @@
     }
    ],
    "cells": [
-    {
-     "instance": "att48",
-     "method": "Amplify-AE",
-     "mean_gap": 0.781,
-     "best": 10711.0,
-     "mean_obj": 10711.0,
-     "ref": 10628.0,
-     "lb": null,
-     "time": 54.81,
-     "runs": 1,
-     "fails": 0
-    },
     {
      "instance": "att48",
      "method": "CP-SAT",
@@ -2867,18 +2771,6 @@
      "ref": 10628.0,
      "lb": null,
      "time": 0.31,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "bayg29",
-     "method": "Amplify-AE",
-     "mean_gap": 0.0,
-     "best": 1610.0,
-     "mean_obj": 1610.0,
-     "ref": 1610.0,
-     "lb": null,
-     "time": 51.92,
      "runs": 1,
      "fails": 0
     },
@@ -3016,18 +2908,6 @@
     },
     {
      "instance": "berlin52",
-     "method": "Amplify-AE",
-     "mean_gap": 0.0,
-     "best": 7542.0,
-     "mean_obj": 7542.0,
-     "ref": 7542.0,
-     "lb": null,
-     "time": 55.37,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "berlin52",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 7542.0,
@@ -3155,18 +3035,6 @@
      "ref": 7542.0,
      "lb": null,
      "time": 0.33,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "burma14",
-     "method": "Amplify-AE",
-     "mean_gap": 0.0,
-     "best": 3323.0,
-     "mean_obj": 3323.0,
-     "ref": 3323.0,
-     "lb": null,
-     "time": 51.16,
      "runs": 1,
      "fails": 0
     },
@@ -3304,18 +3172,6 @@
     },
     {
      "instance": "eil51",
-     "method": "Amplify-AE",
-     "mean_gap": 0.704,
-     "best": 429.0,
-     "mean_obj": 429.0,
-     "ref": 426.0,
-     "lb": null,
-     "time": 55.44,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "eil51",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 426.0,
@@ -3443,18 +3299,6 @@
      "ref": 426.0,
      "lb": null,
      "time": 0.34,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "st70",
-     "method": "Amplify-AE",
-     "mean_gap": 4.296,
-     "best": 704.0,
-     "mean_obj": 704.0,
-     "ref": 675.0,
-     "lb": null,
-     "time": 50.59,
      "runs": 1,
      "fails": 0
     },
@@ -3592,18 +3436,6 @@
     },
     {
      "instance": "ulysses16",
-     "method": "Amplify-AE",
-     "mean_gap": 0.0,
-     "best": 6859.0,
-     "mean_obj": 6859.0,
-     "ref": 6859.0,
-     "lb": null,
-     "time": 51.38,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "ulysses16",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 6859.0,
@@ -3731,18 +3563,6 @@
      "ref": 6859.0,
      "lb": null,
      "time": 0.26,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "ulysses22",
-     "method": "Amplify-AE",
-     "mean_gap": 0.0,
-     "best": 7013.0,
-     "mean_obj": 7013.0,
-     "ref": 7013.0,
-     "lb": null,
-     "time": 51.41,
      "runs": 1,
      "fails": 0
     },
@@ -3890,7 +3710,6 @@
     "st70"
    ],
    "methods": [
-    "Amplify-AE",
     "nn+ls",
     "SA",
     "LKH(elkai)",
@@ -4468,7 +4287,6 @@
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
     "PyVRP-HGS": 1,
-    "Amplify-AE": 1,
     "OpenJij-SQA": 1,
     "OpenJij-SA": 1,
     "DWave-SA": 1
@@ -4483,7 +4301,6 @@
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
     "PyVRP-HGS": "PyVRP-HGS",
-    "Amplify-AE": "Amplify-AE",
     "OpenJij-SQA": "OpenJij-SQA",
     "OpenJij-SA": "OpenJij-SA",
     "DWave-SA": "DWave-SA"
@@ -4498,7 +4315,6 @@
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
     "PyVRP-HGS": 3,
-    "Amplify-AE": 1,
     "OpenJij-SQA": 3,
     "OpenJij-SA": 3,
     "DWave-SA": 3
@@ -4526,19 +4342,6 @@
      "command": "python.exe src/run_bench.py atsp 60 --run 20261025T081323Z-tiamat-atsp --only PyVRP-HGS"
     },
     {
-     "at": "2026-10-25T20:58:48+00:00",
-     "methods": [
-      "Amplify-AE"
-     ],
-     "git": {
-      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-      "branch": "claude/project-thread-wq8605",
-      "dirty": false,
-      "dirty_files": []
-     },
-     "command": "python.exe src/run_bench.py atsp 60 --run latest --only Amplify-AE"
-    },
-    {
      "at": "2026-10-25T21:37:05+00:00",
      "methods": [
       "OpenJij-SQA",
@@ -4555,18 +4358,6 @@
     }
    ],
    "cells": [
-    {
-     "instance": "ft70",
-     "method": "Amplify-AE",
-     "mean_gap": 13.498,
-     "best": 43893.0,
-     "mean_obj": 43893.0,
-     "ref": 38673.0,
-     "lb": null,
-     "time": 41.45,
-     "runs": 1,
-     "fails": 0
-    },
     {
      "instance": "ft70",
      "method": "CP-SAT",
@@ -4708,18 +4499,6 @@
      "ref": 38673.0,
      "lb": null,
      "time": 0.27,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "ftv33",
-     "method": "Amplify-AE",
-     "mean_gap": 0.0,
-     "best": 1286.0,
-     "mean_obj": 1286.0,
-     "ref": 1286.0,
-     "lb": null,
-     "time": 50.57,
      "runs": 1,
      "fails": 0
     },
@@ -4869,18 +4648,6 @@
     },
     {
      "instance": "ftv70",
-     "method": "Amplify-AE",
-     "mean_gap": 6.615,
-     "best": 2079.0,
-     "mean_obj": 2079.0,
-     "ref": 1950.0,
-     "lb": null,
-     "time": 60.89,
-     "runs": 1,
-     "fails": 0
-    },
-    {
-     "instance": "ftv70",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1950.0,
@@ -5022,18 +4789,6 @@
      "time": 0.25,
      "runs": 1,
      "fails": 0
-    },
-    {
-     "instance": "kro124p",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 36230.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "kro124p",
@@ -5181,18 +4936,6 @@
     },
     {
      "instance": "rbg323",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1326.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "rbg323",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1326.0,
@@ -5334,18 +5077,6 @@
      "time": 12.83,
      "runs": 1,
      "fails": 0
-    },
-    {
-     "instance": "rbg443",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 2720.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "rbg443",
@@ -5510,7 +5241,6 @@
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
     "PyVRP-HGS",
-    "Amplify-AE",
     "OpenJij-SQA",
     "OpenJij-SA",
     "DWave-SA"
@@ -8539,7 +8269,6 @@
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
-    "Amplify-AE": 1,
     "OpenJij-SQA": 1,
     "OpenJij-SA": 1,
     "DWave-SA": 1
@@ -8553,7 +8282,6 @@
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
-    "Amplify-AE": "Amplify-AE",
     "OpenJij-SQA": "OpenJij-SQA",
     "OpenJij-SA": "OpenJij-SA",
     "DWave-SA": "DWave-SA"
@@ -8567,7 +8295,6 @@
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
-    "Amplify-AE": 1,
     "OpenJij-SQA": 3,
     "OpenJij-SA": 3,
     "DWave-SA": 3
@@ -8586,19 +8313,6 @@
    },
    "additions": [
     {
-     "at": "2026-10-25T20:59:51+00:00",
-     "methods": [
-      "Amplify-AE"
-     ],
-     "git": {
-      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-      "branch": "claude/project-thread-wq8605",
-      "dirty": false,
-      "dirty_files": []
-     },
-     "command": "python.exe src/run_bench.py jssp 60 --run latest --only Amplify-AE"
-    },
-    {
      "at": "2026-10-25T21:43:59+00:00",
      "methods": [
       "OpenJij-SQA",
@@ -8615,18 +8329,6 @@
     }
    ],
    "cells": [
-    {
-     "instance": "abz5",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1234.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
     {
      "instance": "abz5",
      "method": "CP-SAT",
@@ -8757,18 +8459,6 @@
      "lb": null,
      "time": 60.0,
      "runs": 3,
-     "fails": 0
-    },
-    {
-     "instance": "ft06",
-     "method": "Amplify-AE",
-     "mean_gap": 1.818,
-     "best": 56.0,
-     "mean_obj": 56.0,
-     "ref": 55.0,
-     "lb": null,
-     "time": 51.51,
-     "runs": 1,
      "fails": 0
     },
     {
@@ -8905,18 +8595,6 @@
     },
     {
      "instance": "ft10",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 930.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "ft10",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 930.0,
@@ -9046,18 +8724,6 @@
      "time": 60.0,
      "runs": 3,
      "fails": 0
-    },
-    {
-     "instance": "la16",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 945.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "la16",
@@ -9193,18 +8859,6 @@
     },
     {
      "instance": "la21",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1046.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "la21",
      "method": "CP-SAT",
      "mean_gap": 0.0,
      "best": 1046.0,
@@ -9334,18 +8988,6 @@
      "time": 60.01,
      "runs": 3,
      "fails": 0
-    },
-    {
-     "instance": "orb01",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1059.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "orb01",
@@ -9481,18 +9123,6 @@
     },
     {
      "instance": "swv01",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1407.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "swv01",
      "method": "CP-SAT",
      "mean_gap": 4.122,
      "best": 1465.0,
@@ -9622,18 +9252,6 @@
      "time": 60.0,
      "runs": 3,
      "fails": 0
-    },
-    {
-     "instance": "ta01",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1231.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "ta01",
@@ -9769,18 +9387,6 @@
     },
     {
      "instance": "ta11",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1357.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
-    },
-    {
-     "instance": "ta11",
      "method": "CP-SAT",
      "mean_gap": 6.485,
      "best": 1445.0,
@@ -9910,18 +9516,6 @@
      "time": 60.01,
      "runs": 3,
      "fails": 0
-    },
-    {
-     "instance": "ta21",
-     "method": "Amplify-AE",
-     "mean_gap": null,
-     "best": null,
-     "mean_obj": null,
-     "ref": 1642.0,
-     "lb": null,
-     "time": 0.0,
-     "runs": 1,
-     "fails": 1
     },
     {
      "instance": "ta21",
@@ -10077,7 +9671,6 @@
     "CP-SAT-4w",
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
-    "Amplify-AE",
     "OpenJij-SQA",
     "OpenJij-SA",
     "DWave-SA"

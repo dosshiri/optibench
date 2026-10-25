@@ -75,6 +75,7 @@ class Solver:
     parallel  スレッド数を変えて実行できるか（threads=1 以外を指定すると自動で True）
     packages  run.json にバージョンを記録する追加パッケージ
     description  手法の簡単な解説（日本語 2〜3 文）. 結果ビューと results/README.md に表示する
+    hidden    結果ビューと results/README.md に載せない理由（空なら載せる）. 結果は results/runs/ に残る
 
     結果の手法名（ラベル）は、1 スレッドなら name、それ以外は "name-4w" のようにスレッド数を付ける.
     """
@@ -86,6 +87,7 @@ class Solver:
     parallel: bool = False
     packages: list = field(default_factory=list)
     description: str = ""
+    hidden: str = ""
 
     def run(self, data, tl, seed, threads=1):
         if self.parallel:
@@ -112,11 +114,12 @@ def register_problem(p):
     return p
 
 
-def solver(name, problems, seeds=1, threads=1, parallel=None, packages=(), description=""):
+def solver(name, problems, seeds=1, threads=1, parallel=None, packages=(), description="", hidden=""):
     """解法を登録するデコレータ.
     例: @solver("SA", problems=["tsp", "atsp"], seeds=3, description="焼きなまし法。...")
         @solver("CP-SAT", problems="jssp", threads=[1, 4])   # 1 スレッドと 4 スレッドで実行
-    description は結果ビューと results/README.md に出す手法の解説. 書き忘れは python registry.py の一覧で分かる"""
+    description は結果ビューと results/README.md に出す手法の解説. 書き忘れは python registry.py の一覧で分かる
+    hidden に理由を書くと、結果を results/runs/ に残したまま、結果ビューと results/README.md には載せない"""
     threads = [threads] if isinstance(threads, int) else list(threads)
     if parallel is None:
         parallel = threads != [1]
@@ -125,7 +128,7 @@ def solver(name, problems, seeds=1, threads=1, parallel=None, packages=(), descr
             d = SOLVERS.setdefault(prob, {})
             if name in d:
                 raise ValueError(f"{prob} の解法 {name} は登録済みです")
-            d[name] = Solver(name, prob, func, seeds, threads, parallel, list(packages), description.strip())
+            d[name] = Solver(name, prob, func, seeds, threads, parallel, list(packages), description.strip(), hidden.strip())
         return func
     return deco
 
@@ -196,6 +199,8 @@ def main():
                 extra.append("並列可, 既定 " + "/".join(map(str, s.threads)) + " スレッド")
             print(f"  {s.name}" + (f"（{', '.join(extra)}）" if extra else ""))
             print(f"    {s.description}" if s.description else "    （解説なし: @solver の description を書いてください）")
+            if s.hidden:
+                print(f"    （結果ビューに載せない: {s.hidden}）")
     orphan = sorted(set(SOLVERS) - set(PROBLEMS))
     if orphan:
         print("警告: 問題が登録されていない解法があります:", ", ".join(orphan))

@@ -22,7 +22,7 @@
   </div>
   <div class="eyebrow">考察 · 量子・疑似量子アニーリング · 2026-10-25 時点</div>
   <h1>量子・疑似量子アニーリングの使いどころ</h1>
-  <p class="lede">問題を QUBO（0/1 変数の二次式）に直して解く 4 手法を、QUBO に載る規模の TSP 8 問（14〜70 都市、TSPLIB）で既存の全手法と比べました。あわせて、既存の TSP・ATSP・JSSP のうち QUBO に載る 5 問（berlin52、ftv33、ftv70、ft70、ft06）の結果もまとめます。</p>
+  <p class="lede">問題を QUBO（0/1 変数の二次式）に直して解く 3 手法を、QUBO に載る規模の TSP 8 問（14〜70 都市、TSPLIB）で既存の全手法と比べました。あわせて、既存の TSP・ATSP・JSSP のうち QUBO に載る 5 問（berlin52、ftv33、ftv70、ft70、ft06）の結果もまとめます。</p>
   <p class="meta">計測環境と、全問題に共通する前提・限界は<a href="index.html#common">考察トップ</a>にまとめています。QUBO 系の結果は手元PCの run（<code>20261025T210045Z-tiamat-tsp_small</code> と、TSP・ATSP・JSSP の既存 run への追記、commit <code>e142fd2</code>）によります。</p>
 </header>
 
@@ -39,20 +39,20 @@
 
 <section>
   <div class="verdict"><div class="k">結論</div>
-    <p>QUBO に載る数十都市の TSP でも、LKH・MIP・自作の SA は 1 秒前後から 60 秒で全問の最適値に届き、QUBO 系はどれもそれを上回りませんでした。GPU のクラウドサービス Amplify AE は平均 0.72% と健闘しましたが、手元の CPU で動く OpenJij と dwave-samplers は 45〜74% 劣り、50 都市前後から大きく崩れます。QUBO の変数が都市数の 2 乗で増えるため、100 都市以上・JSSP の標準規模はそもそも解けません。</p></div>
+    <p>QUBO に載る数十都市の TSP でも、LKH・MIP・自作の SA は 1 秒前後から 60 秒で全問の最適値に届き、QUBO 系はどれもそれを上回りませんでした。手元の CPU で動く OpenJij と dwave-samplers は 45〜74% 劣り、50 都市前後から大きく崩れます。QUBO の変数が都市数の 2 乗で増えるため、100 都市以上・JSSP の標準規模はそもそも解けません。</p></div>
 
   <h3 id="choose">手法の選び方</h3>
-  <p>TSP・ATSP・JSSP のように専用の解法や CP-SAT・MIP が使える問題では、QUBO 系を本番の解法に選ぶ理由は今回の結果からは見つかりませんでした。各問題のページの「まず使う」手法（TSP・ATSP は LKH、JSSP は CP-SAT）を使ってください。量子アニーラ実機やその後継を将来使う前提で、定式化と罰金の調整を先に確かめておきたい場合は、手元で動く dwave-samplers（SA）を基準にし、品質を見たいときは Amplify AE を使います。OpenJij の疑似量子アニーリング（SQA）は、同じ QUBO・同じ時間で焼きなまし法より劣ったので、品質目的では選びません。QUBO の変数が数千を超える規模（TSP なら 70 都市級より上）に QUBO 系を使うのは避けます。</p>
+  <p>TSP・ATSP・JSSP のように専用の解法や CP-SAT・MIP が使える問題では、QUBO 系を本番の解法に選ぶ理由は今回の結果からは見つかりませんでした。各問題のページの「まず使う」手法（TSP・ATSP は LKH、JSSP は CP-SAT）を使ってください。量子アニーラ実機やその後継を将来使う前提で、定式化と罰金の調整を先に確かめておきたい場合は、手元で動く dwave-samplers（SA）を基準にします。OpenJij の疑似量子アニーリング（SQA）は、同じ QUBO・同じ時間で焼きなまし法より劣ったので、品質目的では選びません。QUBO の変数が数千を超える規模（TSP なら 70 都市級より上）に QUBO 系を使うのは避けます。</p>
 
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/qubo_*.py の @solver の description）と同じ文。解法を足したら 1 項目足す -->
-  <p>4 手法とも同じ QUBO（TSP は都市 × 訪問順の位置符号化、JSSP は工程 × 開始時刻の時間添字）を解き、罰金の自動調整や二分探索の枠組みも共通です（<code>src/qubo.py</code>）。比べた相手の LKH・MIP・CP-SAT などの解説は <a href="tsp.html#methods">TSP のページ</a>にあります。</p>
+  <p>3 手法とも同じ QUBO（TSP は都市 × 訪問順の位置符号化、JSSP は工程 × 開始時刻の時間添字）を解き、罰金の自動調整や二分探索の枠組みも共通です（<code>src/qubo.py</code>）。比べた相手の LKH・MIP・CP-SAT などの解説は <a href="tsp.html#methods">TSP のページ</a>にあります。</p>
   <dl class="methods">
     <dt><code>OpenJij-SQA</code></dt><dd>疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。</dd>
     <dt><code>OpenJij-SA</code></dt><dd>QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。</dd>
     <dt><code>DWave-SA</code></dt><dd>D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。</dd>
-    <dt><code>Amplify-AE</code></dt><dd>Fixstars 社のクラウドサービス Amplify AE。GPU 上で多数の解を並列に更新する疑似量子アニーリング系のソルバーで、大規模な QUBO も扱える。OpenJij と同じ QUBO を 1 回 10 秒の計算時間で送る呼び出しを制限時間まで繰り返す（通信の時間も制限時間に含む）。</dd>
   </dl>
+  <p class="note">Fixstars Amplify AE（クラウドの GPU で動く疑似量子アニーリング系のサービス）も同じ条件で計測しましたが、無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため、このページには結果を載せていません。計測結果はリポジトリの <code>results/runs/</code> に保存しています。</p>
 
   <h3 id="results">手元の結果</h3>
   <p>TSP 小規模（8 問）の手法別の平均ギャップです。QUBO 系以外の手法は既存の TSP と同じ実装です。</p>
@@ -66,28 +66,27 @@
       <tr class="top1"><td class="m"><code>SA</code>（自作）・<code>ORTools-GLS</code></td><td class="num">0.00%</td><td class="num">8/8</td><td class="num">60 秒</td></tr>
       <tr><td class="m"><code>nn+ls</code>（自作）</td><td class="num">0.22%</td><td class="num">5/8</td><td class="num">0.8 秒</td></tr>
       <tr><td class="m"><code>CP-SAT</code></td><td class="num">0.28%</td><td class="num">7/8</td><td class="num">19.4 秒</td></tr>
-      <tr><td class="m"><code>Amplify-AE</code></td><td class="num">0.72%</td><td class="num">5/8</td><td class="num">52.8 秒</td></tr>
       <tr><td class="m"><code>DWave-SA</code></td><td class="num">45.30%</td><td class="num">0/8</td><td class="num">59.0 秒</td></tr>
       <tr><td class="m"><code>OpenJij-SA</code></td><td class="num">47.34%</td><td class="num">0/8</td><td class="num">59.2 秒</td></tr>
       <tr><td class="m"><code>OpenJij-SQA</code></td><td class="num">74.33%</td><td class="num">0/8</td><td class="num">56.9 秒</td></tr>
     </tbody>
   </table>
   </div>
-  <p class="note">確率的手法は 3 シードの平均（Amplify-AE は乱数の種を指定できないので 1 回）。「最適値に到達」は平均値が最適値に一致した問題の数。DWave-SA は burma14 で 3 シード中 2 回最適値に届いたが、平均では 0.48%。</p>
+  <p class="note">確率的手法は 3 シードの平均。「最適値に到達」は平均値が最適値に一致した問題の数。DWave-SA は burma14 で 3 シード中 2 回最適値に届いたが、平均では 0.48%。</p>
 
   <p>規模ごとのギャップです。QUBO の変数は (都市数 − 1)² 個です。</p>
   <div class="frame">
   <table>
-    <thead><tr><th>問題</th><th class="num">都市</th><th class="num">QUBO 変数</th><th class="num">Amplify-AE</th><th class="num">DWave-SA</th><th class="num">OpenJij-SA</th><th class="num">OpenJij-SQA</th></tr></thead>
+    <thead><tr><th>問題</th><th class="num">都市</th><th class="num">QUBO 変数</th><th class="num">DWave-SA</th><th class="num">OpenJij-SA</th><th class="num">OpenJij-SQA</th></tr></thead>
     <tbody>
-      <tr><td>burma14</td><td class="num">14</td><td class="num">169</td><td class="num">0.00%</td><td class="num">0.48%</td><td class="num">4.45%</td><td class="num">5.81%</td></tr>
-      <tr><td>ulysses16</td><td class="num">16</td><td class="num">225</td><td class="num">0.00%</td><td class="num">3.80%</td><td class="num">4.91%</td><td class="num">14.49%</td></tr>
-      <tr><td>ulysses22</td><td class="num">22</td><td class="num">441</td><td class="num">0.00%</td><td class="num">21.06%</td><td class="num">18.34%</td><td class="num">42.73%</td></tr>
-      <tr><td>bayg29</td><td class="num">29</td><td class="num">784</td><td class="num">0.00%</td><td class="num">23.50%</td><td class="num">24.29%</td><td class="num">38.74%</td></tr>
-      <tr><td>att48</td><td class="num">48</td><td class="num">2,209</td><td class="num">0.78%</td><td class="num">64.84%</td><td class="num">72.29%</td><td class="num">97.04%</td></tr>
-      <tr><td>eil51</td><td class="num">51</td><td class="num">2,500</td><td class="num">0.70%</td><td class="num">60.33%</td><td class="num">73.00%</td><td class="num">102.03%</td></tr>
-      <tr><td>berlin52</td><td class="num">52</td><td class="num">2,601</td><td class="num">0.00%</td><td class="num">73.92%</td><td class="num">82.23%</td><td class="num">111.15%</td></tr>
-      <tr><td>st70</td><td class="num">70</td><td class="num">4,761</td><td class="num">4.30%</td><td class="num">114.47%</td><td class="num">99.21%</td><td class="num">182.67%</td></tr>
+      <tr><td>burma14</td><td class="num">14</td><td class="num">169</td><td class="num">0.48%</td><td class="num">4.45%</td><td class="num">5.81%</td></tr>
+      <tr><td>ulysses16</td><td class="num">16</td><td class="num">225</td><td class="num">3.80%</td><td class="num">4.91%</td><td class="num">14.49%</td></tr>
+      <tr><td>ulysses22</td><td class="num">22</td><td class="num">441</td><td class="num">21.06%</td><td class="num">18.34%</td><td class="num">42.73%</td></tr>
+      <tr><td>bayg29</td><td class="num">29</td><td class="num">784</td><td class="num">23.50%</td><td class="num">24.29%</td><td class="num">38.74%</td></tr>
+      <tr><td>att48</td><td class="num">48</td><td class="num">2,209</td><td class="num">64.84%</td><td class="num">72.29%</td><td class="num">97.04%</td></tr>
+      <tr><td>eil51</td><td class="num">51</td><td class="num">2,500</td><td class="num">60.33%</td><td class="num">73.00%</td><td class="num">102.03%</td></tr>
+      <tr><td>berlin52</td><td class="num">52</td><td class="num">2,601</td><td class="num">73.92%</td><td class="num">82.23%</td><td class="num">111.15%</td></tr>
+      <tr><td>st70</td><td class="num">70</td><td class="num">4,761</td><td class="num">114.47%</td><td class="num">99.21%</td><td class="num">182.67%</td></tr>
     </tbody>
   </table>
   </div>
@@ -95,17 +94,17 @@
   <p>既存の問題で QUBO に載った 5 問の結果です。ほかのインスタンス（TSP の kroA100 以上、ATSP の kro124p 以上、JSSP の ft10 以上）は QUBO の変数が上限の 5,000 個を超えるため解いていません（結果ビューでは「×」）。</p>
   <div class="frame">
   <table>
-    <thead><tr><th>問題</th><th class="num">QUBO 変数</th><th class="num">Amplify-AE</th><th class="num">DWave-SA</th><th class="num">OpenJij-SA</th><th class="num">OpenJij-SQA</th><th>その問題の最良手法</th></tr></thead>
+    <thead><tr><th>問題</th><th class="num">QUBO 変数</th><th class="num">DWave-SA</th><th class="num">OpenJij-SA</th><th class="num">OpenJij-SQA</th><th>その問題の最良手法</th></tr></thead>
     <tbody>
-      <tr><td>TSP berlin52</td><td class="num">2,601</td><td class="num">3.79%</td><td class="num">73.42%</td><td class="num">82.23%</td><td class="num">111.15%</td><td>LKH ほか 8 手法が 0%</td></tr>
-      <tr><td>ATSP ftv33</td><td class="num">1,089</td><td class="num">0.00%</td><td class="num">34.58%</td><td class="num">47.02%</td><td class="num">76.18%</td><td>LKH・CP-SAT・MIP ほかが 0%</td></tr>
-      <tr><td>ATSP ftv70</td><td class="num">4,900</td><td class="num">6.62%</td><td class="num">105.95%</td><td class="num">142.74%</td><td class="num">200.51%</td><td>LKH・CP-SAT・MIP が 0%</td></tr>
-      <tr><td>ATSP ft70</td><td class="num">4,761</td><td class="num">13.50%</td><td class="num">46.14%</td><td class="num">51.35%</td><td class="num">61.20%</td><td>LKH・CP-SAT・MIP が 0%</td></tr>
-      <tr><td>JSSP ft06</td><td class="num">1,302</td><td class="num">1.82%</td><td class="num">12.12%</td><td class="num">17.58%</td><td class="num">23.64%*</td><td>CP-SAT・MIP・タブーサーチ・GA が 0%</td></tr>
+      <tr><td>TSP berlin52</td><td class="num">2,601</td><td class="num">73.42%</td><td class="num">82.23%</td><td class="num">111.15%</td><td>LKH ほか 8 手法が 0%</td></tr>
+      <tr><td>ATSP ftv33</td><td class="num">1,089</td><td class="num">34.58%</td><td class="num">47.02%</td><td class="num">76.18%</td><td>LKH・CP-SAT・MIP ほかが 0%</td></tr>
+      <tr><td>ATSP ftv70</td><td class="num">4,900</td><td class="num">105.95%</td><td class="num">142.74%</td><td class="num">200.51%</td><td>LKH・CP-SAT・MIP が 0%</td></tr>
+      <tr><td>ATSP ft70</td><td class="num">4,761</td><td class="num">46.14%</td><td class="num">51.35%</td><td class="num">61.20%</td><td>LKH・CP-SAT・MIP が 0%</td></tr>
+      <tr><td>JSSP ft06</td><td class="num">1,302</td><td class="num">12.12%</td><td class="num">17.58%</td><td class="num">23.64%*</td><td>CP-SAT・MIP・タブーサーチ・GA が 0%</td></tr>
     </tbody>
   </table>
   </div>
-  <p class="note">* OpenJij-SQA の ft06 は、3 シード中 2 回で制約を満たす解が 1 つも出なかった（それぞれ 260 解中 0）。ギャップは解が出た 1 回の値。berlin52 の Amplify-AE は TSP の run で 3.79%、TSP 小規模の run で 0.00% で、1 回ずつの実行のため揺れがそのまま出ている。</p>
+  <p class="note">* OpenJij-SQA の ft06 は、3 シード中 2 回で制約を満たす解が 1 つも出なかった（それぞれ 260 解中 0）。ギャップは解が出た 1 回の値。</p>
 
   <h3 id="literature">文献との突き合わせ</h3>
   <div class="legend">
@@ -119,7 +118,7 @@
     <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
     <tbody>
       <tr><td class="claim">ルーティング・スケジューリングで、強い古典解法を同じ条件で上回った中立的な報告はない（<a href="../literature/annealing.html#overview">文献レビュー</a>）</td><td class="ours">13 問すべてで LKH・CP-SAT・MIP のいずれかが QUBO 系以上。14〜70 都市でも LKH は全問で最適値</td><td><span class="v ok">一致</span></td></tr>
-      <tr><td class="claim">D-Wave のハイブリッドソルバーは TSPLIB の 14〜22 都市で最適値から 7〜50% 離れ、規模とともに差が広がる（Warren 2021）</td><td class="ours">CPU の QUBO 系は 14 都市で 0.5〜6%、22 都市で 18〜43%、70 都市で 99〜183%。Amplify AE は 70 都市で 4.3%</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">D-Wave のハイブリッドソルバーは TSPLIB の 14〜22 都市で最適値から 7〜50% 離れ、規模とともに差が広がる（Warren 2021）</td><td class="ours">CPU の QUBO 系は 14 都市で 0.5〜6%、22 都市で 18〜43%、70 都市で 99〜183%</td><td><span class="v ok">一致</span></td></tr>
       <tr><td class="claim">TSP は n² 変数になり、berlin52 で約 2,700、kroA100 で 10,000 変数（<a href="../literature/annealing.html#size">QUBO 化による規模</a>）</td><td class="ours">都市 0 を固定して (n−1)² 変数。berlin52 で 2,601。kroA100（9,801）は 1 回の SQA が 60 秒にほぼ届く見積もりのため解いていない</td><td><span class="v ok">一致</span></td></tr>
       <tr><td class="claim">JSSP の時間添字 QUBO は ft06 で約 2,000 変数、ft10 で約 9.3 万（同上）</td><td class="ours">前後の工程で開始時刻を絞り、ft06 は貪欲法の上界 68 で 1,302 変数。ft10 は 7.5 万変数で対象外</td><td><span class="v ok">一致</span></td></tr>
       <tr><td class="claim">罰金が大きいと実行可能解は出やすいが目的関数が効かず、小さいと制約を破る（Garcia ら 2022、Huang ら 2022）</td><td class="ours">罰金を最大の距離から始めると全解が実行可能で品質が低かった。実行可能解の割合を見て自動で下げる方式にすると、att48 の DWave-SA が試行で 112% → 61% に改善</td><td><span class="v ok">一致</span></td></tr>
@@ -130,9 +129,8 @@
 
   <h3 id="discussion">考察</h3>
   <p>CPU で動く 3 手法が崩れる理由は、QUBO の作り方にあります。巡回路を「都市 × 訪問順」の 0/1 で表すと、都市を 1 つ動かすだけでも変数を 4 つ同時に変える必要があり、1 変数ずつ反転させる焼きなまし法では、途中で必ず制約を破った状態を通ります。罰金がその山を高くするので、温度が下がると局所最適から抜けられません。LKH や自作の SA が使う 2-opt のような「巡回路のまま変える」近傍がないことが、14 都市では数%だった差が 70 都市で 100% を超えるまで広がった主因と考えています（推測）。</p>
-  <p>Amplify AE が CPU の 3 手法より桁違いに良かったのは、GPU で多数の解を並列に更新でき、10 秒の 1 回の呼び出しで CPU の SA の数百回分の探索ができるためと考えられます（推測。サービスの内部は公開されていません）。それでも 70 都市で 4.3%、ATSP ft70 で 13.5% と、同じ問題を 1 秒以内に最適に解く LKH や MIP には及びませんでした。また Amplify AE は計算を Fixstars のクラウドの GPU で行うので、手元の CPU 1 スレッドの手法とは計算資源がそろっていません。</p>
   <p>疑似量子アニーリング（SQA）が焼きなまし法（SA）に負けたのは、今回の条件では量子揺らぎの効果より計算の重さが勝ったためです。SQA は解のコピー 4 本を同時に動かすので 1 回の呼び出しが SA の 3〜5 倍かかり、60 秒で試せる解の数がその分少なくなります。逆温度も既定の 5 では制約を満たす解がほとんど出ず、bayg29 で試して 20 にしました。SQA の性能はこうした調整に強く左右されます。</p>
-  <p>JSSP の ft06 では、メイクスパンの判定問題を二分探索で解く方式（Venturelli ら 2015）を使いました。CPU の 3 手法は 1 シードで 260〜1,200 解を試し、制約を満たしたのは 0〜4% でした。結果は最適値 55 に対して 61〜68 まで。Amplify AE は 5 回の呼び出しで 56 に届きました。</p>
+  <p>JSSP の ft06 では、メイクスパンの判定問題を二分探索で解く方式（Venturelli ら 2015）を使いました。CPU の 3 手法は 1 シードで 260〜1,200 解を試し、制約を満たしたのは 0〜4% でした。結果は最適値 55 に対して 61〜68 まででした。</p>
 
   <h3 id="repro">再現性（クラウドと手元PC）</h3>
   <ul class="pts">
@@ -145,14 +143,13 @@
   <ul class="pts">
     <li>QUBO の定式化は TSP・JSSP とも 1 通りだけ。訪問順の符号化を変える、制約を罰金でなく探索側で守る（Amplify の制約機能、one-hot を保つ近傍）などで結果は変わりうる。</li>
     <li>CPU の 3 手法は既定に近いスケジュール（1000 スイープ）のまま。SQA の逆温度だけ 1 問で決めた。スイープ数や Trotter 数は調整していない。</li>
-    <li>Amplify AE は 1 回の実行で、乱数の種も指定できない。計算はクラウドの GPU で、通信の時間を含む。無料枠での実行で、有償の構成とは違う可能性がある。</li>
-    <li>量子アニーラ実機（D-Wave Leap）と、富士通デジタルアニーラ・東芝 SQBM+ などの商用サービスは比べていない。</li>
+    <li>量子アニーラ実機（D-Wave Leap）と、富士通デジタルアニーラ・東芝 SQBM+ などの商用サービスは比べていない。Fixstars Amplify AE は計測したが、公開可否を確認できていないため載せていない。</li>
     <li>QUBO の変数が 5,000 個を超えるインスタンスは解いていない。既存の TSP・ATSP・JSSP の大半はこれに当たる。</li>
   </ul>
 
   <h3 id="next">次の一手</h3>
   <ul class="pts">
-    <li>Amplify の制約機能（one-hot 制約を罰金ではなくソルバー側で扱う）を使った版を加え、定式化の違いでどこまで縮まるかを見る。</li>
+    <li>Fixstars に結果の公開について確認し、了承が得られれば Amplify AE の結果を載せる。あわせて Amplify の制約機能（one-hot 制約を罰金ではなくソルバー側で扱う）を使った版を加え、定式化の違いでどこまで縮まるかを見る。</li>
     <li>D-Wave Leap の無料枠でハイブリッドソルバーを試し、文献（Warren 2021）の 14〜22 都市の結果を手元で再現する。</li>
     <li>QUBO 系の最良解を LKH や 2-opt で仕上げる版を作り、「良い初期解を出す道具」としての価値を測る。</li>
   </ul>

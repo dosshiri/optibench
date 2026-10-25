@@ -38,10 +38,29 @@ def run_summary(meta):
                 additions=meta.get("additions", []))
 
 
-def run_cells(run_id):
+def hidden_methods(meta):
+    """結果ビューに載せない手法名（解法に hidden の理由があるもの）."""
+    solvers = registry.solvers(meta["problem"])
+    names = solver_names(meta["conditions"])
+    return {m for m, n in names.items() if n in solvers and solvers[n].hidden}
+
+
+def drop_methods(summary, hide):
+    """run のメタデータから、載せない手法を除く."""
+    out = dict(summary)
+    for k in ("threads", "solvers", "seeds"):
+        out[k] = {m: v for m, v in summary[k].items() if m not in hide}
+    adds = [dict(a, methods=[m for m in a["methods"] if m not in hide]) for a in summary["additions"]]
+    out["additions"] = [a for a in adds if a["methods"]]
+    return out
+
+
+def run_cells(run_id, hide=()):
     df, s = summarize(run_id)
     cells = []
     for r in s.itertuples():
+        if r.method in hide:
+            continue
         cells.append(dict(instance=r.instance, method=r.method,
                           mean_gap=None if pd.isna(r.mean_gap) else round(float(r.mean_gap), 3),
                           best=None if pd.isna(r.best) else float(r.best),
@@ -49,7 +68,7 @@ def run_cells(run_id):
                           ref=None if pd.isna(r.ref) else float(r.ref),
                           lb=None if pd.isna(r.lb) else float(r.lb),
                           time=round(float(r.time), 2), runs=int(r.runs), fails=int(r.fails)))
-    return cells, set(s.method), set(s.instance)
+    return cells, {c["method"] for c in cells}, set(s.instance)
 
 
 def main(out):
@@ -59,11 +78,13 @@ def main(out):
         prob = p.name
         ids = []
         for meta in runmeta.list_runs(prob):
-            cells, methods, insts = run_cells(meta["run_id"])
+            hide = hidden_methods(meta)
+            cells, methods, insts = run_cells(meta["run_id"], hide)
             if not cells:
                 continue
             c = meta["conditions"]
-            data["runs"][meta["run_id"]] = dict(run_summary(meta), cells=cells, time_limit=c["time_limit"],
+            data["runs"][meta["run_id"]] = dict(drop_methods(run_summary(meta), hide), cells=cells,
+                                                time_limit=c["time_limit"],
                                                 instances=[i for i in c["instances"] if i in insts],
                                                 methods=[m for m in c["methods"] if m in methods])
             ids.append(meta["run_id"])
@@ -71,7 +92,11 @@ def main(out):
             continue
         # run は既定で表示する最新の run（results/README.md もこれを使う）、runs は古い順の一覧
         info = dict(label=p.label, ref=p.ref_label, unit=p.unit,
-                    about={s.name: s.description for s in registry.solvers(prob).values() if s.description})
+                    about={s.name: s.description for s in registry.solvers(prob).values()
+                           if s.description and not s.hidden})
+        hidden = {s.name: s.hidden for s in registry.solvers(prob).values() if s.hidden}
+        if hidden:
+            info["hidden"] = hidden  # 載せない手法と理由（結果は results/runs/ に残っている）
         if p.display != "gap":
             info["display"] = p.display
         if p.sense != "min":

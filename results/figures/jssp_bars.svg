@@ -1,16 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="422" viewBox="0 0 720 422" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
-<rect width="720" height="422" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="392" viewBox="0 0 720 392" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
+<rect width="720" height="392" fill="#ffffff"/>
 <text x="8.0" y="20.0" text-anchor="start" fill="#0b0b0b" font-weight="600">JSSP（ジョブショップ）: 手法別の平均ギャップ (%)</text>
-<line x1="110.0" x2="110.0" y1="36" y2="402" stroke="#c3c2b7"/>
-<text x="110.0" y="417.0" text-anchor="middle" fill="#52514e">0.0%</text>
-<line x1="215.0" x2="215.0" y1="36" y2="402" stroke="#e1e0d9"/>
-<text x="215.0" y="417.0" text-anchor="middle" fill="#52514e">14%</text>
-<line x1="320.0" x2="320.0" y1="36" y2="402" stroke="#e1e0d9"/>
-<text x="320.0" y="417.0" text-anchor="middle" fill="#52514e">29%</text>
-<line x1="425.0" x2="425.0" y1="36" y2="402" stroke="#e1e0d9"/>
-<text x="425.0" y="417.0" text-anchor="middle" fill="#52514e">43%</text>
-<line x1="530.0" x2="530.0" y1="36" y2="402" stroke="#e1e0d9"/>
-<text x="530.0" y="417.0" text-anchor="middle" fill="#52514e">58%</text>
+<line x1="110.0" x2="110.0" y1="36" y2="372" stroke="#c3c2b7"/>
+<text x="110.0" y="387.0" text-anchor="middle" fill="#52514e">0.0%</text>
+<line x1="215.0" x2="215.0" y1="36" y2="372" stroke="#e1e0d9"/>
+<text x="215.0" y="387.0" text-anchor="middle" fill="#52514e">14%</text>
+<line x1="320.0" x2="320.0" y1="36" y2="372" stroke="#e1e0d9"/>
+<text x="320.0" y="387.0" text-anchor="middle" fill="#52514e">29%</text>
+<line x1="425.0" x2="425.0" y1="36" y2="372" stroke="#e1e0d9"/>
+<text x="425.0" y="387.0" text-anchor="middle" fill="#52514e">43%</text>
+<line x1="530.0" x2="530.0" y1="36" y2="372" stroke="#e1e0d9"/>
+<text x="530.0" y="387.0" text-anchor="middle" fill="#52514e">58%</text>
 <text x="102.0" y="55.0" text-anchor="end" fill="#0b0b0b">CP-SAT-4w</text>
 <rect x="110" y="43" width="5.1" height="16" rx="4" fill="#2a78d6"/>
 <text x="121.1" y="55.0" text-anchor="start" fill="#52514e">0.70%</text>
@@ -35,16 +35,13 @@
 <text x="102.0" y="265.0" text-anchor="end" fill="#0b0b0b">SPT</text>
 <rect x="110" y="253" width="400.0" height="16" rx="4" fill="#2a78d6"/>
 <text x="516.0" y="265.0" text-anchor="start" fill="#52514e">55.17%</text>
-<text x="102.0" y="295.0" text-anchor="end" fill="#0b0b0b">Amplify-AE</text>
-<rect x="110" y="283" width="13.2" height="16" rx="4" fill="#2a78d6"/>
-<text x="129.2" y="295.0" text-anchor="start" fill="#52514e">1.82%（解なし9問）</text>
-<text x="102.0" y="325.0" text-anchor="end" fill="#0b0b0b">DWave-SA</text>
-<rect x="110" y="313" width="87.9" height="16" rx="4" fill="#2a78d6"/>
-<text x="203.9" y="325.0" text-anchor="start" fill="#52514e">12.12%（解なし9問）</text>
-<text x="102.0" y="355.0" text-anchor="end" fill="#0b0b0b">OpenJij-SA</text>
-<rect x="110" y="343" width="127.4" height="16" rx="4" fill="#2a78d6"/>
-<text x="243.4" y="355.0" text-anchor="start" fill="#52514e">17.58%（解なし9問）</text>
-<text x="102.0" y="385.0" text-anchor="end" fill="#0b0b0b">OpenJij-SQA</text>
-<rect x="110" y="373" width="171.4" height="16" rx="4" fill="#2a78d6"/>
-<text x="287.4" y="385.0" text-anchor="start" fill="#52514e">23.64%（解なし9問）</text>
+<text x="102.0" y="295.0" text-anchor="end" fill="#0b0b0b">DWave-SA</text>
+<rect x="110" y="283" width="87.9" height="16" rx="4" fill="#2a78d6"/>
+<text x="203.9" y="295.0" text-anchor="start" fill="#52514e">12.12%（解なし9問）</text>
+<text x="102.0" y="325.0" text-anchor="end" fill="#0b0b0b">OpenJij-SA</text>
+<rect x="110" y="313" width="127.4" height="16" rx="4" fill="#2a78d6"/>
+<text x="243.4" y="325.0" text-anchor="start" fill="#52514e">17.58%（解なし9問）</text>
+<text x="102.0" y="355.0" text-anchor="end" fill="#0b0b0b">OpenJij-SQA</text>
+<rect x="110" y="343" width="171.4" height="16" rx="4" fill="#2a78d6"/>
+<text x="287.4" y="355.0" text-anchor="start" fill="#52514e">23.64%（解なし9問）</text>
 </svg>
