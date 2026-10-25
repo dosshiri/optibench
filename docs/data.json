@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T19:02:57+00:00",
+ "generated": "2026-10-25T19:30:52+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
@@ -29,7 +29,8 @@
     "LKH(elkai)": "Lin–Kernighan 法を発展させた Helsgaun の LKH を elkai パッケージ経由で呼ぶ。複数の辺をまとめて入れ替える強力な局所探索で、TSP の近似解法では最強クラス。ここでは時間ではなく試行回数（runs=10）で止めている。",
     "ORTools-GLS": "Google OR-Tools の配送計画ソルバー（Routing）。安い弧から順につないで初期解を作り、誘導局所探索（GLS: 局所最適に何度も現れる辺にペナルティを課して別の解へ誘導する）で改善する。時間枠・容量・複数車両などの業務制約を足せる汎用性が強み。",
     "CP-SAT": "OR-Tools の制約プログラミングソルバー CP-SAT。各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。下界も出すので、時間内に最適性を証明できることもある。",
-    "MIP-HiGHS": "混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。"
+    "MIP-HiGHS": "混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。",
+    "PyVRP-HGS": "配送計画ライブラリ PyVRP のハイブリッド遺伝的探索（HGS）。解の集団を交叉させ、生まれた子を局所探索で磨く遺伝的アルゴリズムで、Vidal の HGS を基にした最先端の配送計画ソルバー。車両 1 台・容量なしの配送計画として、非対称の距離をそのまま使って解く。"
    },
    "run": "20261025T081323Z-tiamat-atsp",
    "runs": [
@@ -158,6 +159,7 @@
     "pcb442": "0f58bc2f1aa0023764ebc14b3b0dcb6e765ffe173963fdc1cb8443d969842b51",
     "rat783": "b9535dc5e44549f613bf6e34ee8667eed6f7a13e6b74c0b0451de95a480cabde"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "a280",
@@ -680,6 +682,7 @@
     "pcb442": "9864cc281ded9fcc4b1c53f15085f2ff33d999847878704075da08e19c1cdaa6",
     "rat783": "05b321ca8c33122377ab6575400fbe4d78311dcda7500ed03cbd1bf5caa80712"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "a280",
@@ -1342,6 +1345,7 @@
     "rbg323": "8cbcdfdc69d873491d194d0d301ed0c6006a46ff0207082a2a801c469af421da",
     "rbg443": "f4ccd0adbb36f2a495601458fff0005856fa4c618aa68ff09b9913cc26f081cc"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "ft70",
@@ -1797,7 +1801,7 @@
    "run_id": "20261025T081323Z-tiamat-atsp",
    "problem": "atsp",
    "started_at": "2026-10-25T08:13:23+00:00",
-   "finished_at": "2026-10-25T08:26:01+00:00",
+   "finished_at": "2026-10-25T19:11:04+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -1815,7 +1819,8 @@
      "numba": "0.68.0",
      "numpy": "2.5.4",
      "pandas": "3.1.0",
-     "tsplib95": "0.7.1"
+     "tsplib95": "0.7.1",
+     "pyvrp": "0.14.1"
     }
    },
    "git": {
@@ -1834,7 +1839,8 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 4
+    "MIP-HiGHS-4w": 4,
+    "PyVRP-HGS": 1
    },
    "solvers": {
     "nn+ls": "nn+ls",
@@ -1844,7 +1850,8 @@
     "CP-SAT": "CP-SAT",
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
-    "MIP-HiGHS-4w": "MIP-HiGHS"
+    "MIP-HiGHS-4w": "MIP-HiGHS",
+    "PyVRP-HGS": "PyVRP-HGS"
    },
    "seeds": {
     "nn+ls": 1,
@@ -1854,7 +1861,8 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 1
+    "MIP-HiGHS-4w": 1,
+    "PyVRP-HGS": 3
    },
    "instance_sha256": {
     "ftv33": "1ba8bdaf6e319ca9155b31e9fe5e2f235a2134fd89edb260223d08869abb8de9",
@@ -1864,6 +1872,21 @@
     "rbg323": "86246b42b512c45745dd81c7bce7f430021e2166bcb02528c654a32d44b807d4",
     "rbg443": "ef8e170da01d8aadcb9f3bf0aa19ccaf89aceb8f0407c377e280cc99011b94d6"
    },
+   "additions": [
+    {
+     "at": "2026-10-25T19:05:58+00:00",
+     "methods": [
+      "PyVRP-HGS"
+     ],
+     "git": {
+      "commit": "75824265afded44681adf039bf3b5cee007c5096",
+      "branch": "claude/project-thread-b965vi",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py atsp 60 --run 20261025T081323Z-tiamat-atsp --only PyVRP-HGS"
+    }
+   ],
    "cells": [
     {
      "instance": "ft70",
@@ -1935,6 +1958,18 @@
      "lb": null,
      "time": 60.06,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ft70",
+     "method": "PyVRP-HGS",
+     "mean_gap": 0.23,
+     "best": 38753.0,
+     "mean_obj": 38762.0,
+     "ref": 38673.0,
+     "lb": null,
+     "time": 60.02,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -2035,6 +2070,18 @@
     },
     {
      "instance": "ftv33",
+     "method": "PyVRP-HGS",
+     "mean_gap": 0.0,
+     "best": 1286.0,
+     "mean_obj": 1286.0,
+     "ref": 1286.0,
+     "lb": null,
+     "time": 60.05,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ftv33",
      "method": "SA",
      "mean_gap": 0.0,
      "best": 1286.0,
@@ -2127,6 +2174,18 @@
      "lb": null,
      "time": 60.06,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ftv70",
+     "method": "PyVRP-HGS",
+     "mean_gap": 0.359,
+     "best": 1950.0,
+     "mean_obj": 1957.0,
+     "ref": 1950.0,
+     "lb": null,
+     "time": 60.03,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -2227,6 +2286,18 @@
     },
     {
      "instance": "kro124p",
+     "method": "PyVRP-HGS",
+     "mean_gap": 0.757,
+     "best": 36230.0,
+     "mean_obj": 36504.33,
+     "ref": 36230.0,
+     "lb": null,
+     "time": 60.03,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "kro124p",
      "method": "SA",
      "mean_gap": 0.0,
      "best": 36230.0,
@@ -2319,6 +2390,18 @@
      "lb": null,
      "time": 60.06,
      "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "rbg323",
+     "method": "PyVRP-HGS",
+     "mean_gap": 0.327,
+     "best": 1330.0,
+     "mean_obj": 1330.33,
+     "ref": 1326.0,
+     "lb": null,
+     "time": 60.18,
+     "runs": 3,
      "fails": 0
     },
     {
@@ -2419,6 +2502,18 @@
     },
     {
      "instance": "rbg443",
+     "method": "PyVRP-HGS",
+     "mean_gap": 0.074,
+     "best": 2720.0,
+     "mean_obj": 2722.0,
+     "ref": 2720.0,
+     "lb": null,
+     "time": 60.32,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "rbg443",
      "method": "SA",
      "mean_gap": 0.0,
      "best": 2720.0,
@@ -2458,7 +2553,8 @@
     "CP-SAT",
     "CP-SAT-4w",
     "MIP-HiGHS",
-    "MIP-HiGHS-4w"
+    "MIP-HiGHS-4w",
+    "PyVRP-HGS"
    ]
   },
   "20261025T104324Z-cloud-atsptw": {
@@ -2536,6 +2632,7 @@
     "rbg172a": "18911d39f071e8d90ec6529d4b80b12fdb5e86d5ddd73734a62abeaac57702fd",
     "rbg233": "6883e6a2c33d94a3a233d21a26c5732d5838c2cac7679fbb3fd19fea6f55321f"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "rbg019a",
@@ -3502,6 +3599,7 @@
     "rbg172a": "4725653351c7eb791726621499384da85c322702094cd44ef3035fec51b3f7d0",
     "rbg233": "a15bcb7a8e49fc78d5dfb7a9b59f3d74fbda747e08ce7e5e504c10702c99b531"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "rbg019a",
@@ -4571,6 +4669,7 @@
     "ta11": "1e55a9039437d95715a7f7d0f419585732e6a0fbc707bbdf3e5a554e30357072",
     "ta21": "7b3c36912f04636a01991787fd7cf29262fe2c3e46d2272cfc25e102677e6488"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "abz5",
@@ -5510,6 +5609,7 @@
     "ta11": "b35abe2d538c35facba5feb1908ffbc316ef7d3839962d34a1e7c316bcfa0a24",
     "ta21": "7b235984be1131995d471d19705ef2901a3fcf0ed214ebe164a3c045195814e7"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "abz5",
@@ -6557,6 +6657,7 @@
     "nsp05": "ee3bede4e4f7ec0df2f8cd93673587fac090d68eba8bea0fcc17e71efd818afd",
     "nsp06": "cbfda6b666c9de030cb7f9862c45f55c4c51b9ca9e25b66f2d2215d4997b7b2e"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "nsp01",
@@ -7000,6 +7101,7 @@
     "nsp05": "a98cc87a0d055fcfb8ad4d81310321c4612ce80999ca834f5713e5628a762afb",
     "nsp06": "ccb386be24e32283f3d5a5a4a7015e0a1ece055c79418ab8a9bde517df41b608"
    },
+   "additions": [],
    "cells": [
     {
      "instance": "nsp01",
