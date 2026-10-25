@@ -1,0 +1,48 @@
+{"obj": 7542, "lb": null, "time": 3.417410141000005, "problem": "tsp", "method": "nn+ls", "instance": "berlin52", "seed": 1, "time_limit": 60.0}
+{"obj": 7542, "lb": null, "time": 0.005714624999995976, "problem": "tsp", "method": "LKH(elkai)", "instance": "berlin52", "seed": 1, "time_limit": 60.0}
+{"obj": 7542, "lb": null, "time": 60.00904754499999, "problem": "tsp", "method": "SA", "instance": "berlin52", "seed": 2, "time_limit": 60.0}
+{"obj": 7542, "lb": null, "time": 60.00861586399998, "problem": "tsp", "method": "SA", "instance": "berlin52", "seed": 3, "time_limit": 60.0}
+{"obj": 7542, "lb": null, "time": 60.009117409, "problem": "tsp", "method": "SA", "instance": "berlin52", "seed": 1, "time_limit": 60.0}
+{"obj": 7542, "lb": 7542, "iters": 1, "time": 0.056262199999991935, "problem": "tsp", "method": "MIP-HiGHS", "instance": "berlin52", "seed": 1, "time_limit": 60.0}
+{"obj": 21282, "lb": null, "time": 0.3189824699999235, "problem": "tsp", "method": "nn+ls", "instance": "kroA100", "seed": 1, "time_limit": 60.0}
+{"obj": 7542, "lb": null, "time": 60.048571641000024, "problem": "tsp", "method": "ORTools-GLS", "instance": "berlin52", "seed": 1, "time_limit": 60.0}
+{"obj": 7542, "lb": 7542, "time": 12.081951544999924, "problem": "tsp", "method": "CP-SAT", "instance": "berlin52", "seed": 1, "time_limit": 60.0}
+{"obj": 21282, "lb": null, "time": 0.22197605400003795, "problem": "tsp", "method": "LKH(elkai)", "instance": "kroA100", "seed": 1, "time_limit": 60.0}
+{"obj": 21282, "lb": null, "time": 60.012493107999944, "problem": "tsp", "method": "SA", "instance": "kroA100", "seed": 1, "time_limit": 60.0}
+{"obj": 21282, "lb": null, "time": 60.00774576800006, "problem": "tsp", "method": "SA", "instance": "kroA100", "seed": 2, "time_limit": 60.0}
+{"obj": 21282, "lb": null, "time": 60.007773027999974, "problem": "tsp", "method": "SA", "instance": "kroA100", "seed": 3, "time_limit": 60.0}
+{"obj": 21282, "lb": 21282, "iters": 7, "time": 3.1884970969999813, "problem": "tsp", "method": "MIP-HiGHS", "instance": "kroA100", "seed": 1, "time_limit": 60.0}
+{"obj": 6544, "lb": null, "time": 0.8068002070000375, "problem": "tsp", "method": "nn+ls", "instance": "ch150", "seed": 1, "time_limit": 60.0}
+{"obj": 21282, "lb": null, "time": 60.055060303000005, "problem": "tsp", "method": "ORTools-GLS", "instance": "kroA100", "seed": 1, "time_limit": 60.0}
+{"obj": 25728, "lb": 17120, "time": 60.234646876000056, "problem": "tsp", "method": "CP-SAT", "instance": "kroA100", "seed": 1, "time_limit": 60.0}
+{"obj": 6528, "lb": null, "time": 1.0372216850000768, "problem": "tsp", "method": "LKH(elkai)", "instance": "ch150", "seed": 1, "time_limit": 60.0}
+{"obj": 6564, "lb": null, "time": 60.01077306000002, "problem": "tsp", "method": "SA", "instance": "ch150", "seed": 1, "time_limit": 60.0}
+{"obj": 6549, "lb": null, "time": 60.008380462000105, "problem": "tsp", "method": "SA", "instance": "ch150", "seed": 2, "time_limit": 60.0}
+{"obj": 6549, "lb": null, "time": 60.008748921999995, "problem": "tsp", "method": "SA", "instance": "ch150", "seed": 3, "time_limit": 60.0}
+{"obj": 2591, "lb": null, "time": 4.990554725999914, "problem": "tsp", "method": "nn+ls", "instance": "a280", "seed": 1, "time_limit": 60.0}
+{"obj": 6528, "lb": 6528, "iters": 7, "time": 21.984134513000072, "problem": "tsp", "method": "MIP-HiGHS", "instance": "ch150", "seed": 1, "time_limit": 60.0}
+{"obj": 6563, "lb": null, "time": 60.053709732000016, "problem": "tsp", "method": "ORTools-GLS", "instance": "ch150", "seed": 1, "time_limit": 60.0}
+{"obj": 7792, "lb": 5579, "time": 60.404378447, "problem": "tsp", "method": "CP-SAT", "instance": "ch150", "seed": 1, "time_limit": 60.0}
+{"obj": 2579, "lb": null, "time": 6.94012873600002, "problem": "tsp", "method": "LKH(elkai)", "instance": "a280", "seed": 1, "time_limit": 60.0}
+{"obj": 2579, "lb": null, "time": 60.01051182599997, "problem": "tsp", "method": "SA", "instance": "a280", "seed": 1, "time_limit": 60.0}
+{"obj": 2581, "lb": null, "time": 60.03036818999999, "problem": "tsp", "method": "SA", "instance": "a280", "seed": 2, "time_limit": 60.0}
+{"obj": 2579, "lb": null, "time": 60.022419176000085, "problem": "tsp", "method": "SA", "instance": "a280", "seed": 3, "time_limit": 60.0}
+{"obj": 2592, "lb": null, "time": 60.0549313030001, "problem": "tsp", "method": "ORTools-GLS", "instance": "a280", "seed": 1, "time_limit": 60.0}
+{"obj": 3039, "lb": 2423, "time": 61.15172190100009, "problem": "tsp", "method": "CP-SAT", "instance": "a280", "seed": 1, "time_limit": 60.0}
+{"obj": 2579, "lb": 2577, "iters": 8, "time": 60.05530536899994, "problem": "tsp", "method": "MIP-HiGHS", "instance": "a280", "seed": 1, "time_limit": 60.0}
+{"obj": 51225, "lb": null, "time": 42.781782249, "problem": "tsp", "method": "nn+ls", "instance": "pcb442", "seed": 1, "time_limit": 60.0}
+{"obj": 50778, "lb": null, "time": 22.149844235000046, "problem": "tsp", "method": "LKH(elkai)", "instance": "pcb442", "seed": 1, "time_limit": 60.0}
+{"obj": 51289, "lb": null, "time": 60.02374787499991, "problem": "tsp", "method": "SA", "instance": "pcb442", "seed": 1, "time_limit": 60.0}
+{"obj": 51019, "lb": null, "time": 60.02068359500004, "problem": "tsp", "method": "SA", "instance": "pcb442", "seed": 2, "time_limit": 60.0}
+{"obj": 50944, "lb": null, "time": 60.03083385000002, "problem": "tsp", "method": "SA", "instance": "pcb442", "seed": 3, "time_limit": 60.0}
+{"obj": 51485, "lb": null, "time": 60.07416316599995, "problem": "tsp", "method": "ORTools-GLS", "instance": "pcb442", "seed": 1, "time_limit": 60.0}
+{"obj": 60593, "lb": 46830, "time": 61.850129519000006, "problem": "tsp", "method": "CP-SAT", "instance": "pcb442", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 50729, "iters": 4, "time": 60.11274815999991, "problem": "tsp", "method": "MIP-HiGHS", "instance": "pcb442", "seed": 1, "time_limit": 60.0}
+{"obj": 9107, "lb": null, "time": 59.74989707999998, "problem": "tsp", "method": "nn+ls", "instance": "rat783", "seed": 1, "time_limit": 60.0}
+{"obj": 8806, "lb": null, "time": 22.650299527000016, "problem": "tsp", "method": "LKH(elkai)", "instance": "rat783", "seed": 1, "time_limit": 60.0}
+{"obj": 8919, "lb": null, "time": 60.04412756700003, "problem": "tsp", "method": "SA", "instance": "rat783", "seed": 1, "time_limit": 60.0}
+{"obj": 8939, "lb": null, "time": 60.045454076000055, "problem": "tsp", "method": "SA", "instance": "rat783", "seed": 2, "time_limit": 60.0}
+{"obj": 8938, "lb": null, "time": 60.05939880200003, "problem": "tsp", "method": "SA", "instance": "rat783", "seed": 3, "time_limit": 60.0}
+{"obj": 9105, "lb": null, "time": 60.09584099199992, "problem": "tsp", "method": "ORTools-GLS", "instance": "rat783", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 7432.0, "time": 64.67587636999997, "problem": "tsp", "method": "CP-SAT", "instance": "rat783", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 8605, "iters": 0, "time": 60.221574421000014, "problem": "tsp", "method": "MIP-HiGHS", "instance": "rat783", "seed": 1, "time_limit": 60.0}

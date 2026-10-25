@@ -1,0 +1,429 @@
+{
+ "generated": "2026-10-25T03:40:02+00:00",
+ "env": {
+  "python": "3.13.17",
+  "machine": "x86_64"
+ },
+ "problems": {
+  "tsp": {
+   "label": "TSP（対称巡回セールスマン）",
+   "ref": "TSPLIB 公表最適値",
+   "unit": "距離",
+   "instances": [
+    "berlin52",
+    "kroA100",
+    "ch150",
+    "a280",
+    "pcb442",
+    "rat783"
+   ],
+   "methods": [
+    "nn+ls",
+    "SA",
+    "LKH(elkai)",
+    "ORTools-GLS",
+    "CP-SAT",
+    "MIP-HiGHS"
+   ],
+   "time_limit": 60.0,
+   "cells": [
+    {
+     "instance": "a280",
+     "method": "CP-SAT",
+     "mean_gap": 17.836,
+     "best": 3039.0,
+     "ref": 2579.0,
+     "lb": 2423.0,
+     "time": 61.15,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "a280",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 2579.0,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 6.94,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "a280",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 2579.0,
+     "ref": 2579.0,
+     "lb": 2577.0,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "a280",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.504,
+     "best": 2592.0,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 60.05,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "a280",
+     "method": "SA",
+     "mean_gap": 0.026,
+     "best": 2579.0,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 60.02,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "a280",
+     "method": "nn+ls",
+     "mean_gap": 0.465,
+     "best": 2591.0,
+     "ref": 2579.0,
+     "lb": null,
+     "time": 4.99,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "CP-SAT",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 12.08,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 0.01,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "ref": 7542.0,
+     "lb": 7542.0,
+     "time": 0.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 60.05,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "berlin52",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 7542.0,
+     "ref": 7542.0,
+     "lb": null,
+     "time": 3.42,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "CP-SAT",
+     "mean_gap": 19.363,
+     "best": 7792.0,
+     "ref": 6528.0,
+     "lb": 5579.0,
+     "time": 60.4,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 6528.0,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 1.04,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 6528.0,
+     "ref": 6528.0,
+     "lb": 6528.0,
+     "time": 21.98,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.536,
+     "best": 6563.0,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 60.05,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "SA",
+     "mean_gap": 0.398,
+     "best": 6549.0,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "ch150",
+     "method": "nn+ls",
+     "mean_gap": 0.245,
+     "best": 6544.0,
+     "ref": 6528.0,
+     "lb": null,
+     "time": 0.81,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "CP-SAT",
+     "mean_gap": 20.891,
+     "best": 25728.0,
+     "ref": 21282.0,
+     "lb": 17120.0,
+     "time": 60.23,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 21282.0,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 0.22,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "MIP-HiGHS",
+     "mean_gap": 0.0,
+     "best": 21282.0,
+     "ref": 21282.0,
+     "lb": 21282.0,
+     "time": 3.19,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "ORTools-GLS",
+     "mean_gap": 0.0,
+     "best": 21282.0,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 60.06,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "SA",
+     "mean_gap": 0.0,
+     "best": 21282.0,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 60.01,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "kroA100",
+     "method": "nn+ls",
+     "mean_gap": 0.0,
+     "best": 21282.0,
+     "ref": 21282.0,
+     "lb": null,
+     "time": 0.32,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "pcb442",
+     "method": "CP-SAT",
+     "mean_gap": 19.329,
+     "best": 60593.0,
+     "ref": 50778.0,
+     "lb": 46830.0,
+     "time": 61.85,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "pcb442",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 50778.0,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 22.15,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "pcb442",
+     "method": "MIP-HiGHS",
+     "mean_gap": null,
+     "best": null,
+     "ref": 50778.0,
+     "lb": 50729.0,
+     "time": 60.11,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "pcb442",
+     "method": "ORTools-GLS",
+     "mean_gap": 1.392,
+     "best": 51485.0,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 60.07,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "pcb442",
+     "method": "SA",
+     "mean_gap": 0.603,
+     "best": 50944.0,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 60.03,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "pcb442",
+     "method": "nn+ls",
+     "mean_gap": 0.88,
+     "best": 51225.0,
+     "ref": 50778.0,
+     "lb": null,
+     "time": 42.78,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "rat783",
+     "method": "CP-SAT",
+     "mean_gap": null,
+     "best": null,
+     "ref": 8806.0,
+     "lb": 7432.0,
+     "time": 64.68,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "rat783",
+     "method": "LKH(elkai)",
+     "mean_gap": 0.0,
+     "best": 8806.0,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 22.65,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "rat783",
+     "method": "MIP-HiGHS",
+     "mean_gap": null,
+     "best": null,
+     "ref": 8806.0,
+     "lb": 8605.0,
+     "time": 60.22,
+     "runs": 1,
+     "fails": 1
+    },
+    {
+     "instance": "rat783",
+     "method": "ORTools-GLS",
+     "mean_gap": 3.395,
+     "best": 9105.0,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 60.1,
+     "runs": 1,
+     "fails": 0
+    },
+    {
+     "instance": "rat783",
+     "method": "SA",
+     "mean_gap": 1.431,
+     "best": 8919.0,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 60.05,
+     "runs": 3,
+     "fails": 0
+    },
+    {
+     "instance": "rat783",
+     "method": "nn+ls",
+     "mean_gap": 3.418,
+     "best": 9107.0,
+     "ref": 8806.0,
+     "lb": null,
+     "time": 59.75,
+     "runs": 1,
+     "fails": 0
+    }
+   ]
+  }
+ }
+}
