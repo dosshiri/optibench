@@ -20,9 +20,9 @@
   </div>
   <div class="eyebrow">考察 · 2026-10-25 時点</div>
   <h1>解法比較の考察</h1>
-  <p class="lede">巡回セールスマン問題（TSP・ATSP）、ジョブショップスケジューリング（JSSP）、ナーススケジューリングの 4 種類の問題について、実務でどの最適化手法を使えばよいかをまとめました。根拠は 2 つあります。同じ条件で各手法を手元のPCで実際に動かした計測結果と、これまでの論文で報告されている結果です。</p>
+  <p class="lede">巡回セールスマン問題（TSP・ATSP）とその時間枠付き版（ATSP-TW）、ジョブショップスケジューリング（JSSP）、ナーススケジューリングの 5 種類の問題について、実務でどの最適化手法を使えばよいかをまとめました。根拠は 2 つあります。同じ条件で各手法を手元のPCで実際に動かした計測結果と、これまでの論文で報告されている結果です。</p>
   <p class="lede">問題ごとにページを分けています。各ページでは最初に手法の選び方を示し、続けてその根拠となる計測結果、論文との比較、注意点を載せています。まず下の早見表で目的の問題を探し、詳しく知りたい問題のページへ進んでください。</p>
-  <p class="meta">計測環境は AMD Ryzen 9 5900HX（8 コア 16 スレッド）、Windows 11、OR-Tools 9.15、HiGHS 1.15 です（commit <code>bffb27c</code>）。各手法の制限時間は 60 秒で、1 スレッドと 4 スレッドの両方で計測しました。4 スレッドの結果は手法名の末尾に <code>-4w</code> を付けています。結果のばらつきを確かめるため、クラウド環境（Xeon 4 vCPU）で計測した結果とも比べています。</p>
+  <p class="meta">計測環境は AMD Ryzen 9 5900HX（8 コア 16 スレッド）、Windows 11、OR-Tools 9.15、HiGHS 1.15 です（commit <code>bffb27c</code>。ATSP-TW は <code>c8ce3fb</code>）。各手法の制限時間は 60 秒で、1 スレッドと 4 スレッドの両方で計測しました。4 スレッドの結果は手法名の末尾に <code>-4w</code> を付けています。結果のばらつきを確かめるため、クラウド環境（Xeon 4 vCPU）で計測した結果とも比べています。</p>
 </header>
 
 <nav class="toc" aria-label="目次">
@@ -40,6 +40,7 @@
     <tbody>
       <tr><td><a href="tsp.html">TSP</a></td><td>LKH</td><td>業務制約があれば OR-Tools Routing。数百ノードまでで証明が要れば MIP（初期解つき）</td><td>大規模での CP-SAT、初期解なしの MIP</td></tr>
       <tr><td><a href="atsp.html">ATSP</a></td><td>LKH</td><td>証明が要れば MIP と CP-SAT の両方を試す。自作するなら向きを保つ局所探索</td><td>2-opt 中心の自作局所探索</td></tr>
+      <tr><td><a href="atsptw.html">ATSP-TW</a></td><td>PyVRP</td><td>自作するなら GVNS。即答が必要なら締め切り順 + 局所探索。70 地点ほどまでで証明が要れば CP-SAT（複数スレッド）</td><td>時間枠の厳しい問題での OR-Tools Routing、big-M の MIP</td></tr>
       <tr><td><a href="jssp.html">JSSP</a></td><td>CP-SAT（複数スレッド）</td><td>専用近傍を実装できればタブーサーチ。即答が必要ならディスパッチングルール</td><td>big-M の MIP、1 スレッドの CP-SAT</td></tr>
       <tr><td><a href="nsp.html">ナース</a></td><td>MIP</td><td>大規模で MIP が解を出せなければ CP-SAT（複数スレッド）</td><td>調整なしの汎用 SA、1 スレッドの CP-SAT</td></tr>
     </tbody>
@@ -61,6 +62,7 @@
   <ul class="pages">
     <li><a href="tsp.html"><b>TSP</b>対称巡回セールスマン</a><p>専用ヒューリスティクスの LKH が圧倒的で、783 都市までは品質で競う余地がほぼありません。厳密解法の MIP は 280 都市付近に「解が何も出なくなる崖」があり、CP-SAT はこの問題には向きません。</p></li>
     <li><a href="atsp.html"><b>ATSP</b>非対称巡回セールスマン</a><p>LKH が全問で最適値に到達しました。厳密系の勝者はインスタンスの構造で入れ替わり、2-opt 系の単純な局所探索は効きにくい問題です。文献で同条件の横並び比較が見つからなかった問題なので、このページの結果はそれ自体が新しい知見です。</p></li>
+    <li><a href="atsptw.html"><b>ATSP-TW</b>時間枠付き非対称巡回セールスマン</a><p>PyVRP が 27 回すべてで最適値に到達し、自作の GVNS が平均 0.02% で続きました。差がついたのは品質よりも「時間枠を守れる解を返せるか」で、OR-Tools Routing・MIP・CP-SAT・LKH-3 はどこかの問題で解を返せませんでした。</p></li>
     <li><a href="jssp.html"><b>JSSP</b>ジョブショップスケジューリング</a><p>CP-SAT が最も強く、4 スレッドで 10 問中 7 問の最適性を証明しました。自作のタブーサーチ（N5 近傍）がそれに迫り、MIP は大きく劣ります。文献の主張はすべて手元でも確認できました。</p></li>
     <li><a href="nsp.html"><b>NSP</b>ナーススケジューリング</a><p>小〜中規模では MIP が最も強く、3 問で最適性を証明しました。最大規模では MIP が解を出せず、CP-SAT（4 スレッド）が最良でした。</p></li>
   </ul>

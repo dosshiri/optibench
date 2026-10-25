@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATSP-TW の手法選び</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<!-- 時間枠付き非対称巡回セールスマン（ATSP-TW）の考察。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の早見表と「問題別の考察」に 1 行ずつ足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">考察トップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../literature/atsptw.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a>
+  </div>
+  <div class="eyebrow">考察 · ATSP-TW · 2026-10-25 時点</div>
+  <h1>時間枠付き巡回セールスマンの手法選び</h1>
+  <p class="lede">Ascheuer の rbg 系 9 問（19〜232 地点、倉庫の搬送クレーンの実データ）。各地点を決められた時間帯の中で訪れ、移動時間の合計を最小にします。参照値は公表最適値（9 問とも最適性が証明済み）。</p>
+  <p class="meta">計測環境と、全問題に共通する前提・限界は<a href="index.html#common">考察トップ</a>にまとめています。この問題の計測は commit <code>c8ce3fb</code>、PyVRP 0.14.1、elkai 2.0.1（LKH-3.0.8 を同梱）を使いました。</p>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <a href="#choose">手法の選び方</a>
+  <a href="#results">手元の結果</a>
+  <a href="#literature">文献との突き合わせ</a>
+  <a href="#discussion">考察</a>
+  <a href="#threads">スレッド数</a>
+  <a href="#repro">再現性</a>
+  <a href="#limits">限界</a>
+  <a href="#next">次の一手</a>
+</nav>
+
+<section>
+  <div class="verdict"><div class="k">結論</div>
+    <p>PyVRP（ハイブリッド遺伝的探索）が 9 問 × 3 シードの 27 回すべてで最適値に到達しました。自作の GVNS が平均 0.02% で続きます。時間枠が効いてくると、「時間枠を守れる巡回路を 1 本見つけること」自体が難しくなり、OR-Tools Routing・MIP・CP-SAT・LKH-3 はいずれも、どこかの問題で解を 1 本も返せませんでした。</p></div>
+
+  <h3 id="choose">手法の選び方</h3>
+  <p>配送や訪問サービスで「この時間帯に来てほしい」という指定がある巡回路の問題です。まず <b>PyVRP</b> を使います。車両 1 台・容量なしの時間枠付き配送計画として書けば、そのまま解けます。pip で入り、Windows でも動きます。</p>
+  <p>次の条件に当てはまるときは、手法を切り替えます。</p>
+  <ul class="pts">
+    <li><b>自前で実装したい、独自の制約を足したい</b>ときは GVNS。遅れの合計を最優先にした評価で区間移動（Or-opt）と 2 点交換を回すだけで、平均 0.02% まで届きました。</li>
+    <li><b>1 秒以内に答えがほしい</b>ときは、締め切りの早い順に並べてから局所探索をかける方法（EDD+LS）。0.2 秒で 9 問すべてに実行可能解を返し、平均 0.6% でした。</li>
+    <li><b>最適であることの証明が必要</b>で 70 地点ほどまでなら、CP-SAT を複数スレッドで動かします。4 スレッドで 4 問を数秒で証明しました。</li>
+  </ul>
+  <p>避けたいのは、OR-Tools Routing を時間枠の厳しい問題に既定の設定で使うことと、時刻変数の big-M 定式化の MIP をそのまま使うことです。どちらも 30 地点前後の問題で解を返せませんでした。LKH-3 は文献では強い手法ですが、150 地点を超えると 60 秒では時間枠を守れる解にたどり着けませんでした。</p>
+
+  <h3 id="results">手元の結果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">解あり</th><th class="num">最適値到達</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
+    <tbody>
+      <tr class="top1"><td class="m"><code>PyVRP-HGS</code></td><td class="num">0.00%</td><td class="num">9/9</td><td class="num">27/27 回</td><td class="num">–</td><td class="num">60.1 秒</td></tr>
+      <tr><td class="m"><code>GVNS</code>（自作）</td><td class="num">0.02%</td><td class="num">9/9</td><td class="num">22/27 回</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>EDD+LS</code>（自作）</td><td class="num">0.60%</td><td class="num">9/9</td><td class="num">2/9</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
+      <tr><td class="m"><code>LKH-3(elkai)</code></td><td class="num">0.07%*</td><td class="num">7/9</td><td class="num">15/27 回</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">0.04%*</td><td class="num">7/9</td><td class="num">5/9</td><td class="num">4</td><td class="num">34.9 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT</code></td><td class="num">0.25%*</td><td class="num">7/9</td><td class="num">5/9</td><td class="num">4</td><td class="num">37.1 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.68%*</td><td class="num">5/9</td><td class="num">3/9</td><td class="num">3</td><td class="num">48.6 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.68%*</td><td class="num">5/9</td><td class="num">3/9</td><td class="num">3</td><td class="num">47.5 秒</td></tr>
+      <tr><td class="m"><code>ORTools-GLS</code></td><td class="num">0.00%*</td><td class="num">4/9</td><td class="num">4/9</td><td class="num">–</td><td class="num">27.0 秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">* 解が得られた問題だけの平均。「解あり」は 3 シードのうち 1 回でも時間枠を守れる巡回路を返した問題の数。返された解はすべて共通の評価関数で時間枠と総移動時間を検証済み。LKH-3 は rbg092a で 3 回中 1 回、rbg172a・rbg233 では 3 回とも解なし。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>解を返せなかった問題</th><th>地点数</th><th>原因</th></tr></thead>
+    <tbody>
+      <tr><td><code>ORTools-GLS</code>: rbg027a, rbg041a, rbg092a, rbg172a, rbg233</td><td class="num">28〜232</td><td>挿入法による初期解の構築が 1 秒以内に失敗し、探索に入れない</td></tr>
+      <tr><td><code>MIP-HiGHS</code>: rbg027a, rbg125a, rbg172a, rbg233</td><td class="num">28〜232</td><td>60 秒で整数解が 1 本も見つからない（下界は rbg233 で最適値の 0.7% 下まで迫る）</td></tr>
+      <tr><td><code>CP-SAT</code>: rbg172a, rbg233</td><td class="num">173〜232</td><td>60 秒で解なし（1/4 スレッドとも）</td></tr>
+      <tr><td><code>LKH-3(elkai)</code>: rbg172a, rbg233</td><td class="num">173〜232</td><td>時間枠の違反が残ったまま制限時間に達する</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="literature">文献との突き合わせ</h3>
+  <div class="legend">
+    <span>判定:</span>
+    <span><span class="v ok">一致</span> 文献と同じ傾向</span>
+    <span><span class="v part">条件つき</span> 一部だけ一致、または条件が違いすぎて比べにくい</span>
+    <span><span class="v new">新規</span> 文献に比較がなかった点</span>
+  </div>
+  <div class="frame">
+  <table>
+    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">無償ソルバーを AFG のような非対称の実データで横並びにした比較は見つからない</td><td class="ours">7 手法 × 9 問を同条件で比較。PyVRP 0.00%（27/27 回で最適）＞ GVNS 0.02% ＞ EDD+LS 0.60%。ほかの 4 手法はどこかで解なし</td><td><span class="v new">新規</span></td></tr>
+      <tr><td class="claim">GVNS は TSPTW ヒューリスティクスの標準で、多くの最良既知解を持つ（da Silva–Urrutia 2010）</td><td class="ours">素朴な自作版でも全問で解を返し、7 問は 3 シードとも最適値。大きい 2 問では最大 0.16% 残る</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">OR-Tools は時間枠が厳しいと実行可能解を見つけられない（Cappart ら 2021、Bi ら 2024）</td><td class="ours">9 問中 5 問で初期解の構築に失敗。TSP と同じ PATH_CHEAPEST_ARC では 19 地点でも失敗した</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">時刻変数の big-M 定式化は弱い（Ascheuer ら 2001）。一方で汎用 MIP は 30 分あれば多くの TSPTW を解く（Kuroiwa–Beck 2023）</td><td class="ours">HiGHS の big-M 定式化は 3 問を証明したが、28 地点の rbg027a でも 60 秒で解なし</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">汎用 CP は MIP より大きく劣る（Kuroiwa–Beck 2023 の CP Optimizer）</td><td class="ours">CP-SAT は MIP より多くの問題で解を返し、証明も多い（4 問対 3 問）。ただし 173 地点以上は解なし</td><td><span class="v part">条件つき</span></td></tr>
+      <tr><td class="claim">LKH-3 は実行可能性・品質とも最良だが時間がかかる（Bi ら 2024 で 1 万件に 1.4 日）</td><td class="ours">125 地点まではほぼ最適。173 地点以上は 60 秒で時間枠を守れる解に届かない</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">古典インスタンスは構造が素直で、手法の差が出にくい面がある（Soulignac 2026）</td><td class="ours">メタヒューリスティクス 2 手法はほぼ全問で最適値。差は「解を返せるか」に集中した</td><td><span class="v part">条件つき</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="discussion">考察</h3>
+  <p>この問題では、手法の差が「品質」よりも「時間枠を守れる巡回路を 1 本でも見つけられるか」に表れました。解を返せた場合のギャップはどの手法も 1% 未満で、勝負を分けたのは解なしの有無です。時間枠を破った解を途中で許し、違反に罰則をかけながら探索する手法（PyVRP、GVNS）は全問で解を返しました。PyVRP は時間枠の違反を罰則つきで許しつつ集団を進化させる設計で、GVNS も遅れの合計を最優先の評価にしています。逆に、最初から実行可能な解を組み立てようとする OR-Tools の初期解構築や、整数解を見つけるまでに時間のかかる MIP は、時間枠が効いた問題でつまずきました。</p>
+  <p>LKH-3 も違反に罰則をかける方式ですが、TSPTW では 1 回の試行に時間がかかり、173 地点以上では 60 秒に収まりませんでした。文献で LKH-3 が強いと報告されているのは、試行回数や時間を十分にとった条件です（推測を含む）。</p>
+  <p>厳密系では CP-SAT が MIP を上回りました。MIP は下界がよく（rbg233 で最適値まで 0.7%）、証明の材料はそろっているのに、整数解を見つける部分で時間切れになっています。初期解を渡せば変わる可能性があります（未検証）。</p>
+  <p>EDD+LS は 0.2 秒で 9 問すべてに実行可能解を返しました。この 9 問では、締め切り順に並べるだけで時間枠をおおむね守れる構造になっていると考えられます。Soulignac（2026）が指摘する「古典インスタンスの素直さ」の表れかもしれません。時間枠が広く重なり合う問題では、この方法が通用するとは限りません。</p>
+
+  <h3 id="threads">スレッド数の効果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
+    <tbody>
+      <tr><td>CP-SAT</td><td class="num">0.25%</td><td class="num up">0.04%</td><td>rbg125a が 1.58% → 0.14%。rbg027a の証明が 12 秒 → 2 秒、rbg067a が 12 秒 → 5 秒。173 地点以上の解なしは変わらず</td></tr>
+      <tr><td>MIP-HiGHS</td><td class="num">0.68%</td><td class="num">0.68%</td><td>解も下界も同じで、証明時間がわずかに短い（rbg055a 36 秒 → 31 秒）</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="repro">再現性（クラウドと手元PC）</h3>
+  <ul class="pts">
+    <li>決定的な <code>EDD+LS</code> は 9 問とも同じ値。<code>PyVRP-HGS</code> はクラウドでも 27 回すべて最適値で、結論は計算機に左右されない。</li>
+    <li><code>GVNS</code> も大きい 2 問の残りギャップ（0.03〜0.15%）までほぼ同じ。<code>ORTools-GLS</code> が解を返せない 5 問も同じ顔ぶれ。</li>
+    <li>時間で打ち切る厳密系は揺れる。<code>CP-SAT</code> の rbg125a は手元PCで 1.58%、クラウドで 3.02%。<code>MIP-HiGHS</code> は rbg092a で手元PCは 2.95% の解を返したが、クラウドでは解なし。解を返せるかどうかの境目にある問題では、計算機の速さで結果が入れ替わる。</li>
+    <li>クラウドの run では LKH-3 を試走中に設定変更したため、比較から外している。</li>
+  </ul>
+
+  <h3 id="limits">この問題での限界</h3>
+  <ul class="pts">
+    <li>AFG セット 50 件のうち 9 件だけで、Dumas・Gendreau などの対称のユークリッド距離インスタンスや、時間枠の広さを系統的に変えた問題がない。</li>
+    <li>目的関数は移動時間の合計だけで、戻り時刻（makespan）や待ち時間を含む所要時間は扱っていない。</li>
+    <li>MIP は時刻変数の big-M 定式化だけで、文献で強いとされる実行不能パス制約や時間バケット定式化は試していない。</li>
+    <li>LKH-3 は elkai 同梱の 3.0.8 を既定のパラメータで使った。最新版や TSPTW 向けの設定ではない。</li>
+    <li>PyVRP・GVNS・LKH-3 は 60 秒を使い切る設定で、最適値に何秒で届いたかは記録していない。</li>
+  </ul>
+
+  <h3 id="next">次の一手</h3>
+  <ul class="pts">
+    <li>時間枠の広さを変えた問題（Gendreau 系、da Silva–Urrutia の 200〜400 地点）を足し、PyVRP と GVNS に差がつく条件を探す。</li>
+    <li>解の更新時刻を記録し、PyVRP・GVNS・EDD+LS の「何秒あれば十分か」を出す。</li>
+    <li>MIP に EDD+LS の解を初期解として渡し、解なしが解消するか確かめる。</li>
+  </ul>
+</section>
+
+<footer>
+  <p>出典: 手元ベンチマークの数値は <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">結果ビュー</a> と <code>results/runs/20261025T111518Z-tiamat-atsptw</code>、文献の数値は <a href="../literature/atsptw.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a> によります。「推測」「未検証」と書いた箇所は、ログや追加実験で確かめていない解釈です。</p>
+  <p><a href="index.html">考察トップに戻る</a> · <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータルに戻る</a></p>
+</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

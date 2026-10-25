@@ -1,0 +1,116 @@
+{
+ "run_id": "20261025T111518Z-tiamat-atsptw",
+ "problem": "atsptw",
+ "started_at": "2026-10-25T11:15:18+00:00",
+ "finished_at": "2026-10-25T11:52:57+00:00",
+ "status": "complete",
+ "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "command": "python.exe src/run_bench.py atsptw 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "environment": {
+  "machine": "tiamat",
+  "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+  "cpu_count": 16,
+  "memory_gb": 31.4,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.9",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.4",
+   "pandas": "3.1.0",
+   "tsplib95": "0.7.1",
+   "pyvrp": "0.14.1"
+  }
+ },
+ "git": {
+  "commit": "c8ce3fbe1ed0c5e51475af0b1dd5864ac042cef0",
+  "branch": "claude/project-thread-b965vi",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "EDD+LS": 1,
+   "GVNS": 1,
+   "LKH-3(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1,
+   "MIP-HiGHS-4w": 4,
+   "PyVRP-HGS": 1
+  },
+  "solvers": {
+   "EDD+LS": "EDD+LS",
+   "GVNS": "GVNS",
+   "LKH-3(elkai)": "LKH-3(elkai)",
+   "ORTools-GLS": "ORTools-GLS",
+   "CP-SAT": "CP-SAT",
+   "CP-SAT-4w": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS",
+   "MIP-HiGHS-4w": "MIP-HiGHS",
+   "PyVRP-HGS": "PyVRP-HGS"
+  },
+  "instances": [
+   "rbg019a",
+   "rbg027a",
+   "rbg041a",
+   "rbg055a",
+   "rbg067a",
+   "rbg092a",
+   "rbg125a",
+   "rbg172a",
+   "rbg233"
+  ],
+  "methods": {
+   "EDD+LS": [
+    1
+   ],
+   "GVNS": [
+    1,
+    2,
+    3
+   ],
+   "LKH-3(elkai)": [
+    1,
+    2,
+    3
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ],
+   "MIP-HiGHS-4w": [
+    1
+   ],
+   "PyVRP-HGS": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ "instance_sha256": {
+  "rbg019a": "d02370aa8d56d10b85846d0800583c1bc033c2fbd35f873fa34f6537f721dfb3",
+  "rbg027a": "163724b9cf9a1c1de43d7ea2c9e7a98919ab89a7f5a3abcbb68ffa4dc2d3abdb",
+  "rbg041a": "8e40aee2b30c2c89c2dd04c1fc615b7c2ef2700dffa5a2ee2d892f2bdb5e09cf",
+  "rbg055a": "2b33dd0611548469f5d33ba238cf2213becb6fcc0feb45788b8829bbfdf0b38c",
+  "rbg067a": "83e5363ea6cb710a5a726487025d6a2ec42e110350dc8e08ee0e2696e3163fde",
+  "rbg092a": "574f322a605fb94b0419f92fb7649ea0336fde5bb65f3fc44f5b8eaecd6cc367",
+  "rbg125a": "630ac6c5e5261b064f7d0f1c62234778e753fe6c0ad19ad1103689737b88f9a5",
+  "rbg172a": "4725653351c7eb791726621499384da85c322702094cd44ef3035fec51b3f7d0",
+  "rbg233": "a15bcb7a8e49fc78d5dfb7a9b59f3d74fbda747e08ce7e5e504c10702c99b531"
+ }
+}

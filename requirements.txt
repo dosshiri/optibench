@@ -5,3 +5,4 @@ numba==0.68.0
 numpy
 pandas
 tsplib95==0.7.1
+pyvrp==0.14.1

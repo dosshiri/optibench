@@ -2,7 +2,7 @@
 
 組合せ最適化ベンチマーク。実務で使われる代表的な組合せ最適化問題について、数理計画・制約プログラミング・メタヒューリスティクスなどの解法を、同じ条件で手元比較するためのリポジトリです。
 
-- 対象問題: TSP（対称巡回セールスマン）、ATSP（非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
+- 対象問題: TSP（対称巡回セールスマン）、ATSP（非対称）、ATSP-TW（時間枠付き非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
 - 入口: `docs/index.html`（文献調査・結果・考察の 3 ページへのリンク集。ダブルクリックで開きます）
 - 文献調査: `docs/literature/`（既存研究における解法比較のレビュー。`index.html` が全体の要点、`<問題>.html` が問題ごとのページ）
 - 考察: `docs/discussion/`（問題ごとの手法の選び方と、その根拠・限界・次の一手。`index.html` が早見表、`<問題>.html` が問題ごとのページ）
@@ -17,10 +17,12 @@ src/            実行スクリプト
   registry.py     問題・解法の登録簿（python src/registry.py で登録内容を一覧）
   problems/       問題種別（インスタンス読込・参照値・解の評価・インスタンス生成）
     routing.py      TSP / ATSP
+    atsptw.py       ATSP-TW（時間枠の評価を含む）
     jssp.py         JSSP
     nsp.py          NSP のモデル・評価関数・合成インスタンス生成
   solvers/        解法（@solver で登録）
     routing.py      TSP / ATSP の解法
+    atsptw.py       ATSP-TW の解法（PyVRP 版は atsptw_pyvrp.py）
     jssp.py         JSSP の解法
     nsp.py          NSP の解法
   common.py       共通ユーティリティ（パス・時間計測）
@@ -42,6 +44,7 @@ docs/           入口（index.html）、対話型のグラフビュー（benchm
 |---|---|---|---|
 | TSP | berlin52, kroA100, ch150, a280, pcb442, rat783 | TSPLIB95 | 公表最適値 |
 | ATSP | ftv33, ftv70, kro124p, ft70, rbg323, rbg443 | TSPLIB95 | 公表最適値 |
+| ATSP-TW | rbg019a, rbg027a, rbg041a, rbg055a, rbg067a, rbg092a, rbg125a, rbg172a, rbg233 | Ascheuer の AFG セット（López-Ibáñez の一覧） | 公表最適値（9 問とも証明済み） |
 | JSSP | ft06, ft10, la16, la21, abz5, orb01, ta01, swv01, ta11, ta21 | JSPLIB（OR-Library 形式） | 既知最適値（ta11=1357, ta21=1642 は文献値） |
 | NSP | nsp01–nsp06（8〜50 人, 14〜42 日, 1〜4 勤務種別） | 合成（`make_instances.py` で再生成可能） | 全 run・全手法中の最良値 |
 
@@ -57,6 +60,13 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 | | `ORTools-GLS` OR-Tools Routing + 誘導局所探索 | メタヒューリスティクス |
 | | `CP-SAT` AddCircuit 制約 | 制約プログラミング |
 | | `MIP-HiGHS` DFJ 定式化 + 部分巡回路除去制約の逐次追加 | 数理計画（厳密解法） |
+| ATSP-TW | `EDD+LS` 締め切り順 + Or-opt/2 点交換の局所探索 | 構築法 + 局所探索（自作, numba） |
+| | `GVNS` 一般化変近傍探索（遅れの合計を最優先に評価） | メタヒューリスティクス（自作, numba） |
+| | `LKH-3(elkai)` elkai 同梱の LKH-3.0.8 を TSPTW として実行 | 専用ヒューリスティクス |
+| | `PyVRP-HGS` PyVRP（車両 1 台の時間枠付き配送計画として解く） | メタヒューリスティクス（HGS） |
+| | `ORTools-GLS` OR-Tools Routing + 時間の次元 + 誘導局所探索 | メタヒューリスティクス |
+| | `CP-SAT`, `CP-SAT-4w` AddCircuit + 時刻変数（1 / 4 ワーカー） | 制約プログラミング |
+| | `MIP-HiGHS`, `MIP-HiGHS-4w` 時刻変数の big-M 定式化（1 / 4 スレッド） | 数理計画 |
 | JSSP | `SPT`, `MWKR` Giffler-Thompson 法 + 優先規則 | ディスパッチングルール |
 | | `GA` 乱数キー GA（BRKGA 型, 能動スケジュール復号） | メタヒューリスティクス（自作） |
 | | `Tabu-N5` タブー探索（Nowicki & Smutnicki の N5 近傍） | メタヒューリスティクス（自作, numba） |
