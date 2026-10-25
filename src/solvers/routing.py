@@ -1,8 +1,12 @@
-"""TSP / ATSP の解法群. 各関数は (D, time_limit, seed) -> dict(obj, lb, tour)."""
+"""TSP / ATSP の解法群. 各関数は (D, time_limit, seed) -> dict(obj, lb, solution=巡回順)."""
 import numpy as np
 from numba import njit
 
-from common import Timer, tour_cost
+from common import Timer
+from problems.routing import tour_cost
+from registry import solver
+
+ROUTING = ["tsp", "atsp"]
 
 
 # ---------------------------------------------------------------- 構築法・局所探索
@@ -110,6 +114,7 @@ def _local_search(D, t, symmetric):
     return t
 
 
+@solver("nn+ls", problems=ROUTING)
 def nn_local_search(D, tl, seed):
     sym = bool((D == D.T).all())
     tm = Timer(tl)
@@ -126,7 +131,7 @@ def nn_local_search(D, tl, seed):
         last = tm.elapsed() - t0
         if tm.left() < last:
             break
-    return dict(obj=best, lb=None, tour=bt.tolist())
+    return dict(obj=best, lb=None, solution=bt.tolist())
 
 
 # ---------------------------------------------------------------- 焼きなまし法
@@ -161,6 +166,7 @@ def _sa_chunk(D, t, cur, best_t, best, T, iters, symmetric, seed):
     return cur, best
 
 
+@solver("SA", problems=ROUTING, seeds=3)
 def simulated_annealing(D, tl, seed):
     sym = bool((D == D.T).all())
     tm = Timer(tl)
@@ -178,19 +184,21 @@ def simulated_annealing(D, tl, seed):
         cur, best = _sa_chunk(D, t, cur, best_t, best, T, 20000, sym, seed * 100003 + k)
         k += 1
     best_t = _local_search(D, best_t, sym)
-    return dict(obj=tour_cost(D, best_t), lb=None, tour=best_t.tolist())
+    return dict(obj=tour_cost(D, best_t), lb=None, solution=best_t.tolist())
 
 
 # ---------------------------------------------------------------- LKH (elkai)
+@solver("LKH(elkai)", problems=ROUTING, packages=["elkai"])
 def lkh(D, tl, seed):
     import elkai
     # elkai は時間制限を持たないので runs を固定 (LKH 既定の試行回数相当)
     m = elkai.DistanceMatrix(D.tolist())
     tour = m.solve_tsp(runs=10)[:-1]
-    return dict(obj=tour_cost(D, tour), lb=None, tour=tour)
+    return dict(obj=tour_cost(D, tour), lb=None, solution=tour)
 
 
 # ---------------------------------------------------------------- OR-Tools Routing
+@solver("ORTools-GLS", problems=ROUTING, packages=["ortools"])
 def ortools_gls(D, tl, seed):
     from ortools.constraint_solver import pywrapcp, routing_enums_pb2
     n = D.shape[0]
@@ -207,10 +215,11 @@ def ortools_gls(D, tl, seed):
     while not r.IsEnd(idx):
         tour.append(mgr.IndexToNode(idx))
         idx = sol.Value(r.NextVar(idx))
-    return dict(obj=tour_cost(D, tour), lb=None, tour=tour)
+    return dict(obj=tour_cost(D, tour), lb=None, solution=tour)
 
 
 # ---------------------------------------------------------------- CP-SAT AddCircuit
+@solver("CP-SAT", problems=ROUTING, packages=["ortools"])
 def cpsat_circuit(D, tl, seed):
     from ortools.sat.python import cp_model
     n = D.shape[0]
@@ -229,13 +238,13 @@ def cpsat_circuit(D, tl, seed):
     s.parameters.random_seed = seed
     st = s.Solve(m)
     if st not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-        return dict(obj=None, lb=s.BestObjectiveBound(), tour=None)
+        return dict(obj=None, lb=s.BestObjectiveBound(), solution=None)
     nxt = {i: j for (i, j), v in x.items() if s.Value(v)}
     tour, c = [0], nxt[0]
     while c != 0:
         tour.append(c)
         c = nxt[c]
-    return dict(obj=tour_cost(D, tour), lb=int(np.ceil(s.BestObjectiveBound() - 1e-6)), tour=tour)
+    return dict(obj=tour_cost(D, tour), lb=int(np.ceil(s.BestObjectiveBound() - 1e-6)), solution=tour)
 
 
 # ---------------------------------------------------------------- MIP (HiGHS, DFJ 逐次カット)
@@ -261,6 +270,7 @@ def _components(n, succ_pairs):
     return comps
 
 
+@solver("MIP-HiGHS", problems=ROUTING, packages=["highspy"])
 def mip_dfj(D, tl, seed):
     """対称: 無向辺 x_e, 次数2. 非対称: 有向弧, 入出次数1. 部分巡回路を見つけるたびに除去制約を追加して再求解."""
     import highspy
@@ -326,8 +336,8 @@ def mip_dfj(D, tl, seed):
                     break
                 tour.append(c)
             if st == highspy.HighsModelStatus.kOptimal:
-                return dict(obj=tour_cost(D, tour), lb=lb, tour=tour, iters=it)
-            return dict(obj=tour_cost(D, tour), lb=lb, tour=tour, iters=it)
+                return dict(obj=tour_cost(D, tour), lb=lb, solution=tour, iters=it)
+            return dict(obj=tour_cost(D, tour), lb=lb, solution=tour, iters=it)
         if st != highspy.HighsModelStatus.kOptimal:
             break
         for comp in comps:  # 各成分 S について sum_{i,j in S} x_ij <= |S|-1
@@ -338,14 +348,5 @@ def mip_dfj(D, tl, seed):
                 idx = [eidx[(i, j)] for i in comp for j in comp if i != j]
             h.addRow(-inf, len(S) - 1, len(idx), np.array(idx, dtype=np.int32), np.ones(len(idx)))
         it += 1
-    return dict(obj=None, lb=lb, tour=None, iters=it)
+    return dict(obj=None, lb=lb, solution=None, iters=it)
 
-
-METHODS = {
-    "nn+ls": nn_local_search,
-    "SA": simulated_annealing,
-    "LKH(elkai)": lkh,
-    "ORTools-GLS": ortools_gls,
-    "CP-SAT": cpsat_circuit,
-    "MIP-HiGHS": mip_dfj,
-}

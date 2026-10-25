@@ -169,12 +169,13 @@ function methodStats(P) {
     const ok = cs.filter(c => c.mean_gap != null);
     const mean = ok.length ? ok.reduce((a, c) => a + c.mean_gap, 0) / ok.length : null;
     const nopt = ok.filter(c => c.mean_gap <= 1e-9).length;
-    // 平均順位: インスタンスごとに平均目的値で順位付け（解なしは最下位）
+    // 平均順位: インスタンスごとに平均目的値で順位付け（解なしは最下位）。最大化問題は大きいほど上位
+    const sgn = P.sense === "max" ? -1 : 1;
     const ranks = P.instances.map(inst => {
       const mine = cs.find(c => c.instance === inst);
       if (!mine || mine.mean_obj == null) return P.methods.length;
       const others = P.cells.filter(c => c.instance === inst && c.mean_obj != null);
-      return 1 + others.filter(c => c.mean_obj < mine.mean_obj - 1e-9).length;
+      return 1 + others.filter(c => sgn * (c.mean_obj - mine.mean_obj) < -1e-9).length;
     });
     const rank = ranks.reduce((a, r) => a + r, 0) / ranks.length;
     return { method: m, mean, rank, solved: ok.length, total: P.instances.length, nopt,
@@ -304,9 +305,9 @@ function signed(v, d = 2) {
   const r = Number(v.toFixed(d));
   return (r > 0 ? "+" : r < 0 ? "−" : "±") + Math.abs(r).toFixed(d);
 }
-function diffCell(d, unit = "", digits = 2) {  // 小さいほど良い指標の差 (B − A)
+function diffCell(d, unit = "", digits = 2, sgn = 1) {  // 小さいほど良い指標の差 (B − A)。sgn = -1 なら大きいほど良い
   if (d == null) return "<td>—</td>";
-  const r = Number(d.toFixed(digits));
+  const r = Number(d.toFixed(digits)) * sgn;
   const cls = r === 0 ? "" : r < 0 ? "better" : "worse";
   return `<td class="${cls}">${signed(d, digits)}${unit}</td>`;
 }
@@ -352,7 +353,7 @@ function drawCompare(P, A, B) {
     if (!a && !b) return;
     const oa = a?.mean_obj ?? null, ob = b?.mean_obj ?? null;
     crow.push(`<tr><td>${esc(i)}</td><td>${esc(m)}</td><td>${oa ?? "×"}</td><td>${ob ?? "×"}</td>` +
-      diffCell(oa == null || ob == null ? null : ob - oa, "", byValue ? 1 : 0) +
+      diffCell(oa == null || ob == null ? null : ob - oa, "", byValue ? 1 : 0, P.sense === "max" ? -1 : 1) +
       `<td>${fmt(a?.mean_gap)}</td><td>${fmt(b?.mean_gap)}</td>` +
       diffCell(a?.mean_gap == null || b?.mean_gap == null ? null : b.mean_gap - a.mean_gap) +
       `<td>${fmt(a?.time, 1)}</td><td>${fmt(b?.time, 1)}</td></tr>`);
@@ -410,6 +411,9 @@ document.getElementById("cmpSel").onchange = e => { compare[current] = e.target.
     b.textContent = P.label; b.dataset.k = k; b.setAttribute("role", "tab");
     b.onclick = () => render(k); tabs.appendChild(b);
   });
+  // 問題名は登録されている問題から作る（表示名の括弧書きは省く）
+  document.getElementById("sub").textContent = Object.values(d.problems).map(P => P.label.split("（")[0]).join("・") +
+    "に対する代表的解法の手元比較（全手法 1 スレッド・同一制限時間）";
   document.getElementById("foot").textContent = `データ生成: ${d.generated}` + (d.env ? `（Python ${d.env.python}, ${d.env.machine}）` : "");
   let first = Object.keys(d.problems)[0];
   try { const s = localStorage.getItem("tab"); if (s && d.problems[s]) first = s; } catch (e) {}

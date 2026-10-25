@@ -3,6 +3,7 @@ import numpy as np
 from numba import njit
 
 from common import Timer
+from registry import solver
 
 
 def _arrays(jobs, nm):
@@ -58,12 +59,14 @@ def _giffler_thompson(M, P, prio_kind, keys):
     return mr.max(), seq
 
 
+@solver("SPT", problems="jssp")
 def spt(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     c, _ = _giffler_thompson(M, P, 0, np.zeros(1))
     return dict(obj=int(c), lb=None)
 
 
+@solver("MWKR", problems="jssp")
 def mwkr(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     c, _ = _giffler_thompson(M, P, 1, np.zeros(1))
@@ -71,6 +74,7 @@ def mwkr(data, tl, seed):
 
 
 # ---------------------------------------------------------------- 遺伝的アルゴリズム (乱数キー + GT 復号, BRKGA 型)
+@solver("GA", problems="jssp", seeds=3)
 def ga(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     tm = Timer(tl)
@@ -244,6 +248,7 @@ def _tabu(M, P, seq, iters, seed, tenure_lo, tenure_hi):
     return best, best_seq
 
 
+@solver("Tabu-N5", problems="jssp", seeds=3)
 def tabu_n5(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     tm = Timer(tl)
@@ -293,15 +298,18 @@ def _cpsat(data, tl, seed, workers):
                 optimal=st == cp_model.OPTIMAL)
 
 
+@solver("CP-SAT", problems="jssp", packages=["ortools"])
 def cpsat1(data, tl, seed):
     return _cpsat(data, tl, seed, 1)
 
 
+@solver("CP-SAT-4w", problems="jssp", threads=4, packages=["ortools"])
 def cpsat4(data, tl, seed):
     return _cpsat(data, tl, seed, 4)
 
 
 # ---------------------------------------------------------------- MIP (Manne の離接定式化, HiGHS)
+@solver("MIP-HiGHS", problems="jssp", packages=["highspy"])
 def mip_disjunctive(data, tl, seed):
     import highspy
     jobs, nm = data
@@ -339,13 +347,3 @@ def mip_disjunctive(data, tl, seed):
                 lb=int(np.ceil(info.mip_dual_bound - 1e-6)) if np.isfinite(info.mip_dual_bound) else None,
                 optimal=h.getModelStatus() == highspy.HighsModelStatus.kOptimal)
 
-
-METHODS = {
-    "SPT": spt,
-    "MWKR": mwkr,
-    "GA": ga,
-    "Tabu-N5": tabu_n5,
-    "CP-SAT": cpsat1,
-    "CP-SAT-4w": cpsat4,
-    "MIP-HiGHS": mip_disjunctive,
-}

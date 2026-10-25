@@ -1,0 +1,162 @@
+# 問題・解法の追加方法
+
+問題種別も解法も、`src/problems/` と `src/solvers/` に Python ファイルを置くだけで登録されます。
+実行（`run_bench.py`）・集計（`analyze.py`）・結果ページとビュー（`export_web.py`）は登録内容を読むだけなので、既存のファイルを編集する必要はありません。
+
+```
+src/
+  registry.py          登録簿（Problem / Solver の定義と、プラグインの読み込み）
+  problems/            問題種別. 1 ファイルで 1 つ以上の問題を登録する
+    routing.py           tsp, atsp
+    jssp.py              jssp
+    nsp.py               nsp（合成インスタンスの生成を含む）
+  solvers/             解法. 1 ファイルに好きな数の解法を登録できる
+    routing.py           TSP/ATSP の解法
+    jssp.py              JSSP の解法
+    nsp.py               NSP の解法
+instances/<問題>/      インスタンスファイル
+```
+
+登録されている問題と解法は `python src/registry.py` で一覧できます。`_` で始まるファイルは読み込まれません（作業中のファイルの退避などに使えます）。
+依存パッケージが入っていないなどの理由で読み込めないファイルは、警告を出して飛ばします（他の問題・解法はそのまま動きます）。
+
+## 解法を追加する
+
+既存の問題に解法を足す場合は、`src/solvers/` に新しいファイルを作るか、既存のファイルに関数を追加して `@solver` を付けます。
+
+```python
+# src/solvers/my_tsp.py
+from common import Timer
+from problems.routing import tour_cost
+from registry import solver
+
+
+@solver("2opt-random", problems=["tsp", "atsp"], seeds=3)
+def two_opt_random(D, tl, seed):
+    tm = Timer(tl)            # 制限時間 tl 秒を守る
+    ...
+    return dict(obj=tour_cost(D, tour), lb=None, solution=tour)
+```
+
+### 関数の約束
+
+- 引数は `(データ, 制限時間[秒], seed)`。データの中身は問題ごとに決まっています（各 `src/problems/*.py` の冒頭の説明を参照）。
+- 戻り値は dict。
+  - `obj`: 目的関数値。制限時間内に実行可能解が得られなければ `None`
+  - `lb`: 双対境界（最小化なら下界、最大化なら上界）。無ければ `None`
+  - `solution`: 解そのもの（任意）。返すと、問題側の評価関数で `obj` を計算し直して検証し、結果に `verified: true/false` を記録します（解自体は保存しません）
+  - そのほかのキー（反復回数、最適性を証明したかなど）は結果の JSON にそのまま残ります
+- 実行時間はフレームワークが計ります。制限時間を守るのは解法の責任です（`common.Timer` が使えます）。
+
+### `@solver` の引数
+
+| 引数 | 内容 |
+|---|---|
+| `name` | 手法名（結果・グラフに出る名前。問題ごとに一意） |
+| `problems` | 対象の問題名。文字列またはリスト |
+| `seeds` | 既定で回すシード数（確率的手法は 3 など。既定 1） |
+| `threads` | 使うスレッド数（既定 1）。2 以上の手法は他のジョブと並列にせず単独で実行し、`run.json` に記録されます |
+| `packages` | `run.json` にバージョンを記録したい追加パッケージ（例: `["pyvrp"]`）。新しい依存は `requirements.txt` にも追加してください |
+
+追加したら、短い制限時間で動作を確かめてから本番の run を回します。
+
+```bash
+python src/run_one.py tsp 2opt-random berlin52 1 5                 # 1 ジョブだけ実行して JSON を表示
+python src/run_bench.py tsp 60 --only 2opt-random --note "2opt-random を追加"
+```
+
+`--only` で走らせた run には、その手法だけが含まれます。他の手法と同じ表で比べたい場合は、全手法で run を回し直すと実行環境・条件が揃います。
+
+## 問題種別を追加する
+
+1. `instances/<問題名>/` にインスタンスファイルを置く
+2. `src/problems/<名前>.py` で `Problem` を登録する
+3. `src/solvers/<名前>.py` で解法を登録する
+
+例として、0-1 ナップサック問題（最大化）を追加する場合です。
+
+```python
+# src/problems/knapsack.py
+"""0-1 ナップサック問題. データはインスタンスの dict（capacity, weights, values）, 解は選ぶ品物の番号のリスト."""
+import json
+
+from registry import Problem, register_problem
+
+
+def load(name):
+    with open(PROBLEM.instance_path(name), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def evaluate(inst, chosen):
+    """実行可能なら目的関数値、そうでなければ None."""
+    if sum(inst["weights"][i] for i in chosen) > inst["capacity"]:
+        return None
+    return sum(inst["values"][i] for i in chosen)
+
+
+PROBLEM = register_problem(Problem(
+    name="knapsack", label="0-1 ナップサック", unit="価値", sense="max", ref_label="全 run・全手法中の最良値",
+    instance_file="knapsack/{}.json", instances=["k30"], load=load, evaluate=evaluate, display="value"))
+```
+
+```python
+# src/solvers/knapsack.py
+from registry import solver
+
+
+@solver("Greedy", problems="knapsack")
+def greedy(inst, tl, seed):
+    w, v, cap = inst["weights"], inst["values"], inst["capacity"]
+    chosen, used = [], 0
+    for i in sorted(range(len(w)), key=lambda i: -v[i] / w[i]):
+        if used + w[i] <= cap:
+            chosen.append(i)
+            used += w[i]
+    return dict(obj=sum(v[i] for i in chosen), lb=None, solution=chosen)
+
+
+@solver("CP-SAT", problems="knapsack", packages=["ortools"])
+def cpsat(inst, tl, seed):
+    from ortools.sat.python import cp_model
+    m = cp_model.CpModel()
+    x = [m.NewBoolVar("") for _ in inst["weights"]]
+    m.Add(sum(wi * xi for wi, xi in zip(inst["weights"], x)) <= inst["capacity"])
+    m.Maximize(sum(vi * xi for vi, xi in zip(inst["values"], x)))
+    s = cp_model.CpSolver()
+    s.parameters.max_time_in_seconds = tl
+    s.parameters.num_workers = 1
+    s.parameters.random_seed = seed
+    s.Solve(m)
+    chosen = [i for i, xi in enumerate(x) if s.Value(xi)]
+    return dict(obj=int(s.ObjectiveValue()), lb=int(s.BestObjectiveBound()), solution=chosen)
+```
+
+これで `python src/run_bench.py knapsack 60` → `python src/export_web.py` とすると、結果ページとビューに「0-1 ナップサック」のタブが増えます。
+
+### `Problem` の項目
+
+| 項目 | 必須 | 内容 |
+|---|:-:|---|
+| `name` | ✓ | 問題の識別子（コマンド引数・run_id・結果ファイルに使う。英小文字推奨） |
+| `label` | ✓ | 表示名 |
+| `unit` | ✓ | 目的関数値の単位（例: 距離、メイクスパン） |
+| `ref_label` | ✓ | 参照値の説明（結果ページとビューに表示） |
+| `instance_file` | ✓ | `instances/` からのファイルパス。`{}` にインスタンス名が入る。`run.json` に記録する SHA-256 もこのファイルから計算する |
+| `instances` | ✓ | 既定で解くインスタンスの一覧。リストか、一覧を返す関数（ディレクトリ内の全ファイルなど）。`run_bench.py --instances a,b` で一時的に変えられる |
+| `load` | ✓ | `load(インスタンス名)` → 解法に渡すデータ |
+| `reference` | | `reference(インスタンス名)` → 参照値（既知最適値など）。`None` を返す（または省略する）と、同じ内容のインスタンスを解いた全 run・全手法の最良値を参照値にする |
+| `evaluate` | | `evaluate(データ, 解)` → 目的関数値（実行不能なら `None`）。解法が `solution` を返したときの検証に使う |
+| `generate` | | 合成インスタンスを（再）生成する関数。`python src/make_instances.py <問題名>` で呼ばれる |
+| `sense` | | `"min"`（既定）または `"max"`。ギャップは常に「参照値より悪い方向が正」になる |
+| `display` | | `"gap"`（既定。参照値に対するギャップで比較）または `"value"`（参照値が最適値でないとき。値と平均順位で比較） |
+| `order` | | ビューのタブなどの並び順（小さいほど先。既定 100） |
+| `packages` | | `run.json` にバージョンを記録したい追加パッケージ |
+
+1 つのファイルで複数の問題を登録しても構いません（`problems/routing.py` は TSP と ATSP を登録しています）。
+
+## 中立性のための注意
+
+- 新しい解法も、既存の手法と同じ制限時間・スレッド数の条件で比べてください。複数スレッドを使う場合は `threads` を正しく宣言し、手法名にもそれが分かる印（`-4w` など）を付けると読み手に親切です。
+- 解法が解を返せる場合は `solution` を返し、問題側には `evaluate` を用意してください。ソルバーの自己申告値ではなく共通の評価関数で確かめられます（現在 TSP/ATSP/NSP は対応済み、JSSP は未対応）。
+- コードを変えたらコミットしてから run を回してください（`run.json` に記録されるコミットで結果を再現できるようにするため）。
