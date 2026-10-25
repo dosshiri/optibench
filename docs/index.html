@@ -72,7 +72,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
 <header>
   <div class="eyebrow">optibench · 組合せ最適化ベンチマーク</div>
   <h1>optibench ポータル</h1>
-  <p class="lede">巡回セールスマン問題、ジョブショップスケジューリング、ナーススケジューリングなど、実務でよく使われる組合せ最適化問題について、どの解法を選べばよいかを調べました。このページはその入口で、論文の調査、手元のPCでの計測、両者を踏まえた考察の 3 つのページにつながっています。</p>
+  <p class="lede">巡回セールスマン問題（時間枠付きを含む）、ジョブショップスケジューリング、ナーススケジューリングなど、実務でよく使われる組合せ最適化問題について、どの解法を選べばよいかを調べました。このページはその入口で、論文の調査、手元のPCでの計測、両者を踏まえた考察の 3 つのページにつながっています。</p>
   <p class="hint">どの手法を使えばよいかを知りたいときは、まず <a href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a> を開いてください。根拠を詳しく確かめたいときは、ほかの 2 つのページを参照してください。</p>
 </header>
 
@@ -84,7 +84,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
     <ul>
       <li>問題ごとの標準インスタンス集・代表ソルバー・主要な比較研究</li>
       <li>手法 × 問題の現状マトリクス</li>
-      <li>比較を中立にするための注意点、文献約 25 件</li>
+      <li>比較を中立にするための注意点、文献約 40 件</li>
     </ul>
     <div class="go"><a class="btn" href="literature/index.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">開く</a></div>
   </li>
@@ -105,7 +105,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
     <h2><a href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></h2>
     <p>問題ごとに、どの手法を選ぶべきかと、その根拠をどこまで信じてよいか。</p>
     <ul>
-      <li>TSP・ATSP・JSSP・ナースの章ごとに、手法の選び方を先頭に</li>
+      <li>TSP・ATSP・ATSP-TW・JSSP・ナースの章ごとに、手法の選び方を先頭に</li>
       <li>手元の結果と文献の突き合わせ、スレッド数の効果、再現性</li>
       <li>その問題での限界と次の一手</li>
     </ul>
@@ -122,6 +122,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
     <tbody>
       <tr><td>TSP</td><td>LKH</td><td>業務制約があれば OR-Tools Routing。数百ノードまでで証明が要れば MIP（初期解つき）</td><td>大規模での CP-SAT、初期解なしの MIP</td></tr>
       <tr><td>ATSP</td><td>LKH</td><td>証明が要れば MIP と CP-SAT の両方を試す</td><td>2-opt 中心の自作局所探索</td></tr>
+      <tr><td>ATSP-TW</td><td>PyVRP</td><td>自作するなら GVNS。即答が必要なら締め切り順 + 局所探索。70 地点ほどまでで証明が要れば CP-SAT（複数スレッド）</td><td>時間枠の厳しい問題での OR-Tools Routing、big-M の MIP</td></tr>
       <tr><td>JSSP</td><td>CP-SAT（複数スレッド）</td><td>専用近傍を実装できればタブーサーチ。即答が必要ならディスパッチングルール</td><td>big-M の MIP、1 スレッドの CP-SAT</td></tr>
       <tr><td>ナース</td><td>MIP</td><td>大規模で MIP が解を出せなければ CP-SAT（複数スレッド）</td><td>調整なしの汎用 SA、1 スレッドの CP-SAT</td></tr>
     </tbody>
