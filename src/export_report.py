@@ -1,5 +1,5 @@
 """ビュー用データ (docs/data.json) から、GitHub 上でそのまま読める結果ページを書き出す.
-results/README.md（表）と results/figures/*.svg（棒グラフ・ヒートマップ）を生成する.
+results/README.md（各問題の最新 run の表と実行履歴）と results/figures/*.svg（棒グラフ・ヒートマップ）を生成する.
 python export_report.py [data.json]   （通常は export_web.py から呼ばれる）"""
 import json
 import os
@@ -171,25 +171,60 @@ def md_tables(P, st):
     return lines
 
 
+def threads_text(R):
+    multi = sorted({n for n in R["threads"].values() if n > 1})
+    if not multi:
+        return "全手法 1 スレッド"
+    return "全手法 1 スレッド（" + "、".join(
+        "・".join(m for m, n in R["threads"].items() if n == k) + f" は {k} スレッド" for k in multi) + "）"
+
+
+def env_text(R):
+    e, g = R["environment"], R["git"]
+    pk = ", ".join(f"{k} {v}" for k, v in e["packages"].items() if v and k in ("ortools", "highspy", "elkai", "numba"))
+    commit = (g["commit"] or "不明")[:7] + ("（未コミット変更あり）" if g["dirty"] else "")
+    return (f'{e["machine"]}: {e["cpu"]}, {e["cpu_count"]} 論理 CPU, メモリ {e["memory_gb"]} GB, {e["os"]}, '
+            f'Python {e["python"]}, {pk}。コード: commit `{commit}`')
+
+
+def history(data):
+    lines = ["## 実行履歴", "",
+             "`results/runs/<run_id>/` に run ごとの `run.json`（メタデータ）・`results.jsonl`（生データ）・"
+             "`summary.csv`（集計）があります。各問題の上の表は最新の run です。", "",
+             "| run_id | 問題 | 開始日時 (UTC) | 実行環境 | 制限時間 | commit | メモ |", "|---|---|---|---|---:|---|---|"]
+    for R in sorted(data["runs"].values(), key=lambda r: (r["started_at"], r["run_id"]), reverse=True):
+        e, g = R["environment"], R["git"]
+        commit = (g["commit"] or "?")[:7] + ("*" if g["dirty"] else "")
+        note = R["note"].replace("|", "\\|")
+        note = note if len(note) <= 40 else note[:40] + "…"
+        lines.append(f'| `{R["run_id"]}` | {R["problem"]} | {R["started_at"][:16].replace("T", " ")} | '
+                     f'{e["machine"]} ({e["cpu_count"]} CPU) | {R["time_limit"]:g} 秒 | `{commit}` | {note} |')
+    return lines + ["", "commit の `*` は未コミットの変更がある状態で実行したことを示します。", ""]
+
+
 def main(data):
     os.makedirs(FIG_DIR, exist_ok=True)
     md = ["# ベンチマーク結果", "",
           "このページは `python src/export_web.py` で自動生成しています（手で編集しないでください）。"
-          "マウスオーバーで詳細が見られる対話型のビューは、手元で `docs/index.html` をダブルクリックすると開きます。", "",
-          f'データ生成: {data["generated"]}（Python {data["env"]["python"]}, {data["env"]["machine"]}）', ""]
-    md += ["- " + " / ".join(f'[{P["label"]}](#{k})' for k, P in data["problems"].items()), ""]
-    for k, P in data["problems"].items():
+          "マウスオーバーで詳細が見られ、run を切り替えて比較できる対話型のビューは、"
+          "手元で `docs/index.html` をダブルクリックすると開きます。", "",
+          f'データ生成: {data["generated"]}', ""]
+    md += ["- " + " / ".join(f'[{P["label"]}](#{k})' for k, P in data["problems"].items()) + " / [実行履歴](#history)", ""]
+    for k, Pm in data["problems"].items():
+        P = dict(data["runs"][Pm["run"]], **Pm)
         st = method_stats(P)
         order = [s["method"] for s in st]
         for name, svg in ((f"{k}_bars.svg", bars_svg(P, st)), (f"{k}_heat.svg", heat_svg(P, order))):
             with open(os.path.join(FIG_DIR, name), "w", encoding="utf-8", newline="\n") as f:
                 f.write(svg)
         md += [f'<a id="{k}"></a>', "", f'## {P["label"]}', "",
-               f'参照値: {P["ref"]}。制限時間 {P["time_limit"]:g} 秒、全手法 1 スレッド（-4w は 4 スレッド）。'
-               "確率的手法は複数シードの平均。", "",
+               f'run `{P["run_id"]}`（{P["started_at"][:16].replace("T", " ")} UTC 開始）。'
+               f'参照値: {P["ref"]}。制限時間 {P["time_limit"]:g} 秒、{threads_text(P)}。確率的手法は複数シードの平均。', "",
+               f"実行環境: {env_text(P)}", "",
                f"![{P['label']} 手法別](figures/{k}_bars.svg)", "",
                f"![{P['label']} ヒートマップ](figures/{k}_heat.svg)", ""]
         md += md_tables(P, st) + [""]
+    md += ['<a id="history"></a>', ""] + history(data)
     with open(os.path.join(OUT_DIR, "README.md"), "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(md))
 

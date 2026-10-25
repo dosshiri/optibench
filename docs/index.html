@@ -21,6 +21,7 @@
   --seq-4: #256abf; --seq-5: #184f95; --seq-6: #0d366b;
   --ink-on-dark: #ffffff; --ink-on-light: #0b0b0b;
   --accent: #2a78d6;
+  --better: #1a7f37; --worse: #c4314b;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -31,6 +32,7 @@
     --seq-0: #104281; --seq-1: #184f95; --seq-2: #1c5cab; --seq-3: #256abf;
     --seq-4: #3987e5; --seq-5: #6da7ec; --seq-6: #b7d3f6;
     --ink-on-dark: #0b0b0b; --ink-on-light: #f0efec; --accent: #3987e5;
+    --better: #4ac26b; --worse: #ff7b8a;
   }
 }
 :root[data-theme="dark"] {
@@ -41,6 +43,7 @@
   --seq-0: #104281; --seq-1: #184f95; --seq-2: #1c5cab; --seq-3: #256abf;
   --seq-4: #3987e5; --seq-5: #6da7ec; --seq-6: #b7d3f6;
   --ink-on-dark: #0b0b0b; --ink-on-light: #f0efec; --accent: #3987e5;
+  --better: #4ac26b; --worse: #ff7b8a;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--text-primary);
@@ -69,6 +72,18 @@ th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: l
 summary { cursor: pointer; color: var(--text-secondary); }
 .legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);
   margin-top: 8px; flex-wrap: wrap; }
+.runbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 16px; font-size: 14px; }
+.runbar label { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); min-width: 0; max-width: 100%; }
+.runbar select { font: inherit; font-size: 13px; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface-1); color: var(--text-primary); min-width: 0; max-width: 100%; }
+dl.meta { display: grid; grid-template-columns: max-content 1fr; gap: 2px 16px; margin: 0; font-size: 13px; }
+dl.meta dt { color: var(--text-secondary); }
+dl.meta dd { margin: 0; overflow-wrap: anywhere; }
+code { font-size: 12px; }
+table.envdiff { table-layout: fixed; }
+table.envdiff th, table.envdiff td { text-align: left; white-space: normal; overflow-wrap: anywhere; vertical-align: top; }
+table.envdiff th:first-child { width: 7em; }
+.better { color: var(--better); } .worse { color: var(--worse); }
 .legend i { display: inline-block; width: 22px; height: 12px; border-radius: 2px; }
 </style>
 </head>
@@ -77,6 +92,26 @@ summary { cursor: pointer; color: var(--text-secondary); }
   <h1>組合せ最適化ベンチマーク</h1>
   <p class="sub" id="sub">TSP・ATSP・JSSP・ナーススケジューリングに対する代表的解法の手元比較（全手法 1 スレッド・同一制限時間）</p>
   <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="runbar">
+    <label>run <select id="runSel"></select></label>
+    <label>比較対象 <select id="cmpSel"></select></label>
+  </div>
+  <section class="card">
+    <details id="runinfo">
+      <summary id="runsum"></summary>
+      <div id="runmeta" style="margin-top:8px"></div>
+    </details>
+  </section>
+  <section class="card" id="cmp" hidden>
+    <h2 id="t3">run の比較</h2>
+    <p class="note" id="n3"></p>
+    <div id="cmpenv"></div>
+    <div class="scroll" id="cmpmethods"></div>
+    <details style="margin-top:12px">
+      <summary>インスタンス別の比較</summary>
+      <div class="scroll" id="cmpcells"></div>
+    </details>
+  </section>
   <section class="card">
     <h2 id="t1">手法別の平均ギャップ</h2>
     <p class="note" id="n1"></p>
@@ -104,6 +139,7 @@ const NS = "http://www.w3.org/2000/svg";
 const BINS = [0.001, 0.5, 1, 2, 5, 10, 20];  // ギャップ (%) の段階
 const tip = document.getElementById("tip");
 let DATA, current;
+const chosen = {}, compare = {};  // 問題ごとに選んだ run と比較対象
 
 function el(tag, attrs = {}, parent) {
   const e = document.createElementNS(NS, tag);
@@ -230,21 +266,140 @@ function drawTable(P) {
     `</tbody></table>`;
 }
 
+function esc(v) { return String(v ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+function short(c) { return c ? c.slice(0, 7) : "?"; }
+function runLabel(R) {
+  return `${R.started_at.slice(0, 16).replace("T", " ")} · ${R.environment.machine} · ${R.time_limit}秒 · ${short(R.git.commit)}${R.git.dirty ? "*" : ""}`;
+}
+function threadsText(R) {
+  const multi = [...new Set(Object.values(R.threads))].filter(n => n > 1).sort();
+  if (!multi.length) return "全手法 1 スレッド";
+  return "全手法 1 スレッド（" + multi.map(k => Object.keys(R.threads).filter(m => R.threads[m] === k).join("・") + ` は ${k} スレッド`).join("、") + "）";
+}
+function envRows(R) {
+  const e = R.environment, g = R.git;
+  return [
+    ["run_id", `<code>${esc(R.run_id)}</code>`],
+    ["実行日時 (UTC)", esc(R.started_at) + (R.finished_at ? " 〜 " + esc(R.finished_at) : "") + (R.status !== "complete" ? `（${esc(R.status)}）` : "")],
+    ["マシン", esc(e.machine)],
+    ["CPU", `${esc(e.cpu)}（${e.cpu_count} 論理 CPU）`],
+    ["メモリ", e.memory_gb == null ? "—" : e.memory_gb + " GB"],
+    ["OS", esc(e.os)],
+    ["Python", esc(e.python)],
+    ["パッケージ", Object.entries(e.packages).map(([k, v]) => `${esc(k)} ${esc(v ?? "—")}`).join(", ")],
+    ["制限時間", R.time_limit + " 秒"],
+    ["並列", `${threadsText(R)}、同時 ${R.workers} ジョブ`],
+    ["シード数", Object.entries(R.seeds).map(([m, n]) => `${esc(m)} ${n}`).join(", ")],
+    ["コード", `commit <code>${esc(g.commit ?? "不明")}</code>（${esc(g.branch ?? "")}）` + (g.dirty ? `<br>未コミットの変更あり: ${g.dirty_files.map(esc).join(", ")}` : "")],
+    ["メモ", esc(R.note) || "—"],
+  ];
+}
+function drawRunInfo(R) {
+  document.getElementById("runsum").textContent = `実行環境と条件: ${R.environment.cpu}（${R.environment.cpu_count} CPU）· ${R.time_limit} 秒 · commit ${short(R.git.commit)}${R.git.dirty ? "（未コミット変更あり）" : ""}`;
+  document.getElementById("runmeta").innerHTML = `<dl class="meta">` + envRows(R).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("") + `</dl>`;
+}
+
+function signed(v, d = 2) {
+  if (v == null) return "—";
+  const r = Number(v.toFixed(d));
+  return (r > 0 ? "+" : r < 0 ? "−" : "±") + Math.abs(r).toFixed(d);
+}
+function diffCell(d, unit = "", digits = 2) {  // 小さいほど良い指標の差 (B − A)
+  if (d == null) return "<td>—</td>";
+  const r = Number(d.toFixed(digits));
+  const cls = r === 0 ? "" : r < 0 ? "better" : "worse";
+  return `<td class="${cls}">${signed(d, digits)}${unit}</td>`;
+}
+function drawCompare(P, A, B) {
+  const box = document.getElementById("cmp");
+  if (!B) { box.hidden = true; return; }
+  box.hidden = false;
+  document.getElementById("n3").innerHTML =
+    `A = 表示中の run（${esc(runLabel(A))}）、B = 比較対象（${esc(runLabel(B))}）。差は B − A で、<span class="better">緑</span>は B が良い、<span class="worse">赤</span>は B が悪いことを示します。` +
+    "平均は両方の run で解が得られたインスタンスだけで取っています。";
+  // 実行環境・条件で異なる項目
+  const ra = Object.fromEntries(envRows(A)), rb = Object.fromEntries(envRows(B));
+  const skip = new Set(["run_id", "実行日時 (UTC)", "メモ"]);
+  const diffs = Object.keys(ra).filter(k => !skip.has(k) && ra[k] !== rb[k]);
+  const insts = P.instances.filter(i => (B.instances || []).includes(i));
+  const changed = insts.filter(i => A.instance_sha256[i] !== B.instance_sha256[i]);
+  document.getElementById("cmpenv").innerHTML = (diffs.length
+    ? `<table class="envdiff" style="margin-bottom:12px"><thead><tr><th>異なる項目</th><th>A</th><th>B</th></tr></thead><tbody>` +
+      diffs.map(k => `<tr><td>${k}</td><td>${ra[k]}</td><td>${rb[k]}</td></tr>`).join("") + `</tbody></table>`
+    : `<p class="note">実行環境・条件・コードは同じです。</p>`) +
+    (changed.length ? `<p class="note worse">インスタンスの内容が異なります: ${changed.map(esc).join(", ")}</p>` : "");
+  const cellOf = (R, i, m) => R.cells.find(c => c.instance === i && c.method === m);
+  const methods = P.methods.filter(m => B.methods.includes(m));
+  const byValue = P.display === "value";
+  const rows = methods.map(m => {
+    const pairs = insts.map(i => [cellOf(A, i, m), cellOf(B, i, m)]);
+    const both = pairs.filter(([a, b]) => a && b && a.mean_gap != null && b.mean_gap != null);
+    const avg = f => both.length ? both.reduce((s, p) => s + f(p), 0) / both.length : null;
+    const ga = avg(([a]) => a.mean_gap), gb = avg(([, b]) => b.mean_gap);
+    const ta = avg(([a]) => a.time), tb = avg(([, b]) => b.time);
+    const solved = R => pairs.filter(p => p[R] && p[R].mean_gap != null).length;
+    return `<tr><td>${esc(m)}</td><td>${solved(0)}/${insts.length}</td><td>${solved(1)}/${insts.length}</td>` +
+      `<td>${fmt(ga)}</td><td>${fmt(gb)}</td>${diffCell(ga == null || gb == null ? null : gb - ga)}` +
+      `<td>${fmt(ta, 1)}</td><td>${fmt(tb, 1)}</td>${diffCell(ta == null || tb == null ? null : tb - ta, "", 1)}</tr>`;
+  });
+  const gapName = byValue ? "最良値との差%" : "平均ギャップ%";
+  document.getElementById("cmpmethods").innerHTML =
+    `<table><thead><tr><th>手法</th><th>解あり A</th><th>解あり B</th><th>${gapName} A</th><th>${gapName} B</th><th>差</th><th>時間 A</th><th>時間 B</th><th>差</th></tr></thead><tbody>` +
+    rows.join("") + `</tbody></table>`;
+  const crow = [];
+  insts.forEach(i => methods.forEach(m => {
+    const a = cellOf(A, i, m), b = cellOf(B, i, m);
+    if (!a && !b) return;
+    const oa = a?.mean_obj ?? null, ob = b?.mean_obj ?? null;
+    crow.push(`<tr><td>${esc(i)}</td><td>${esc(m)}</td><td>${oa ?? "×"}</td><td>${ob ?? "×"}</td>` +
+      diffCell(oa == null || ob == null ? null : ob - oa, "", byValue ? 1 : 0) +
+      `<td>${fmt(a?.mean_gap)}</td><td>${fmt(b?.mean_gap)}</td>` +
+      diffCell(a?.mean_gap == null || b?.mean_gap == null ? null : b.mean_gap - a.mean_gap) +
+      `<td>${fmt(a?.time, 1)}</td><td>${fmt(b?.time, 1)}</td></tr>`);
+  }));
+  document.getElementById("cmpcells").innerHTML =
+    `<table><thead><tr><th>インスタンス</th><th>手法</th><th>平均値 A</th><th>平均値 B</th><th>差</th><th>${gapName} A</th><th>${gapName} B</th><th>差</th><th>時間 A</th><th>時間 B</th></tr></thead><tbody>` +
+    crow.join("") + `</tbody></table>`;
+}
+
+function fillSelect(sel, ids, value, none) {
+  sel.innerHTML = (none ? `<option value="">なし</option>` : "") +
+    ids.slice().reverse().map(id => `<option value="${esc(id)}">${esc(runLabel(DATA.runs[id]))}</option>`).join("");
+  sel.value = value || "";
+}
+
 function render(key) {
   current = key;
-  const P = DATA.problems[key];
+  const Pm = DATA.problems[key];
+  const runs = Pm.runs || [];
+  if (!chosen[key]) chosen[key] = Pm.run;
+  const R = DATA.runs ? DATA.runs[chosen[key]] : null;
+  const P = R ? Object.assign({}, R, Pm) : Pm;  // 旧形式の data.json（runs なし）にも対応
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.k === key));
+  if (R) {
+    fillSelect(document.getElementById("runSel"), runs, chosen[key], false);
+    const others = runs.filter(id => id !== chosen[key]);
+    if (compare[key] && !others.includes(compare[key])) compare[key] = "";
+    fillSelect(document.getElementById("cmpSel"), others, compare[key], true);
+    document.getElementById("cmpSel").disabled = !others.length;
+    drawRunInfo(R);
+  }
+  document.querySelector(".runbar").hidden = !R;
+  document.getElementById("runinfo").parentElement.hidden = !R;
   const byValue = P.display === "value";
   document.getElementById("t1").textContent = `${P.label}: ` + (byValue ? "手法別の平均順位" : "手法別の平均ギャップ");
   document.getElementById("t2").textContent = byValue ? `インスタンス × 手法の${P.unit}` : "インスタンス × 手法のギャップ (%)";
   document.getElementById("n2").textContent = (byValue
-    ? `セルの値は${P.unit}の平均値（小さいほど良い）。色は全手法中の最良値からの差 (%) を示します。`
+    ? `セルの値は${P.unit}の平均値（小さいほど良い）。色は全 run・全手法中の最良値からの差 (%) を示します。`
     : "セルの値は参照値に対する平均ギャップ (%)。") + "「×」は制限時間内に実行可能解が得られなかったことを示します。";
   document.getElementById("n1").textContent =
-    `参照値: ${P.ref}。制限時間 ${P.time_limit} 秒、全手法 1 スレッド（-4w は 4 スレッド）。確率的手法は複数シードの平均。`;
+    `参照値: ${P.ref}。制限時間 ${P.time_limit} 秒、${R ? threadsText(R) : "全手法 1 スレッド（-4w は 4 スレッド）"}。確率的手法は複数シードの平均。`;
   drawBars(P); drawHeat(P); drawTable(P);
+  if (R) drawCompare(P, R, compare[key] ? DATA.runs[compare[key]] : null);
   try { localStorage.setItem("tab", key); } catch (e) {}
 }
+document.getElementById("runSel").onchange = e => { chosen[current] = e.target.value; render(current); };
+document.getElementById("cmpSel").onchange = e => { compare[current] = e.target.value; render(current); };
 
 // data.js があればそれを使う（ダブルクリックで file:// として開いた場合も表示できる）
 (window.OPTIBENCH_DATA ? Promise.resolve(window.OPTIBENCH_DATA) : fetch("data.json").then(r => r.json())).then(d => {
@@ -255,7 +410,7 @@ function render(key) {
     b.textContent = P.label; b.dataset.k = k; b.setAttribute("role", "tab");
     b.onclick = () => render(k); tabs.appendChild(b);
   });
-  document.getElementById("foot").textContent = `データ生成: ${d.generated}（Python ${d.env.python}, ${d.env.machine}）`;
+  document.getElementById("foot").textContent = `データ生成: ${d.generated}` + (d.env ? `（Python ${d.env.python}, ${d.env.machine}）` : "");
   let first = Object.keys(d.problems)[0];
   try { const s = localStorage.getItem("tab"); if (s && d.problems[s]) first = s; } catch (e) {}
   render(first);

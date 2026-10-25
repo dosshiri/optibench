@@ -16,12 +16,13 @@ src/            実行スクリプト
   nsp_model.py    NSP のモデル・評価関数・合成インスタンス生成
   nsp_methods.py  NSP の解法
   run_one.py      1 ジョブ実行（JSON 1 行を出力）
-  run_bench.py    一括実行（results/<problem>.jsonl に追記、完了済みはスキップ）
-  analyze.py      集計（results/summary_<problem>.csv）
+  run_bench.py    一括実行（1 回の実行を 1 つの run として results/runs/<run_id>/ に保存）
+  runmeta.py      run のメタデータ（実行環境・条件・git コミット）の収集と読み書き
+  analyze.py      集計（results/runs/<run_id>/summary.csv）
   export_web.py   ビュー用データ（docs/data.json, docs/data.js）と結果ページの書き出し
   export_report.py 結果ページ（results/README.md, results/figures/*.svg）の生成
 instances/      ベンチマークインスタンス
-results/        実行結果の生データ（JSONL）・集計 CSV・結果ページ（README.md と figures/）
+results/        run ごとの実行結果（runs/）と結果ページ（README.md と figures/）
 docs/           対話型のグラフビュー（index.html）
 ```
 
@@ -32,7 +33,7 @@ docs/           対話型のグラフビュー（index.html）
 | TSP | berlin52, kroA100, ch150, a280, pcb442, rat783 | TSPLIB95 | 公表最適値 |
 | ATSP | ftv33, ftv70, kro124p, ft70, rbg323, rbg443 | TSPLIB95 | 公表最適値 |
 | JSSP | ft06, ft10, la16, la21, abz5, orb01, ta01, swv01, ta11, ta21 | JSPLIB（OR-Library 形式） | 既知最適値（ta11=1357, ta21=1642 は文献値） |
-| NSP | nsp01–nsp06（8〜50 人, 14〜42 日, 1〜4 勤務種別） | 合成（`nsp_model.py` で再生成可能） | 全手法中の最良値 |
+| NSP | nsp01–nsp06（8〜50 人, 14〜42 日, 1〜4 勤務種別） | 合成（`nsp_model.py` で再生成可能） | 全 run・全手法中の最良値 |
 
 NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmarks.org）と同じ制約体系を持つ合成インスタンスです。ハード制約は 1 日 1 勤務、禁止勤務遷移、勤務種別ごとの上限回数、総勤務時間の上下限、最大・最小連続勤務日数、最小連続休日数、最大勤務週末数、指定休日。ソフト制約は勤務希望・回避希望と、必要人数の不足（重み 100/人）・超過（重み 1/人）です。公式インスタンスへの差し替えは今後の課題です。
 
@@ -62,11 +63,11 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 - 全手法 1 スレッド（`-4w` のみ 4 スレッド、単独実行）。1 スレッド手法は 4 ジョブ並列で実行
 - 確率的手法（`SA`, `GA`, `Tabu-N5`）は 3 シードの平均
 - 指標: 参照値に対するギャップ (%) = (得られた値 − 参照値) / 参照値 × 100
-- 実行環境: 4 vCPU / 16 GB のクラウドコンテナ、Python 3.13、OR-Tools 9.15、HiGHS 1.15
+- 実行環境: 4 vCPU / 16 GB のクラウドコンテナ、Python 3.13、OR-Tools 9.15、HiGHS 1.15（run ごとの詳細は各 `run.json`）
 
 ## 初回結果のサマリ（2026-10-25, 制限時間 60 秒）
 
-数値は参照値に対する平均ギャップ (%)。詳細はビュー（`docs/`）と `results/summary_*.csv` を参照してください。
+数値は参照値に対する平均ギャップ (%)。詳細はビュー（`docs/`）と `results/runs/*-cloud-*/summary.csv` を参照してください。
 
 | 問題 | 1 位 | 主な結果 |
 |---|---|---|
@@ -82,7 +83,7 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 - 決定的な手法は 1 回、確率的手法は 3 シードの結果です。順位の僅差は誤差の範囲と考えてください。
 - `CP-SAT` は本来マルチワーカー前提のソルバーです。1 ワーカーの結果は公平性のための参考値で、実用上は `-4w` を見てください。
 - `LKH(elkai)` は時間制限ではなく試行回数（runs=10）で止めています。
-- NSP は合成インスタンスで、参照値は全手法中の最良値です（最適値ではありません）。
+- NSP は合成インスタンスで、参照値は全 run・全手法中の最良値です（最適値ではありません）。
 
 ## 再現方法
 
@@ -91,11 +92,39 @@ python -m venv .venv && . .venv/bin/activate   # Windows (PowerShell) は .venv\
 pip install -r requirements.txt
 python src/nsp_model.py              # NSP インスタンスを再生成（同一 seed で同じものが出ます）
 python src/run_bench.py tsp 60       # tsp / atsp / jssp / nsp
-python src/analyze.py                # 集計表を表示・CSV 出力
+python src/analyze.py                # 問題ごとに最新の run の集計表を表示・CSV 出力（run_id を渡すとその run）
 python src/export_web.py             # docs/data.json・data.js と results/README.md・figures を更新
 ```
 
-`results/<problem>.jsonl` に記録済みのジョブはスキップされるため、手法やインスタンスを追加して同じコマンドを実行すれば差分だけ実行されます。`--only` で手法を絞れます。
+`--only` で手法を絞れます。`--note "メモ"` で run にメモを、`--machine 名前` で実行環境の名前（省略時はホスト名）を付けられます。
+
+## 実験結果の履歴管理
+
+`run_bench.py` を 1 回実行するごとに、1 つの run として `results/runs/<run_id>/` に保存されます。run_id は `<開始日時 UTC>-<マシン名>-<問題>`（例: `20261025T050501Z-cloud-tsp`）です。
+
+```
+results/runs/<run_id>/
+  run.json       メタデータ
+  results.jsonl  1 ジョブ 1 行の生データ
+  summary.csv    集計（analyze.py / export_web.py が書き出す）
+```
+
+`run.json` には次の情報が入ります。
+
+| キー | 内容 |
+|---|---|
+| `started_at`, `finished_at`, `status` | 実行開始・終了日時（UTC）と状態（`running` / `complete`） |
+| `environment` | マシン名、CPU 型番、論理 CPU 数、メモリ、OS、Python とソルバー各パッケージのバージョン |
+| `conditions` | 制限時間、同時実行ジョブ数、手法ごとのスレッド数、インスタンス一覧、手法ごとのシード |
+| `git` | 実行時のコミットハッシュ・ブランチ、`src/`・`instances/`・`requirements.txt` に未コミットの変更があったか（`dirty`）とそのファイル |
+| `instance_sha256` | 各インスタンスファイルの SHA-256（同じ名前で中身が変わっていないかの確認用） |
+| `command`, `note` | 実行したコマンドと任意のメモ |
+
+結果を正しく紐づけるため、コードを変えたらコミットしてから実行してください（未コミットのまま実行すると警告が出て、`dirty: true` が記録されます）。途中で止まった run は `python src/run_bench.py <problem> <time_limit> --run <run_id>` で再開でき、記録済みのジョブはスキップされます。
+
+`results/README.md` と `docs/` のビューは、問題ごとに最新の run を既定で表示します。ビューでは run を切り替えられ、「比較対象」に別の run を選ぶと、実行環境・条件の違いと手法別・インスタンス別の差が表示されます。NSP の参照値は、同じ内容のインスタンスを解いた全 run・全手法の最良値です。
+
+初回の結果（クラウドコンテナで実行）は `*-cloud-*` の 4 つの run として移行済みです。移行前は開始・終了日時を記録していなかったため、結果をコミットした時刻を入れています。
 
 ## 結果の閲覧
 

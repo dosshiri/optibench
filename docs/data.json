@@ -1,31 +1,102 @@
 {
- "generated": "2026-10-25T05:04:34+00:00",
- "env": {
-  "python": "3.13.17",
-  "machine": "x86_64"
- },
+ "generated": "2026-10-25T06:09:39+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
    "ref": "TSPLIB 公表最適値",
    "unit": "距離",
-   "instances": [
-    "berlin52",
-    "kroA100",
-    "ch150",
-    "a280",
-    "pcb442",
-    "rat783"
-   ],
-   "methods": [
-    "nn+ls",
-    "SA",
-    "LKH(elkai)",
-    "ORTools-GLS",
-    "CP-SAT",
-    "MIP-HiGHS"
-   ],
+   "run": "20261025T050501Z-cloud-tsp",
+   "runs": [
+    "20261025T050501Z-cloud-tsp"
+   ]
+  },
+  "atsp": {
+   "label": "ATSP（非対称巡回セールスマン）",
+   "ref": "TSPLIB 公表最適値",
+   "unit": "距離",
+   "run": "20261025T050501Z-cloud-atsp",
+   "runs": [
+    "20261025T050501Z-cloud-atsp"
+   ]
+  },
+  "jssp": {
+   "label": "JSSP（ジョブショップ）",
+   "ref": "既知最適値（JSPLIB, ta11/ta21 は文献値）",
+   "unit": "メイクスパン",
+   "run": "20261025T050501Z-cloud-jssp",
+   "runs": [
+    "20261025T050501Z-cloud-jssp"
+   ]
+  },
+  "nsp": {
+   "label": "ナーススケジューリング",
+   "ref": "全 run・全手法中の最良値（合成インスタンス、最適値未知）",
+   "unit": "ペナルティ",
+   "display": "value",
+   "run": "20261025T050501Z-cloud-nsp",
+   "runs": [
+    "20261025T050501Z-cloud-nsp"
+   ]
+  }
+ },
+ "runs": {
+  "20261025T050501Z-cloud-tsp": {
+   "run_id": "20261025T050501Z-cloud-tsp",
+   "problem": "tsp",
+   "started_at": "2026-10-25T05:05:01+00:00",
+   "finished_at": "2026-10-25T05:05:01+00:00",
+   "status": "complete",
+   "note": "既存結果（results/tsp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。pcb442・rat783 は 460373e で計測（ソルバーのコードは 99b5f2e と同一で、差分は文字コード指定のみ）。",
+   "migrated": true,
+   "environment": {
+    "machine": "cloud",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cpu_count": 4,
+    "memory_gb": 15.7,
+    "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+    "python": "3.13.17",
+    "packages": {
+     "ortools": "9.15.6755",
+     "highspy": "1.15.1",
+     "elkai": "2.0.1",
+     "numba": "0.68.0",
+     "numpy": "2.5.3",
+     "pandas": "3.0.5",
+     "tsplib95": "0.7.1"
+    }
+   },
+   "git": {
+    "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+    "branch": "claude/initial-benchmark",
+    "dirty": false,
+    "dirty_files": []
+   },
    "time_limit": 60.0,
+   "workers": 4,
+   "threads": {
+    "nn+ls": 1,
+    "SA": 1,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "MIP-HiGHS": 1
+   },
+   "seeds": {
+    "nn+ls": 1,
+    "SA": 3,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "MIP-HiGHS": 1
+   },
+   "instance_sha256": {
+    "berlin52": "8496a5838133e3c3eb25a9fa8893b1ac302593fc8dc325350643a0cabd8abadc",
+    "kroA100": "e103100c1cf31dfc06be95a9d04011b5a8753bb65a3339594ca34404e574bdf5",
+    "ch150": "05abd424f773269b13477d367e534797aac080fb536a28074a72a9c0ba8064f5",
+    "a280": "3fb489af4be6d04f2e84e73ec8302c32c65e6d344187b2347685fb311416e7bf",
+    "pcb442": "0f58bc2f1aa0023764ebc14b3b0dcb6e765ffe173963fdc1cb8443d969842b51",
+    "rat783": "b9535dc5e44549f613bf6e34ee8667eed6f7a13e6b74c0b0451de95a480cabde"
+   },
    "cells": [
     {
      "instance": "a280",
@@ -459,19 +530,14 @@
      "runs": 1,
      "fails": 0
     }
-   ]
-  },
-  "atsp": {
-   "label": "ATSP（非対称巡回セールスマン）",
-   "ref": "TSPLIB 公表最適値",
-   "unit": "距離",
+   ],
    "instances": [
-    "ftv33",
-    "ftv70",
-    "kro124p",
-    "ft70",
-    "rbg323",
-    "rbg443"
+    "berlin52",
+    "kroA100",
+    "ch150",
+    "a280",
+    "pcb442",
+    "rat783"
    ],
    "methods": [
     "nn+ls",
@@ -480,8 +546,65 @@
     "ORTools-GLS",
     "CP-SAT",
     "MIP-HiGHS"
-   ],
+   ]
+  },
+  "20261025T050501Z-cloud-atsp": {
+   "run_id": "20261025T050501Z-cloud-atsp",
+   "problem": "atsp",
+   "started_at": "2026-10-25T05:05:01+00:00",
+   "finished_at": "2026-10-25T05:05:01+00:00",
+   "status": "complete",
+   "note": "既存結果（results/atsp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。",
+   "migrated": true,
+   "environment": {
+    "machine": "cloud",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cpu_count": 4,
+    "memory_gb": 15.7,
+    "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+    "python": "3.13.17",
+    "packages": {
+     "ortools": "9.15.6755",
+     "highspy": "1.15.1",
+     "elkai": "2.0.1",
+     "numba": "0.68.0",
+     "numpy": "2.5.3",
+     "pandas": "3.0.5",
+     "tsplib95": "0.7.1"
+    }
+   },
+   "git": {
+    "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+    "branch": "claude/initial-benchmark",
+    "dirty": false,
+    "dirty_files": []
+   },
    "time_limit": 60.0,
+   "workers": 4,
+   "threads": {
+    "nn+ls": 1,
+    "SA": 1,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "MIP-HiGHS": 1
+   },
+   "seeds": {
+    "nn+ls": 1,
+    "SA": 3,
+    "LKH(elkai)": 1,
+    "ORTools-GLS": 1,
+    "CP-SAT": 1,
+    "MIP-HiGHS": 1
+   },
+   "instance_sha256": {
+    "ftv33": "4d23e2b99043503fa7325bdd69d8ce5e6f7f55df33c63533ed993d460332171d",
+    "ftv70": "b88527b48a669eaf92c2ed426f664b393733fbd59dc62225986afc2a058f3bf6",
+    "kro124p": "3912ee6e649329ac4798a94d5197ddd34c38132397f84b31beb9362aae73e910",
+    "ft70": "2cec2439b11f76d7de850d752c2f1636af0bee396f08674ce5d95c0785bede7b",
+    "rbg323": "8cbcdfdc69d873491d194d0d301ed0c6006a46ff0207082a2a801c469af421da",
+    "rbg443": "f4ccd0adbb36f2a495601458fff0005856fa4c618aa68ff09b9913cc26f081cc"
+   },
    "cells": [
     {
      "instance": "ft70",
@@ -915,34 +1038,87 @@
      "runs": 1,
      "fails": 0
     }
-   ]
-  },
-  "jssp": {
-   "label": "JSSP（ジョブショップ）",
-   "ref": "既知最適値（JSPLIB, ta11/ta21 は文献値）",
-   "unit": "メイクスパン",
+   ],
    "instances": [
-    "ft06",
-    "ft10",
-    "la16",
-    "la21",
-    "abz5",
-    "orb01",
-    "ta01",
-    "swv01",
-    "ta11",
-    "ta21"
+    "ftv33",
+    "ftv70",
+    "kro124p",
+    "ft70",
+    "rbg323",
+    "rbg443"
    ],
    "methods": [
-    "SPT",
-    "MWKR",
-    "Tabu-N5",
-    "GA",
+    "nn+ls",
+    "SA",
+    "LKH(elkai)",
+    "ORTools-GLS",
     "CP-SAT",
-    "CP-SAT-4w",
     "MIP-HiGHS"
-   ],
+   ]
+  },
+  "20261025T050501Z-cloud-jssp": {
+   "run_id": "20261025T050501Z-cloud-jssp",
+   "problem": "jssp",
+   "started_at": "2026-10-25T05:05:01+00:00",
+   "finished_at": "2026-10-25T05:05:01+00:00",
+   "status": "complete",
+   "note": "既存結果（results/jssp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。",
+   "migrated": true,
+   "environment": {
+    "machine": "cloud",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cpu_count": 4,
+    "memory_gb": 15.7,
+    "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+    "python": "3.13.17",
+    "packages": {
+     "ortools": "9.15.6755",
+     "highspy": "1.15.1",
+     "elkai": "2.0.1",
+     "numba": "0.68.0",
+     "numpy": "2.5.3",
+     "pandas": "3.0.5",
+     "tsplib95": "0.7.1"
+    }
+   },
+   "git": {
+    "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+    "branch": "claude/initial-benchmark",
+    "dirty": false,
+    "dirty_files": []
+   },
    "time_limit": 60.0,
+   "workers": 4,
+   "threads": {
+    "SPT": 1,
+    "MWKR": 1,
+    "Tabu-N5": 1,
+    "GA": 1,
+    "CP-SAT": 1,
+    "CP-SAT-4w": 4,
+    "MIP-HiGHS": 1
+   },
+   "seeds": {
+    "SPT": 1,
+    "MWKR": 1,
+    "Tabu-N5": 3,
+    "GA": 3,
+    "CP-SAT": 1,
+    "CP-SAT-4w": 1,
+    "MIP-HiGHS": 1
+   },
+   "instance_sha256": {
+    "ft06": "fee212360082ab31d7a6f375e352dad79973e17e70da40d14fcce5400a721a1c",
+    "ft10": "eff0a40841b2160661f64bfc94c77a3d02d3dcfdfab9c02bf39f7da1153891b7",
+    "la16": "30b4c4ef875c9847ea29bd6c42a2ba58f7e7bda58c3d7736a6efd4df58669483",
+    "la21": "28b9ed55089bb38b58d7d936c96f599ebd234a4952cd2d18437d64f2341a179a",
+    "abz5": "bd8afe85d188fc3ae5c2be6a328d175a5eb4f020deab786931f18460a10849f4",
+    "orb01": "a8cdf6a752554df23a0da2eb4f408e2811e12ec3978647499142e268b3117340",
+    "ta01": "eb6efca2f3b22f29609abbbc15acc3ec33cac91eb2b75097aad343fc6930623d",
+    "swv01": "1bacbe31b1b2469b61904624041107b1caa2ed66d5dec66600fb8020cec5a4d3",
+    "ta11": "1e55a9039437d95715a7f7d0f419585732e6a0fbc707bbdf3e5a554e30357072",
+    "ta21": "7b3c36912f04636a01991787fd7cf29262fe2c3e46d2272cfc25e102677e6488"
+   },
    "cells": [
     {
      "instance": "abz5",
@@ -1784,29 +1960,84 @@
      "runs": 3,
      "fails": 0
     }
-   ]
-  },
-  "nsp": {
-   "label": "ナーススケジューリング",
-   "ref": "全手法中の最良値（合成インスタンス、最適値未知）",
-   "unit": "ペナルティ",
-   "display": "value",
+   ],
    "instances": [
-    "nsp01",
-    "nsp02",
-    "nsp03",
-    "nsp04",
-    "nsp05",
-    "nsp06"
+    "ft06",
+    "ft10",
+    "la16",
+    "la21",
+    "abz5",
+    "orb01",
+    "ta01",
+    "swv01",
+    "ta11",
+    "ta21"
    ],
    "methods": [
-    "Greedy",
-    "SA",
+    "SPT",
+    "MWKR",
+    "Tabu-N5",
+    "GA",
     "CP-SAT",
     "CP-SAT-4w",
     "MIP-HiGHS"
-   ],
+   ]
+  },
+  "20261025T050501Z-cloud-nsp": {
+   "run_id": "20261025T050501Z-cloud-nsp",
+   "problem": "nsp",
+   "started_at": "2026-10-25T05:05:01+00:00",
+   "finished_at": "2026-10-25T05:05:01+00:00",
+   "status": "complete",
+   "note": "既存結果（results/nsp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。",
+   "migrated": true,
+   "environment": {
+    "machine": "cloud",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cpu_count": 4,
+    "memory_gb": 15.7,
+    "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+    "python": "3.13.17",
+    "packages": {
+     "ortools": "9.15.6755",
+     "highspy": "1.15.1",
+     "elkai": "2.0.1",
+     "numba": "0.68.0",
+     "numpy": "2.5.3",
+     "pandas": "3.0.5",
+     "tsplib95": "0.7.1"
+    }
+   },
+   "git": {
+    "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+    "branch": "claude/initial-benchmark",
+    "dirty": false,
+    "dirty_files": []
+   },
    "time_limit": 60.0,
+   "workers": 4,
+   "threads": {
+    "Greedy": 1,
+    "SA": 1,
+    "CP-SAT": 1,
+    "CP-SAT-4w": 4,
+    "MIP-HiGHS": 1
+   },
+   "seeds": {
+    "Greedy": 1,
+    "SA": 3,
+    "CP-SAT": 1,
+    "CP-SAT-4w": 1,
+    "MIP-HiGHS": 1
+   },
+   "instance_sha256": {
+    "nsp01": "de82abdc448aa7192b82142d66e8cd9764b3f5a147c5af3bc572772f60a02f2e",
+    "nsp02": "e4186f2068cee1fc0906ccf3fe316f2f5ed294e6acbb2504cc950c65039e54b5",
+    "nsp03": "1ac2e6119d73c0c77dc7687e0e819f5fe716f5673689d956920341227a61e100",
+    "nsp04": "951b2cc3e886b34b1a5702c7aef1caa2031d7f52cb8d918f4543241fa2677909",
+    "nsp05": "ee3bede4e4f7ec0df2f8cd93673587fac090d68eba8bea0fcc17e71efd818afd",
+    "nsp06": "cbfda6b666c9de030cb7f9862c45f55c4c51b9ca9e25b66f2d2215d4997b7b2e"
+   },
    "cells": [
     {
      "instance": "nsp01",
@@ -2168,6 +2399,21 @@
      "runs": 3,
      "fails": 0
     }
+   ],
+   "instances": [
+    "nsp01",
+    "nsp02",
+    "nsp03",
+    "nsp04",
+    "nsp05",
+    "nsp06"
+   ],
+   "methods": [
+    "Greedy",
+    "SA",
+    "CP-SAT",
+    "CP-SAT-4w",
+    "MIP-HiGHS"
    ]
   }
  }

@@ -1,16 +1,18 @@
 # ベンチマーク結果
 
-このページは `python src/export_web.py` で自動生成しています（手で編集しないでください）。マウスオーバーで詳細が見られる対話型のビューは、手元で `docs/index.html` をダブルクリックすると開きます。
+このページは `python src/export_web.py` で自動生成しています（手で編集しないでください）。マウスオーバーで詳細が見られ、run を切り替えて比較できる対話型のビューは、手元で `docs/index.html` をダブルクリックすると開きます。
 
-データ生成: 2026-10-25T05:04:34+00:00（Python 3.13.17, x86_64）
+データ生成: 2026-10-25T06:09:39+00:00
 
-- [TSP（対称巡回セールスマン）](#tsp) / [ATSP（非対称巡回セールスマン）](#atsp) / [JSSP（ジョブショップ）](#jssp) / [ナーススケジューリング](#nsp)
+- [TSP（対称巡回セールスマン）](#tsp) / [ATSP（非対称巡回セールスマン）](#atsp) / [JSSP（ジョブショップ）](#jssp) / [ナーススケジューリング](#nsp) / [実行履歴](#history)
 
 <a id="tsp"></a>
 
 ## TSP（対称巡回セールスマン）
 
-参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド（-4w は 4 スレッド）。確率的手法は複数シードの平均。
+run `20261025T050501Z-cloud-tsp`（2026-10-25 05:05 UTC 開始）。参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド。確率的手法は複数シードの平均。
+
+実行環境: cloud: Intel(R) Xeon(R) Processor @ 2.10GHz, 4 論理 CPU, メモリ 15.7 GB, Linux-6.18.44-fc-v153-x86_64-with-glibc2.39, Python 3.13.17, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `99b5f2e`
 
 ![TSP（対称巡回セールスマン） 手法別](figures/tsp_bars.svg)
 
@@ -40,7 +42,9 @@
 
 ## ATSP（非対称巡回セールスマン）
 
-参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド（-4w は 4 スレッド）。確率的手法は複数シードの平均。
+run `20261025T050501Z-cloud-atsp`（2026-10-25 05:05 UTC 開始）。参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド。確率的手法は複数シードの平均。
+
+実行環境: cloud: Intel(R) Xeon(R) Processor @ 2.10GHz, 4 論理 CPU, メモリ 15.7 GB, Linux-6.18.44-fc-v153-x86_64-with-glibc2.39, Python 3.13.17, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `99b5f2e`
 
 ![ATSP（非対称巡回セールスマン） 手法別](figures/atsp_bars.svg)
 
@@ -70,7 +74,9 @@
 
 ## JSSP（ジョブショップ）
 
-参照値: 既知最適値（JSPLIB, ta11/ta21 は文献値）。制限時間 60 秒、全手法 1 スレッド（-4w は 4 スレッド）。確率的手法は複数シードの平均。
+run `20261025T050501Z-cloud-jssp`（2026-10-25 05:05 UTC 開始）。参照値: 既知最適値（JSPLIB, ta11/ta21 は文献値）。制限時間 60 秒、全手法 1 スレッド（CP-SAT-4w は 4 スレッド）。確率的手法は複数シードの平均。
+
+実行環境: cloud: Intel(R) Xeon(R) Processor @ 2.10GHz, 4 論理 CPU, メモリ 15.7 GB, Linux-6.18.44-fc-v153-x86_64-with-glibc2.39, Python 3.13.17, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `99b5f2e`
 
 ![JSSP（ジョブショップ） 手法別](figures/jssp_bars.svg)
 
@@ -105,7 +111,9 @@
 
 ## ナーススケジューリング
 
-参照値: 全手法中の最良値（合成インスタンス、最適値未知）。制限時間 60 秒、全手法 1 スレッド（-4w は 4 スレッド）。確率的手法は複数シードの平均。
+run `20261025T050501Z-cloud-nsp`（2026-10-25 05:05 UTC 開始）。参照値: 全 run・全手法中の最良値（合成インスタンス、最適値未知）。制限時間 60 秒、全手法 1 スレッド（CP-SAT-4w は 4 スレッド）。確率的手法は複数シードの平均。
+
+実行環境: cloud: Intel(R) Xeon(R) Processor @ 2.10GHz, 4 論理 CPU, メモリ 15.7 GB, Linux-6.18.44-fc-v153-x86_64-with-glibc2.39, Python 3.13.17, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `99b5f2e`
 
 ![ナーススケジューリング 手法別](figures/nsp_bars.svg)
 
@@ -129,3 +137,18 @@
 | nsp04 | 44 | **42** | 77 | 3852 | × |
 | nsp05 | 78 | **70** | 116 | × | × |
 | nsp06 | **165** | × | 230 | × | × |
+
+<a id="history"></a>
+
+## 実行履歴
+
+`results/runs/<run_id>/` に run ごとの `run.json`（メタデータ）・`results.jsonl`（生データ）・`summary.csv`（集計）があります。各問題の上の表は最新の run です。
+
+| run_id | 問題 | 開始日時 (UTC) | 実行環境 | 制限時間 | commit | メモ |
+|---|---|---|---|---:|---|---|
+| `20261025T050501Z-cloud-tsp` | tsp | 2026-10-25 05:05 | cloud (4 CPU) | 60 秒 | `99b5f2e` | 既存結果（results/tsp.jsonl）からの移行。開始・終了日時は記録が… |
+| `20261025T050501Z-cloud-nsp` | nsp | 2026-10-25 05:05 | cloud (4 CPU) | 60 秒 | `99b5f2e` | 既存結果（results/nsp.jsonl）からの移行。開始・終了日時は記録が… |
+| `20261025T050501Z-cloud-jssp` | jssp | 2026-10-25 05:05 | cloud (4 CPU) | 60 秒 | `99b5f2e` | 既存結果（results/jssp.jsonl）からの移行。開始・終了日時は記録… |
+| `20261025T050501Z-cloud-atsp` | atsp | 2026-10-25 05:05 | cloud (4 CPU) | 60 秒 | `99b5f2e` | 既存結果（results/atsp.jsonl）からの移行。開始・終了日時は記録… |
+
+commit の `*` は未コミットの変更がある状態で実行したことを示します。
