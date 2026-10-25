@@ -38,7 +38,7 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     done = set()
     if os.path.exists(out):
-        for l in open(out):
+        for l in open(out, encoding="utf-8"):
             r = json.loads(l)
             done.add((r["method"], r["instance"], r["seed"]))
     jobs = [(m, i, s) for i in insts for m, seeds in methods.items() for s in seeds
@@ -52,14 +52,14 @@ def main():
         env = dict(os.environ, OMP_NUM_THREADS="1", NUMBA_NUM_THREADS="1")
         try:
             p = subprocess.run([sys.executable, os.path.join(ROOT, "src", "run_one.py"), a.problem, m, i, str(s),
-                                str(a.time_limit)], capture_output=True, text=True,
+                                str(a.time_limit)], capture_output=True, text=True, encoding="utf-8",
                                timeout=a.time_limit * 3 + 120, env=env)
             line = p.stdout.strip().splitlines()[-1] if p.stdout.strip() else None
             r = json.loads(line) if line else dict(error=p.stderr[-500:])
         except subprocess.TimeoutExpired:
             r = dict(error="timeout")
         r.update(problem=a.problem, method=m, instance=i, seed=s, time_limit=a.time_limit)
-        with open(out, "a") as f:
+        with open(out, "a", encoding="utf-8") as f:
             f.write(json.dumps(r) + "\n")
         print(m, i, s, r.get("obj"), r.get("lb"), round(r.get("time", -1), 1), r.get("error", ""), flush=True)
 

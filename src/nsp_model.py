@@ -74,7 +74,7 @@ def generate(name):
     inst = dict(name=name, horizon=H, shifts=shift_names, length=[length[s] for s in shift_names],
                 forbid=forbid, employees=emps, cover=cover.tolist(), w_under=100, w_over=1)
     os.makedirs(NSP_DIR, exist_ok=True)
-    with open(os.path.join(NSP_DIR, name + ".json"), "w") as f:
+    with open(os.path.join(NSP_DIR, name + ".json"), "w", encoding="utf-8") as f:
         json.dump(inst, f, indent=1)
     return inst
 
@@ -87,7 +87,7 @@ def _employee_feasible(emp, H, shifts, length, forbid):
 
 
 def load_instance(name):
-    with open(os.path.join(NSP_DIR, name + ".json")) as f:
+    with open(os.path.join(NSP_DIR, name + ".json"), encoding="utf-8") as f:
         return json.load(f)
 
 

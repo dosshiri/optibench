@@ -83,8 +83,8 @@ summary { cursor: pointer; color: var(--text-secondary); }
     <div id="bars"></div>
   </section>
   <section class="card">
-    <h2>インスタンス × 手法のギャップ (%)</h2>
-    <p class="note">セルの値は既知最良値に対する平均ギャップ (%)。「×」は制限時間内に実行可能解が得られなかったことを示します。</p>
+    <h2 id="t2">インスタンス × 手法のギャップ (%)</h2>
+    <p class="note" id="n2"></p>
     <div class="scroll" id="heat"></div>
     <div class="legend" id="legend"></div>
   </section>
@@ -131,9 +131,18 @@ function methodStats(P) {
     const ok = cs.filter(c => c.mean_gap != null);
     const mean = ok.length ? ok.reduce((a, c) => a + c.mean_gap, 0) / ok.length : null;
     const nopt = ok.filter(c => c.mean_gap <= 1e-9).length;
-    return { method: m, mean, solved: ok.length, total: P.instances.length, nopt,
+    // 平均順位: インスタンスごとに平均目的値で順位付け（解なしは最下位）
+    const ranks = P.instances.map(inst => {
+      const mine = cs.find(c => c.instance === inst);
+      if (!mine || mine.mean_obj == null) return P.methods.length;
+      const others = P.cells.filter(c => c.instance === inst && c.mean_obj != null);
+      return 1 + others.filter(c => c.mean_obj < mine.mean_obj - 1e-9).length;
+    });
+    const rank = ranks.reduce((a, r) => a + r, 0) / ranks.length;
+    return { method: m, mean, rank, solved: ok.length, total: P.instances.length, nopt,
              time: cs.reduce((a, c) => a + c.time, 0) / cs.length };
-  }).sort((a, b) => (a.solved !== b.solved) ? b.solved - a.solved : (a.mean ?? 1e9) - (b.mean ?? 1e9));
+  }).sort(P.display === "value" ? (a, b) => a.rank - b.rank :
+    (a, b) => (a.solved !== b.solved) ? b.solved - a.solved : (a.mean ?? 1e9) - (b.mean ?? 1e9));
 }
 
 function drawBars(P) {
@@ -141,26 +150,28 @@ function drawBars(P) {
   const st = methodStats(P);
   const W = Math.max(300, box.clientWidth), rowH = 30, left = 104, right = W < 600 ? 120 : 170, top = 8;
   const H = top + st.length * rowH + 24;
-  const max = Math.max(1, ...st.map(s => s.mean ?? 0)) * 1.05;
+  const byRank = P.display === "value";
+  const val = s => byRank ? s.rank : s.mean;
+  const max = byRank ? P.methods.length : Math.max(1, ...st.map(s => s.mean ?? 0)) * 1.05;
   const svg = el("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, box);
   const x = v => left + (W - left - right) * v / max;
   const ticks = W < 600 ? 2 : 4;
   for (let i = 0; i <= ticks; i++) {
     const v = max * i / ticks, xx = x(v);
     el("line", { x1: xx, x2: xx, y1: top, y2: H - 20, stroke: i ? "var(--grid)" : "var(--axis)" }, svg);
-    el("text", { x: xx, y: H - 4, "text-anchor": "middle" }, svg).textContent = v.toFixed(v < 10 ? 1 : 0) + "%";
+    el("text", { x: xx, y: H - 4, "text-anchor": "middle" }, svg).textContent = byRank ? v.toFixed(1) + "位" : v.toFixed(v < 10 ? 1 : 0) + "%";
   }
   st.forEach((s, i) => {
     const y = top + i * rowH;
     el("text", { x: left - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "label" }, svg).textContent = s.method;
-    const w = s.mean == null ? 0 : Math.max(2, x(s.mean) - left);
+    const w = val(s) == null ? 0 : Math.max(2, x(val(s)) - left);
     el("rect", { x: left, y: y + 7, width: w, height: rowH - 14, rx: 4, fill: "var(--bar)" }, svg);
-    const lab = s.mean == null ? "解なし" : fmt(s.mean) + "%";
+    const lab = byRank ? fmt(s.rank, 1) + "位" : s.mean == null ? "解なし" : fmt(s.mean) + "%";
     const extra = s.solved < s.total ? `（解なし${s.total - s.solved}問）` : "";
     el("text", { x: left + w + 6, y: y + rowH / 2 + 4 }, svg).textContent = lab + extra;
     const hit = el("rect", { x: 0, y, width: W, height: rowH, fill: "transparent" }, svg);
     hit.addEventListener("mousemove", ev => showTip(ev,
-      `<b>${s.method}</b><br>平均ギャップ ${s.mean == null ? "—" : fmt(s.mean) + "%"}（解あり ${s.solved}/${s.total} 問）` +
+      `<b>${s.method}</b><br>平均順位 ${fmt(s.rank, 1)} 位<br>平均ギャップ ${s.mean == null ? "—" : fmt(s.mean) + "%"}（解あり ${s.solved}/${s.total} 問）` +
       `<br>最良値到達 ${s.nopt} 問<br>平均時間 ${fmt(s.time, 1)} 秒`));
     hit.addEventListener("mouseleave", hideTip);
   });
@@ -186,7 +197,8 @@ function drawHeat(P) {
         const b = binOf(c.mean_gap);
         fill = `var(--seq-${b})`;
         ink = b >= 4 ? "var(--ink-on-dark)" : "var(--ink-on-light)";
-        txt = c.mean_gap <= 1e-9 ? "0" : fmt(c.mean_gap, c.mean_gap < 10 ? 2 : 1);
+        txt = P.display === "value" ? String(Math.round(c.mean_obj)) :
+          c.mean_gap <= 1e-9 ? "0" : fmt(c.mean_gap, c.mean_gap < 10 ? 2 : 1);
       }
       el("rect", { x: x0 + 1, y: y0 + 1, width: cw - 2, height: ch - 2, rx: 3, fill }, svg);
       const t = el("text", { x: x0 + cw / 2, y: y0 + ch / 2 + 4, "text-anchor": "middle" }, svg);
@@ -194,7 +206,7 @@ function drawHeat(P) {
       const hit = el("rect", { x: x0, y: y0, width: cw, height: ch, fill: "transparent" }, svg);
       hit.addEventListener("mousemove", ev => showTip(ev, c ?
         `<b>${inst} · ${m}</b><br>平均ギャップ ${c.mean_gap == null ? "解なし" : fmt(c.mean_gap) + "%"}` +
-        `<br>最良値 ${c.best ?? "—"}（参照値 ${c.ref ?? "—"}）` +
+        `<br>平均値 ${c.mean_obj ?? "—"} · 最良値 ${c.best ?? "—"}（参照値 ${c.ref ?? "—"}）` +
         (c.lb != null ? `<br>下界 ${c.lb}` : "") +
         `<br>平均時間 ${fmt(c.time, 1)} 秒 · ${c.runs} 試行${c.fails ? `（失敗 ${c.fails}）` : ""}` : "未実行"));
       hit.addEventListener("mouseleave", hideTip);
@@ -210,8 +222,8 @@ function drawTable(P) {
   const rows = P.cells.slice().sort((a, b) =>
     P.instances.indexOf(a.instance) - P.instances.indexOf(b.instance) || (a.mean_gap ?? 1e9) - (b.mean_gap ?? 1e9));
   document.getElementById("table").innerHTML =
-    `<table><thead><tr><th>インスタンス</th><th>手法</th><th>最良値</th><th>参照値</th><th>平均ギャップ%</th><th>下界</th><th>平均時間(秒)</th><th>試行</th></tr></thead><tbody>` +
-    rows.map(c => `<tr><td>${c.instance}</td><td>${c.method}</td><td>${c.best ?? "—"}</td><td>${c.ref ?? "—"}</td>` +
+    `<table><thead><tr><th>インスタンス</th><th>手法</th><th>平均値</th><th>最良値</th><th>参照値</th><th>平均ギャップ%</th><th>下界</th><th>平均時間(秒)</th><th>試行</th></tr></thead><tbody>` +
+    rows.map(c => `<tr><td>${c.instance}</td><td>${c.method}</td><td>${c.mean_obj ?? "—"}</td><td>${c.best ?? "—"}</td><td>${c.ref ?? "—"}</td>` +
       `<td>${fmt(c.mean_gap)}</td><td>${c.lb ?? "—"}</td><td>${fmt(c.time, 1)}</td><td>${c.runs}${c.fails ? "（失敗" + c.fails + "）" : ""}</td></tr>`).join("") +
     `</tbody></table>`;
 }
@@ -220,7 +232,12 @@ function render(key) {
   current = key;
   const P = DATA.problems[key];
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.k === key));
-  document.getElementById("t1").textContent = `${P.label}: 手法別の平均ギャップ`;
+  const byValue = P.display === "value";
+  document.getElementById("t1").textContent = `${P.label}: ` + (byValue ? "手法別の平均順位" : "手法別の平均ギャップ");
+  document.getElementById("t2").textContent = byValue ? `インスタンス × 手法の${P.unit}` : "インスタンス × 手法のギャップ (%)";
+  document.getElementById("n2").textContent = (byValue
+    ? `セルの値は${P.unit}の平均値（小さいほど良い）。色は全手法中の最良値からの差 (%) を示します。`
+    : "セルの値は参照値に対する平均ギャップ (%)。") + "「×」は制限時間内に実行可能解が得られなかったことを示します。";
   document.getElementById("n1").textContent =
     `参照値: ${P.ref}。制限時間 ${P.time_limit} 秒、全手法 1 スレッド（-4w は 4 スレッド）。確率的手法は複数シードの平均。`;
   drawBars(P); drawHeat(P); drawTable(P);

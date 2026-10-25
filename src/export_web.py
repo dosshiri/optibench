@@ -17,7 +17,8 @@ META = {
     "tsp": dict(label="TSP（対称巡回セールスマン）", ref="TSPLIB 公表最適値", unit="距離"),
     "atsp": dict(label="ATSP（非対称巡回セールスマン）", ref="TSPLIB 公表最適値", unit="距離"),
     "jssp": dict(label="JSSP（ジョブショップ）", ref="既知最適値（JSPLIB, ta11/ta21 は文献値）", unit="メイクスパン"),
-    "nsp": dict(label="ナーススケジューリング", ref="全手法中の最良値（合成インスタンス、最適値未知）", unit="ペナルティ"),
+    "nsp": dict(label="ナーススケジューリング", ref="全手法中の最良値（合成インスタンス、最適値未知）", unit="ペナルティ",
+                display="value"),
 }
 
 
@@ -36,12 +37,13 @@ def main(out):
             cells.append(dict(instance=r.instance, method=r.method,
                               mean_gap=None if pd.isna(r.mean_gap) else round(float(r.mean_gap), 3),
                               best=None if pd.isna(r.best) else float(r.best),
+                              mean_obj=None if pd.isna(r.mean_obj) else round(float(r.mean_obj), 2),
                               ref=None if pd.isna(r.ref) else float(r.ref),
                               lb=None if pd.isna(r.lb) else float(r.lb),
                               time=round(float(r.time), 2), runs=int(r.runs), fails=int(r.fails)))
         data["problems"][prob] = dict(META[prob], instances=insts, methods=methods, time_limit=tl,
                                       cells=cells)
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
 
 

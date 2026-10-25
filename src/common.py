@@ -37,7 +37,7 @@ def tour_cost(D, tour):
 
 def load_jssp(name):
     """JSPLIB (OR-Library 形式) を読み込む. jobs[j] = [(machine, duration), ...]"""
-    with open(os.path.join(INST, "jssp", name)) as f:
+    with open(os.path.join(INST, "jssp", name), encoding="utf-8") as f:
         lines = [l for l in f if l.strip() and not l.startswith("#")]
     nj, nm = map(int, lines[0].split())
     jobs = []
@@ -48,7 +48,7 @@ def load_jssp(name):
 
 
 def jssp_ref(name):
-    with open(os.path.join(INST, "jssp", "instances.json")) as f:
+    with open(os.path.join(INST, "jssp", "instances.json"), encoding="utf-8") as f:
         for x in json.load(f):
             if x["name"] == name:
                 if x.get("optimum"):

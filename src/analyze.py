@@ -14,7 +14,7 @@ JSSP_BKS_OVERRIDE = {"ta11": 1357, "ta21": 1642}
 
 def load(problem):
     p = os.path.join(ROOT, "results", f"{problem}.jsonl")
-    rows = [json.loads(l) for l in open(p)]
+    rows = [json.loads(l) for l in open(p, encoding="utf-8")]
     df = pd.DataFrame(rows)
     # 再実行があれば最後の記録を採用
     return df.drop_duplicates(["method", "instance", "seed"], keep="last")
@@ -43,7 +43,7 @@ def summarize(problem):
     if "lb" not in df:
         df["lb"] = np.nan
     s = df.groupby(["instance", "method"], as_index=False).agg(
-        best=("obj", "min"), mean_gap=("gap", "mean"), best_gap=("gap", "min"), lb=("lb", "max"),
+        best=("obj", "min"), mean_obj=("obj", "mean"), mean_gap=("gap", "mean"), best_gap=("gap", "min"), lb=("lb", "max"),
         time=("time", "mean"), runs=("seed", "count"), fails=("failed", "sum"))
     s["ref"] = s.instance.map(ref)
     s.to_csv(os.path.join(ROOT, "results", f"summary_{problem}.csv"), index=False)
