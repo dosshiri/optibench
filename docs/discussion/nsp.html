@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NSP の手法選び</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<!-- ナーススケジューリング（NSP）の考察。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の早見表と「問題別の考察」に 1 行ずつ足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">考察トップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../literature/nsp.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a>
+  </div>
+  <div class="eyebrow">考察 · NSP · 2026-10-25 時点</div>
+  <h1>ナーススケジューリングの手法選び</h1>
+  <p class="lede">Curtois–Qu と同じ制約体系の合成 6 問（8〜50 人、14〜42 日）。参照値は全 run・全手法の最良値で、最適値ではない。</p>
+  <p class="meta">計測環境と、全問題に共通する前提・限界は<a href="index.html#common">考察トップ</a>にまとめています。</p>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <a href="#choose">手法の選び方</a>
+  <a href="#results">手元の結果</a>
+  <a href="#literature">文献との突き合わせ</a>
+  <a href="#discussion">考察</a>
+  <a href="#threads">スレッド数</a>
+  <a href="#repro">再現性</a>
+  <a href="#limits">限界</a>
+  <a href="#next">次の一手</a>
+</nav>
+
+<section>
+  <div class="verdict"><div class="k">結論</div>
+    <p>小〜中規模では MIP が最も強く、3 問で最適性を証明しました。最大規模では MIP が解を出せず、CP-SAT（4 スレッド）が最良でした。</p></div>
+
+  <h3 id="choose">手法の選び方</h3>
+  <p>病棟単位の勤務表のような中規模までなら、まず MIP で解き、最適性の証明か下界との差を確認します。規模が大きい、制約がきつくて MIP が解を出せない、という場合は CP-SAT を複数スレッドで使います。調整していない汎用の SA で品質を判断するのは避けます。</p>
+  <h3 id="results">手元の結果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>手法</th><th class="num">最良値との差</th><th class="num">解あり</th><th class="num">最良値到達</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
+    <tbody>
+      <tr class="top1"><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">0.00%*</td><td class="num">5/6</td><td class="num">5</td><td class="num">3</td><td class="num">31.5 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">2.53%</td><td class="num">6/6</td><td class="num">3</td><td class="num">2</td><td class="num">40.7 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.78%*</td><td class="num">5/6</td><td class="num">3</td><td class="num">3</td><td class="num">31.7 秒</td></tr>
+      <tr><td class="m"><code>SA</code>（自作）</td><td class="num">42.09%</td><td class="num">6/6</td><td class="num">1</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT</code></td><td class="num">2568%*</td><td class="num">4/6</td><td class="num">2</td><td class="num">2</td><td class="num">40.9 秒</td></tr>
+      <tr><td class="m"><code>Greedy</code></td><td class="num">18117%*</td><td class="num">2/6</td><td class="num">0</td><td class="num">–</td><td class="num">0.9 秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">* 実行可能解が得られた問題だけの平均。CP-SAT（1 スレッド）の 2568% は nsp04 のペナルティ 4242（最良 41）による。</p>
+
+  <h3 id="literature">文献との突き合わせ</h3>
+  <div class="legend">
+    <span>判定:</span>
+    <span><span class="v ok">一致</span> 文献と同じ傾向</span>
+    <span><span class="v part">条件つき</span> 一部だけ一致、または条件が違いすぎて比べにくい</span>
+    <span><span class="v new">新規</span> 文献に比較がなかった点</span>
+  </div>
+  <div class="frame">
+  <table>
+    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">MIP 系（分解・分枝価格法）が強い（Valouxis ら 2012、Legrain–Omer 2024）</td><td class="ours">MIP-HiGHS-4w が 6 問中 5 問で最良、3 問で証明。最大の nsp06 は解なし</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">メタヒューリスティクスは MIP と拮抗する</td><td class="ours">自作 SA は全問で実行可能解を得たが、最良値より平均 42% 悪い</td><td><span class="v part">条件つき</span></td></tr>
+      <tr><td class="claim">CP-SAT の評価が少ない（文献の空白）</td><td class="ours">汎用ソルバーで 6 問すべてに解を出せたのは CP-SAT-4w だけ（nsp06 で最良）。1 スレッドでは 2 問で解なし</td><td><span class="v new">新規</span></td></tr>
+      <tr><td class="claim">制約がきつい問題では MILP が強い（Combrink ら 2025）</td><td class="ours">制約体系が同じなので直接は比べられないが、中規模まで MIP が最良という点は整合</td><td><span class="v part">条件つき</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="discussion">考察</h3>
+  <p>ナーススケジューリングは 0-1 変数と線形制約で素直に書け、LP 緩和が効くため、MIP が強いのは文献どおりです。規模が大きくなると話が変わり、最大の nsp06（50 人 × 42 日）では MIP は 1・4 スレッドとも解なしで、解を出したのは CP-SAT-4w（171）と SA（230）だけでした。手元の結果からは、CP-SAT は「MIP の代わり」より「大規模側の保険」という位置づけが見えます。</p>
+  <p>自作 SA の 42% は、文献の「メタヒューリスティクスは MIP と拮抗」より明らかに悪い値です。文献で拮抗しているのは、問題専用の近傍と長い調整を持つ実装です。手元の SA は 1 マス変更と職員間の区間交換だけで、重みの調整もしていません。この差は手法族の限界ではなく、作り込みの差と読むべきです。<code>Greedy</code> は 4 問でハード制約を満たせず、構築法だけでは実用になりません。</p>
+
+  <h3 id="threads">スレッド数の効果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
+    <tbody>
+      <tr><td>CP-SAT</td><td class="num">4/6 問で解</td><td class="num up">6/6 問で解</td><td>nsp04 が 4242 → 44。nsp05・nsp06 で解が出るようになった</td></tr>
+      <tr><td>MIP-HiGHS</td><td class="num">0.78%</td><td class="num">0.00%</td><td>nsp04・nsp05 で 1 ずつ改善。nsp06 は解なしのまま</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>CP-SAT は 1 スレッドでは大規模の 2 問で解が出ず、この問題では実用にならないと言ってよい水準です。</p>
+
+  <h3 id="repro">再現性（クラウドと手元PC）</h3>
+  <ul class="pts">
+    <li><code>CP-SAT-4w</code> の nsp05 はクラウドで最良値より 11.4%、手元PCで 5.8%。</li>
+    <li><code>CP-SAT</code>（1 スレッド）の nsp03 は 70.8% と 27.1% で、1 スレッドの方が大きく揺れる。</li>
+    <li><code>MIP-HiGHS</code> は最適性を証明した nsp01〜03 で一致し、時間切れの nsp04・nsp05 だけ 1〜2 点ずれる。</li>
+  </ul>
+
+  <h3 id="limits">この問題での限界</h3>
+  <ul class="pts">
+    <li>合成インスタンスだけで、参照値は最良値であり最適値ではない。公式インスタンス（Curtois–Qu、INRC-II）での文献値と直接比べられない。</li>
+    <li>文献で最も強い分枝価格法（NurseScheduler）がいない。</li>
+    <li>SA は近傍も重みも調整しておらず、メタヒューリスティクスの実力を代表していない。</li>
+  </ul>
+
+
+  <h3 id="next">次の一手</h3>
+  <ul class="pts">
+    <li>Curtois–Qu の 24 件か INRC-II 静的版に差し替え、Legrain–Omer（2024）の結果と直接比べる。</li>
+    <li>分枝価格法の NurseScheduler を加える。</li>
+    <li>SA に LNS（一部の職員・日を MIP や CP-SAT で解き直す）を組み合わせた版を作り、メタヒューリスティクス側を文献の水準に近づける。</li>
+    <li>MIP に CP-SAT や SA の解を初期解として渡し、nsp06 で解が出るか確かめる。</li>
+  </ul>
+</section>
+
+<footer>
+  <p>出典: 手元ベンチマークの数値は <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">結果ビュー</a> と <code>results/runs/*-tiamat-*</code>、文献の数値は <a href="../literature/nsp.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a> によります。「推測」と書いた箇所は、ログや追加実験で確かめていない解釈です。</p>
+  <p><a href="index.html">考察トップに戻る</a> · <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータルに戻る</a></p>
+</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

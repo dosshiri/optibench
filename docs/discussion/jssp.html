@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JSSP の手法選び</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<!-- ジョブショップスケジューリング（JSSP）の考察。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の早見表と「問題別の考察」に 1 行ずつ足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">考察トップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../literature/jssp.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a>
+  </div>
+  <div class="eyebrow">考察 · JSSP · 2026-10-25 時点</div>
+  <h1>ジョブショップスケジューリングの手法選び</h1>
+  <p class="lede">JSPLIB 10 問（ft06〜ta21、6×6〜20×20）。参照値は既知最適値（ta11・ta21 は文献値）。</p>
+  <p class="meta">計測環境と、全問題に共通する前提・限界は<a href="index.html#common">考察トップ</a>にまとめています。</p>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <a href="#choose">手法の選び方</a>
+  <a href="#results">手元の結果</a>
+  <a href="#literature">文献との突き合わせ</a>
+  <a href="#discussion">考察</a>
+  <a href="#threads">スレッド数</a>
+  <a href="#repro">再現性</a>
+  <a href="#limits">限界</a>
+  <a href="#next">次の一手</a>
+</nav>
+
+<section>
+  <div class="verdict"><div class="k">結論</div>
+    <p>CP-SAT が最も強く、4 スレッドで 10 問中 7 問の最適性を証明しました。自作のタブーサーチ（N5 近傍）がそれに迫り、MIP は大きく劣ります。文献の主張はすべて手元でも確認できました。</p></div>
+
+  <h3 id="choose">手法の選び方</h3>
+  <p>工程の順序づけには、まず CP-SAT を使えるだけのコアで動かします。最適性の証明が要らず、問題専用の近傍を実装できるならタブーサーチも有力です。すぐ答えが必要な再スケジュールにはディスパッチングルールを使い、その解を CP-SAT やタブーサーチの初期解にします。big-M の MIP は小さな問題以外では使いません。</p>
+  <h3 id="results">手元の結果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">解あり</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
+    <tbody>
+      <tr class="top1"><td class="m"><code>CP-SAT-4w</code></td><td class="num">0.70%</td><td class="num">10/10</td><td class="num">7</td><td class="num">23.9 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT</code></td><td class="num">1.63%</td><td class="num">10/10</td><td class="num">5</td><td class="num">38.8 秒</td></tr>
+      <tr><td class="m"><code>Tabu-N5</code>（自作）</td><td class="num">2.03%</td><td class="num">10/10</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>GA</code>（自作）</td><td class="num">10.71%</td><td class="num">10/10</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">24.05%</td><td class="num">10/10</td><td class="num">1</td><td class="num">54.2 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">26.74%</td><td class="num">10/10</td><td class="num">1</td><td class="num">54.3 秒</td></tr>
+      <tr><td class="m"><code>MWKR</code></td><td class="num">29.45%</td><td class="num">10/10</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
+      <tr><td class="m"><code>SPT</code></td><td class="num">55.17%</td><td class="num">10/10</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="literature">文献との突き合わせ</h3>
+  <div class="legend">
+    <span>判定:</span>
+    <span><span class="v ok">一致</span> 文献と同じ傾向</span>
+    <span><span class="v part">条件つき</span> 一部だけ一致、または条件が違いすぎて比べにくい</span>
+    <span><span class="v new">新規</span> 文献に比較がなかった点</span>
+  </div>
+  <div class="frame">
+  <table>
+    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">汎用ソルバーでは CP が MIP を明確に上回る（Ku–Beck 2016、Naderi ら 2023）</td><td class="ours">CP-SAT-4w 0.70% に対し MIP（Manne の big-M）26.7%。ta11 では 3.6% 対 51%</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">近似解の最前線は N5 近傍のタブーサーチ系（Peng ら 2015）</td><td class="ours">Tabu-N5 は平均 2.03% で、ta11 では CP-SAT-4w と同じ 3.61%</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">汎用 GA は専用近傍のタブーサーチに大きく劣る（Reijnen ら 2023 で GA 34.5%）</td><td class="ours">乱数キー GA は 10.7% で、Tabu-N5 の約 5 倍のギャップ</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">CP-SAT は 1 コアから 4 コアで最適到達が大きく増える（Da Col–Teppan 2019）</td><td class="ours">証明が 5 → 7 問、平均時間 38.8 → 23.9 秒</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">ディスパッチングルールは CP-SAT に大差で劣る（Reijnen ら 2023 で MWR 19.5%）</td><td class="ours">MWKR 29.5%、SPT 55.2%</td><td><span class="v ok">一致</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="discussion">考察</h3>
+  <p>CP-SAT は未証明の swv01・ta11・ta21 でも 1.6〜3.6% でした。自作の <code>Tabu-N5</code> は最適性を証明できませんが、平均 2.03% と CP-SAT の 1 スレッド（1.63%）に近く、問題専用の近傍の強さがよく出ています。同じメタヒューリスティクスでも、汎用の乱数キー GA は 10.7% で、手法族の名前より近傍の設計が効くという文献の指摘どおりです。</p>
+  <p>MIP（Manne の離接定式化、big-M）は ft06（6×6）以外で最適性を証明できず、ta21（20×20）では 81% でした。Ku–Beck は 3600 秒・CPLEX で ta11–ta20 の MIP を約 6.2% と報告しており、手元はそれより大きく劣ります。ただし時間は 60 分の 1、ソルバーも違うため、数値の差よりも「CP との差が規模とともに広がる」という傾向の一致を見るべきです。ディスパッチングルールは 0.2 秒で終わるので、初期解やリアルタイムの再スケジュール用です。</p>
+
+  <h3 id="threads">スレッド数の効果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
+    <tbody>
+      <tr><td>CP-SAT</td><td class="num">1.63%</td><td class="num up">0.70%</td><td>証明 5 → 7 問。ft10 は 36 秒 → 3 秒、orb01 は時間切れ → 9 秒</td></tr>
+      <tr><td>MIP-HiGHS</td><td class="num">26.74%</td><td class="num">24.05%</td><td>証明は ft06 の 1 問のまま</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>4 スレッド化の効果は大きく、ft10 の証明は 10 倍以上速くなりました。CP-SAT は複数のワーカーが異なる探索戦略を同時に走らせる設計で、1 スレッドではその一部しか動きません。CP-SAT を 1 スレッドで評価すると、実力を大きく見誤ります。</p>
+
+  <h3 id="repro">再現性（クラウドと手元PC）</h3>
+  <ul class="pts">
+    <li>決定的な <code>SPT</code>・<code>MWKR</code> は全問で一致。</li>
+    <li><code>CP-SAT-4w</code> の ta11 はクラウドで 1.47%、手元PCで 3.61%。並列の CP-SAT はスレッドの進み具合で探索の経路が変わり、同じ設定でも結果がぶれる。</li>
+    <li><code>CP-SAT</code>（1 スレッド）は証明できた問題の結果が両方で一致し、未証明の問題だけが揺れる（swv01 で 4.62% と 4.12%）。</li>
+  </ul>
+
+  <h3 id="limits">この問題での限界</h3>
+  <ul class="pts">
+    <li>制限時間 60 秒で、文献の多く（3600 秒）より大幅に短い。</li>
+    <li>MIP は big-M の離接定式化だけで、時間添字型などとの比較がない。</li>
+    <li>最大 20×20 で、Taillard の 30×20 以上や DMU がない。</li>
+    <li>文献で CP-SAT と並ぶ CP Optimizer（商用）がいない。</li>
+  </ul>
+
+
+  <h3 id="next">次の一手</h3>
+  <ul class="pts">
+    <li>CP-SAT を 8・16 スレッドでも測る（手元PCは 16 論理 CPU、<code>--threads 1,4,8,16</code>）。伸びがどこで頭打ちになるかが分かる。</li>
+    <li>制限時間 600 秒・3600 秒の run を追加し、Ku–Beck など文献の条件に近づける。</li>
+    <li>Taillard の 30×20・50×20 や DMU を加え、CP-SAT とタブーサーチの差が規模でどう変わるかを見る。</li>
+    <li>MIP に時間添字型の定式化を足す。</li>
+  </ul>
+</section>
+
+<footer>
+  <p>出典: 手元ベンチマークの数値は <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">結果ビュー</a> と <code>results/runs/*-tiamat-*</code>、文献の数値は <a href="../literature/jssp.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a> によります。「推測」と書いた箇所は、ログや追加実験で確かめていない解釈です。</p>
+  <p><a href="index.html">考察トップに戻る</a> · <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータルに戻る</a></p>
+</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

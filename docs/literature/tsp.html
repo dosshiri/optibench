@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TSP の文献レビュー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+<!-- TSP（対称巡回セールスマン問題）の文献レビュー。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の「要点」に 1 項目足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">文献レビューのトップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
+  <div class="eyebrow">文献レビュー · Symmetric Traveling Salesman Problem · 2026-10-25 時点</div>
+  <h1>TSP（対称巡回セールスマン問題）</h1>
+  <p class="lead">厳密解は Concorde（分枝カット）が事実上の標準で、汎用MIPソルバーは大きく劣ります。近似解では LKH と EAX型GA が最強クラスです。ニューラル解法は小規模・一様乱数インスタンス以外ではまだ品質で及びません。</p>
+  <div class="legend">
+    <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / B&amp;P)</span>
+    <span class="tag t-mh">メタヒューリスティクス</span>
+    <span class="tag t-sp">専用ヒューリスティクス</span>
+    <span class="tag t-ml">機械学習</span>
+  </div>
+</header>
+
+<nav class="idx" aria-label="目次">
+  <a href="#overview">概要</a>
+  <a href="#studies">主要な比較研究</a>
+  <a href="#matrix">手法ごとの評価</a>
+  <a href="#plan">手元ベンチマークへの示唆</a>
+  <a href="#refs">文献</a>
+</nav>
+
+<section id="overview">
+  <h2>概要</h2>
+  <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、スレッド数、ソルバー版）での結果です。論文間で直接比較することはできません。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
+  <div class="facts">
+    <div class="fact"><div class="k">標準インスタンス</div><div class="v">TSPLIB（Reinelt 1991）、National TSP・VLSI（Waterloo）、DIMACS TSP Challenge の一様乱数・クラスタ生成器</div></div>
+    <div class="fact"><div class="k">代表ソルバー</div><div class="v">Concorde（厳密）、LKH-2/3、GA-EAX、OR-Tools Routing、Gurobi/CPLEX/HiGHS + 部分巡回除去の遅延制約</div></div>
+    <div class="fact"><div class="k">到達点</div><div class="v">85,900都市（pla85900）まで最適性が証明済み。数万〜数十万都市規模では最良既知解との差は通常1%未満</div></div>
+  </div>
+
+</section>
+
+<section id="studies">
+  <h2>主要な比較研究</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Liu, Zhang, Tang, Yao<span class="yr">arXiv 2209.10913</span></td>
+        <td><span class="tag t-ml">POMO</span> <span class="tag t-ml">DACT</span> <span class="tag t-ml">NeuroLKH</span> 対 <span class="tag t-sp">LKH-3</span> <span class="tag t-mh">EAX</span> <span class="tag t-mh">MAOS</span></td>
+        <td>50〜10,000都市。一様乱数・クラスタ・TSPLIB・VLSI・National</td>
+        <td>品質ではEAXが最良で、実問題系30インスタンス中22で最多成功。50都市の乱数ではEAX/MAOSがギャップ <span class="num">0.0000%</span>、POMO（拡張なし）は <span class="num">0.1185%</span>。クラスタ型や分布外ではニューラル解法の劣化が大きい（DACTを50→100都市へ汎化するとギャップ <span class="num">27.54%</span>）。一方、小規模乱数での時間・電力効率はニューラル構築型が優位。Concordeは大規模で時間がかかるため対象外。</td></tr>
+      <tr><td class="ref">Nagata, Kobayashi<span class="yr">INFORMS J. Comput. 2013</span></td>
+        <td><span class="tag t-mh">GA + 辺組立交叉 (EAX)</span> 対 LKH 等</td>
+        <td>TSPLIB、National、VLSI など大規模を含む</td>
+        <td>LKHと並ぶ近似解法の頂点。大規模インスタンスで当時の最良既知解を複数更新したと報告。<span class="note">（本文の数値は未確認。<a href="https://github.com/nagata-yuichi/GA-EAX" target="_blank" rel="noopener">GA-EAX</a> として公開実装あり）</span></td></tr>
+      <tr><td class="ref">Applegate, Bixby, Chvátal, Cook<span class="yr">書籍 2006</span></td>
+        <td><span class="tag t-mp">分枝カット (Concorde)</span></td>
+        <td>TSPLIB 全般</td>
+        <td>厳密解法の標準的な文献。汎用MIPに部分巡回除去制約を足すだけの定式化より桁違いに強い。これは独自の切除平面族、LKHによる初期上界、局所カット生成の効果。</td></tr>
+      <tr><td class="ref">Xin, Song, Cao, Zhang<span class="yr">NeurIPS 2021</span></td>
+        <td><span class="tag t-ml">NeuroLKH</span> 対 <span class="tag t-sp">LKH</span></td>
+        <td>一様乱数100〜5,000都市、TSPLIB</td>
+        <td>学習した辺スコアでLKHの候補集合を置き換える混合型。同じ時間ならLKHより小さいギャップ。「MLが既存の強い解法を補強する」方向の代表例。</td></tr>
+      <tr><td class="ref">Johnson, McGeoch<span class="yr">DIMACS TSP Challenge 2002</span></td>
+        <td><span class="tag t-sp">構築法</span> <span class="tag t-sp">2-opt / 3-opt / LK</span> <span class="tag t-mh">反復LK</span></td>
+        <td>一様乱数・クラスタ生成器、TSPLIB</td>
+        <td>品質と時間のトレードオフを機械性能で正規化して比較した古典。ハードウェア正規化の手法自体も参考になる。</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Kool ら（ICLR 2019）の Attention Model 以降、ニューラル解法の論文の多くは50〜100都市の一様乱数で、Concorde や LKH と比べて評価しています。実問題系のインスタンスや1万都市超での評価は少ないため、Liu らの体系的評価が中立的な参照点になります。</p>
+</section>
+
+<section id="matrix">
+  <h2>手法ごとの評価</h2>
+  <p>上の文献に基づく定性的な整理です。<span class="lvl l3">◎</span> 最前線、<span class="lvl l2">○</span> 実用的に強い、<span class="lvl l1">△</span> 条件付きで有効、<span class="lvl l0">–</span> 現状では不利または実証が少ない。</p>
+  <div class="tbl"><table class="matrix">
+    <thead><tr><th>手法</th><th>評価</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-mp">専用 分枝カット / 分枝価格法</span></td><td class="lvl l3">◎ Concorde</td></tr>
+      <tr><td><span class="tag t-mp">汎用MIP（そのまま定式化）</span></td><td class="lvl l1">△ 小中規模</td></tr>
+      <tr><td><span class="tag t-mp">CP / CP-SAT</span></td><td class="lvl l0">–</td></tr>
+      <tr><td><span class="tag t-sp">専用局所探索（LK / LKH / TSAB）</span></td><td class="lvl l3">◎ LKH</td></tr>
+      <tr><td><span class="tag t-mh">GA・焼きなまし法・タブーサーチ・VNS 等</span></td><td class="lvl l3">◎ EAX</td></tr>
+      <tr><td><span class="tag t-ml">ニューラル構築 / 改善型</span></td><td class="lvl l1">△ 小規模乱数</td></tr>
+      <tr><td><span class="tag t-ml">ML + 古典の混合（NeuroLKH 等）</span></td><td class="lvl l2">○</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="plan">
+  <h2>手元ベンチマークへの示唆</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
+    <tbody>
+      <tr><td>TSPLIB（〜1万都市）、National の一部、DIMACS 乱数</td><td>Concorde、LKH-3、GA-EAX、OR-Tools Routing、HiGHS/SCIP/Gurobi + 遅延制約、POMO 等</td><td>MIPソルバー最新版と Concorde の差、ニューラル解法の実問題での成績</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="refs">
+  <h2>文献</h2>
+  <ol class="refs">
+    <li>S. Liu, Y. Zhang, K. Tang, X. Yao. How Good Is Neural Combinatorial Optimization? A Systematic Evaluation on the Traveling Salesman Problem. <a href="https://arxiv.org/pdf/2209.10913" target="_blank" rel="noopener">arXiv:2209.10913</a></li>
+    <li>Y. Nagata, S. Kobayashi. A Powerful Genetic Algorithm Using Edge Assembly Crossover for the TSP. INFORMS J. Comput. 25(2), 2013. <a href="https://pubsonline.informs.org/doi/suppl/10.1287/ijoc.1120.0506" target="_blank" rel="noopener">doi:10.1287/ijoc.1120.0506</a></li>
+    <li>D. Applegate, R. Bixby, V. Chvátal, W. Cook. The Traveling Salesman Problem: A Computational Study. Princeton Univ. Press, 2006.</li>
+    <li>L. Xin, W. Song, Z. Cao, J. Zhang. NeuroLKH: Combining Deep Learning Model with Lin-Kernighan-Helsgaun Heuristic. NeurIPS 2021. <a href="https://arxiv.org/pdf/2110.07983" target="_blank" rel="noopener">arXiv:2110.07983</a></li>
+    <li>W. Kool, H. van Hoof, M. Welling. Attention, Learn to Solve Routing Problems! ICLR 2019. <a href="https://arxiv.org/pdf/1803.08475" target="_blank" rel="noopener">arXiv:1803.08475</a></li>
+    <li>D. S. Johnson, L. A. McGeoch. Experimental Analysis of Heuristics for the STSP. In: The TSP and Its Variations, 2002（DIMACS TSP Challenge）.</li>
+  </ol>
+  <p class="note">比較の進め方に関する文献（Accorsi ら、Dolan–Moré）は<a href="index.html#refs">トップ</a>にあります。</p>
+</section>
+
+<footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

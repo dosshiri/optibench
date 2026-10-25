@@ -10,7 +10,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジ�
 OUT_DIR = os.path.join(ROOT, "results")
 FIG_DIR = os.path.join(OUT_DIR, "figures")
 
-# docs/index.html と同じ配色・段階（GitHub のダーク表示でも読めるよう背景は白で固定）
+# docs/benchmark.html と同じ配色・段階（GitHub のダーク表示でも読めるよう背景は白で固定）
 BINS = [0.001, 0.5, 1, 2, 5, 10, 20]
 SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 BIN_NAMES = ["最良値", "<0.5%", "<1%", "<2%", "<5%", "<10%", "≥10%"]
@@ -32,7 +32,7 @@ def fmt(v, d=2):
 
 
 def method_stats(P):
-    """index.html の methodStats と同じ集計・並び順."""
+    """benchmark.html の methodStats と同じ集計・並び順."""
     sgn = -1 if P.get("sense") == "max" else 1
     out = []
     for m in P["methods"]:
@@ -173,7 +173,7 @@ def md_tables(P, st):
 
 
 def threads_tables(P):
-    """同じ解法を複数のスレッド数で実行した結果を解法ごとに並べた表（index.html の drawThreads と同じ内容）."""
+    """同じ解法を複数のスレッド数で実行した結果を解法ごとに並べた表（benchmark.html の drawThreads と同じ内容）."""
     by_value = P.get("display") == "value"
     groups = {}
     for m in P["methods"]:
@@ -245,7 +245,7 @@ def main(data):
     md = ["# ベンチマーク結果", "",
           "このページは `python src/export_web.py` で自動生成しています（手で編集しないでください）。"
           "マウスオーバーで詳細が見られ、run を切り替えて比較できる対話型のビューは、"
-          "手元で `docs/index.html` をダブルクリックすると開きます。", "",
+          "手元で `docs/benchmark.html` をダブルクリックすると開きます（入口は `docs/index.html`）。", "",
           f'データ生成: {data["generated"]}', ""]
     md += ["- " + " / ".join(f'[{P["label"]}](#{k})' for k, P in data["problems"].items()) + " / [実行履歴](#history)", ""]
     for k, Pm in data["problems"].items():
