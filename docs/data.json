@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T21:31:51+00:00",
+ "generated": "2026-10-25T22:05:32+00:00",
  "problems": {
   "tsp": {
    "label": "TSP（対称巡回セールスマン）",
@@ -649,7 +649,7 @@
    "run_id": "20261025T075502Z-tiamat-tsp",
    "problem": "tsp",
    "started_at": "2026-10-25T07:55:02+00:00",
-   "finished_at": "2026-10-25T20:58:46+00:00",
+   "finished_at": "2026-10-25T21:37:04+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -691,10 +691,10 @@
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
+    "Amplify-AE": 1,
     "OpenJij-SQA": 1,
     "OpenJij-SA": 1,
-    "DWave-SA": 1,
-    "Amplify-AE": 1
+    "DWave-SA": 1
    },
    "solvers": {
     "nn+ls": "nn+ls",
@@ -705,10 +705,10 @@
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
+    "Amplify-AE": "Amplify-AE",
     "OpenJij-SQA": "OpenJij-SQA",
     "OpenJij-SA": "OpenJij-SA",
-    "DWave-SA": "DWave-SA",
-    "Amplify-AE": "Amplify-AE"
+    "DWave-SA": "DWave-SA"
    },
    "seeds": {
     "nn+ls": 1,
@@ -719,10 +719,10 @@
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
+    "Amplify-AE": 1,
     "OpenJij-SQA": 3,
     "OpenJij-SA": 3,
-    "DWave-SA": 3,
-    "Amplify-AE": 1
+    "DWave-SA": 3
    },
    "instance_sha256": {
     "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
@@ -733,21 +733,6 @@
     "rat783": "05b321ca8c33122377ab6575400fbe4d78311dcda7500ed03cbd1bf5caa80712"
    },
    "additions": [
-    {
-     "at": "2026-10-25T20:44:45+00:00",
-     "methods": [
-      "OpenJij-SQA",
-      "OpenJij-SA",
-      "DWave-SA"
-     ],
-     "git": {
-      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-      "branch": "claude/project-thread-wq8605",
-      "dirty": false,
-      "dirty_files": []
-     },
-     "command": "python.exe src/run_bench.py tsp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
-    },
     {
      "at": "2026-10-25T20:57:50+00:00",
      "methods": [
@@ -760,6 +745,21 @@
       "dirty_files": []
      },
      "command": "python.exe src/run_bench.py tsp 60 --run latest --only Amplify-AE"
+    },
+    {
+     "at": "2026-10-25T21:34:07+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py tsp 60 --run 20261025T075502Z-tiamat-tsp --only OpenJij-SQA,OpenJij-SA,DWave-SA"
     }
    ],
    "cells": [
@@ -946,12 +946,12 @@
     {
      "instance": "berlin52",
      "method": "DWave-SA",
-     "mean_gap": 72.514,
-     "best": 13011.0,
-     "mean_obj": 13011.0,
+     "mean_gap": 73.42,
+     "best": 12968.0,
+     "mean_obj": 13079.33,
      "ref": 7542.0,
      "lb": null,
-     "time": 58.6,
+     "time": 58.74,
      "runs": 3,
      "fails": 0
     },
@@ -1006,24 +1006,24 @@
     {
      "instance": "berlin52",
      "method": "OpenJij-SA",
-     "mean_gap": 79.448,
-     "best": 13307.0,
-     "mean_obj": 13534.0,
+     "mean_gap": 82.233,
+     "best": 13466.0,
+     "mean_obj": 13744.0,
      "ref": 7542.0,
      "lb": null,
-     "time": 58.73,
+     "time": 58.86,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "berlin52",
      "method": "OpenJij-SQA",
-     "mean_gap": 120.401,
-     "best": 15613.0,
-     "mean_obj": 16622.67,
+     "mean_gap": 111.151,
+     "best": 14968.0,
+     "mean_obj": 15925.0,
      "ref": 7542.0,
      "lb": null,
-     "time": 52.23,
+     "time": 56.2,
      "runs": 3,
      "fails": 0
     },
@@ -1645,10 +1645,10 @@
     "CP-SAT-4w",
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
+    "Amplify-AE",
     "OpenJij-SQA",
     "OpenJij-SA",
-    "DWave-SA",
-    "Amplify-AE"
+    "DWave-SA"
    ]
   },
   "20261025T203242Z-cloud-tsp_small": {
@@ -2623,7 +2623,7 @@
    "run_id": "20261025T210045Z-tiamat-tsp_small",
    "problem": "tsp_small",
    "started_at": "2026-10-25T21:00:45+00:00",
-   "finished_at": "2026-10-25T21:30:50+00:00",
+   "finished_at": "2026-10-25T22:05:05+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。QUBO で扱える 14〜70 都市の TSP",
    "migrated": false,
@@ -2658,9 +2658,6 @@
    "workers": 4,
    "threads": {
     "Amplify-AE": 1,
-    "DWave-SA": 1,
-    "OpenJij-SQA": 1,
-    "OpenJij-SA": 1,
     "nn+ls": 1,
     "SA": 1,
     "LKH(elkai)": 1,
@@ -2668,13 +2665,13 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 4
+    "MIP-HiGHS-4w": 4,
+    "OpenJij-SQA": 1,
+    "OpenJij-SA": 1,
+    "DWave-SA": 1
    },
    "solvers": {
     "Amplify-AE": "Amplify-AE",
-    "DWave-SA": "DWave-SA",
-    "OpenJij-SQA": "OpenJij-SQA",
-    "OpenJij-SA": "OpenJij-SA",
     "nn+ls": "nn+ls",
     "SA": "SA",
     "LKH(elkai)": "LKH(elkai)",
@@ -2682,13 +2679,13 @@
     "CP-SAT": "CP-SAT",
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
-    "MIP-HiGHS-4w": "MIP-HiGHS"
+    "MIP-HiGHS-4w": "MIP-HiGHS",
+    "OpenJij-SQA": "OpenJij-SQA",
+    "OpenJij-SA": "OpenJij-SA",
+    "DWave-SA": "DWave-SA"
    },
    "seeds": {
     "Amplify-AE": 1,
-    "DWave-SA": 3,
-    "OpenJij-SQA": 3,
-    "OpenJij-SA": 3,
     "nn+ls": 1,
     "SA": 3,
     "LKH(elkai)": 1,
@@ -2696,7 +2693,10 @@
     "CP-SAT": 1,
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
-    "MIP-HiGHS-4w": 1
+    "MIP-HiGHS-4w": 1,
+    "OpenJij-SQA": 3,
+    "OpenJij-SA": 3,
+    "DWave-SA": 3
    },
    "instance_sha256": {
     "burma14": "c01eafd6c2da17a1a0f4929413d2394863754502191a4001f524fbf05c820dc5",
@@ -2708,7 +2708,23 @@
     "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
     "st70": "1ed07159d9148d7d275815a8bd34828c4bff3bfd1b932b8415359e47ff07bee0"
    },
-   "additions": [],
+   "additions": [
+    {
+     "at": "2026-10-25T21:47:02+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py tsp_small 60 --run 20261025T210045Z-tiamat-tsp_small --only OpenJij-SQA,OpenJij-SA,DWave-SA"
+    }
+   ],
    "cells": [
     {
      "instance": "att48",
@@ -2749,12 +2765,12 @@
     {
      "instance": "att48",
      "method": "DWave-SA",
-     "mean_gap": 61.372,
-     "best": 17076.0,
-     "mean_obj": 17150.67,
+     "mean_gap": 64.838,
+     "best": 17423.0,
+     "mean_obj": 17519.0,
      "ref": 10628.0,
      "lb": null,
-     "time": 59.0,
+     "time": 58.97,
      "runs": 3,
      "fails": 0
     },
@@ -2809,24 +2825,24 @@
     {
      "instance": "att48",
      "method": "OpenJij-SA",
-     "mean_gap": 69.678,
-     "best": 17381.0,
-     "mean_obj": 18033.33,
+     "mean_gap": 72.287,
+     "best": 17883.0,
+     "mean_obj": 18310.67,
      "ref": 10628.0,
      "lb": null,
-     "time": 59.01,
+     "time": 59.3,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "att48",
      "method": "OpenJij-SQA",
-     "mean_gap": 88.505,
-     "best": 16740.0,
-     "mean_obj": 20034.33,
+     "mean_gap": 97.042,
+     "best": 20073.0,
+     "mean_obj": 20941.67,
      "ref": 10628.0,
      "lb": null,
-     "time": 54.68,
+     "time": 55.54,
      "runs": 3,
      "fails": 0
     },
@@ -2893,12 +2909,12 @@
     {
      "instance": "bayg29",
      "method": "DWave-SA",
-     "mean_gap": 22.733,
-     "best": 1976.0,
-     "mean_obj": 1976.0,
+     "mean_gap": 23.499,
+     "best": 1954.0,
+     "mean_obj": 1988.33,
      "ref": 1610.0,
      "lb": null,
-     "time": 59.71,
+     "time": 59.69,
      "runs": 3,
      "fails": 0
     },
@@ -2953,24 +2969,24 @@
     {
      "instance": "bayg29",
      "method": "OpenJij-SA",
-     "mean_gap": 27.495,
-     "best": 1898.0,
-     "mean_obj": 2052.67,
+     "mean_gap": 24.286,
+     "best": 1903.0,
+     "mean_obj": 2001.0,
      "ref": 1610.0,
      "lb": null,
-     "time": 59.78,
+     "time": 59.77,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "bayg29",
      "method": "OpenJij-SQA",
-     "mean_gap": 48.261,
-     "best": 2320.0,
-     "mean_obj": 2387.0,
+     "mean_gap": 38.737,
+     "best": 2219.0,
+     "mean_obj": 2233.67,
      "ref": 1610.0,
      "lb": null,
-     "time": 59.02,
+     "time": 59.09,
      "runs": 3,
      "fails": 0
     },
@@ -3037,12 +3053,12 @@
     {
      "instance": "berlin52",
      "method": "DWave-SA",
-     "mean_gap": 72.514,
-     "best": 13011.0,
-     "mean_obj": 13011.0,
+     "mean_gap": 73.924,
+     "best": 12968.0,
+     "mean_obj": 13117.33,
      "ref": 7542.0,
      "lb": null,
-     "time": 57.9,
+     "time": 58.81,
      "runs": 3,
      "fails": 0
     },
@@ -3097,24 +3113,24 @@
     {
      "instance": "berlin52",
      "method": "OpenJij-SA",
-     "mean_gap": 79.448,
-     "best": 13307.0,
-     "mean_obj": 13534.0,
+     "mean_gap": 82.233,
+     "best": 13466.0,
+     "mean_obj": 13744.0,
      "ref": 7542.0,
      "lb": null,
-     "time": 59.21,
+     "time": 59.15,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "berlin52",
      "method": "OpenJij-SQA",
-     "mean_gap": 120.401,
-     "best": 15613.0,
-     "mean_obj": 16622.67,
+     "mean_gap": 111.151,
+     "best": 14968.0,
+     "mean_obj": 15925.0,
      "ref": 7542.0,
      "lb": null,
-     "time": 56.57,
+     "time": 56.87,
      "runs": 3,
      "fails": 0
     },
@@ -3181,9 +3197,9 @@
     {
      "instance": "burma14",
      "method": "DWave-SA",
-     "mean_gap": 0.692,
-     "best": 3346.0,
-     "mean_obj": 3346.0,
+     "mean_gap": 0.481,
+     "best": 3323.0,
+     "mean_obj": 3339.0,
      "ref": 3323.0,
      "lb": null,
      "time": 59.97,
@@ -3241,24 +3257,24 @@
     {
      "instance": "burma14",
      "method": "OpenJij-SA",
-     "mean_gap": 2.979,
-     "best": 3381.0,
-     "mean_obj": 3422.0,
+     "mean_gap": 4.454,
+     "best": 3346.0,
+     "mean_obj": 3471.0,
      "ref": 3323.0,
      "lb": null,
-     "time": 59.97,
+     "time": 59.96,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "burma14",
      "method": "OpenJij-SQA",
-     "mean_gap": 4.273,
-     "best": 3394.0,
-     "mean_obj": 3465.0,
+     "mean_gap": 5.808,
+     "best": 3452.0,
+     "mean_obj": 3516.0,
      "ref": 3323.0,
      "lb": null,
-     "time": 59.8,
+     "time": 59.87,
      "runs": 3,
      "fails": 0
     },
@@ -3325,12 +3341,12 @@
     {
      "instance": "eil51",
      "method": "DWave-SA",
-     "mean_gap": 63.146,
-     "best": 695.0,
-     "mean_obj": 695.0,
+     "mean_gap": 60.329,
+     "best": 664.0,
+     "mean_obj": 683.0,
      "ref": 426.0,
      "lb": null,
-     "time": 58.37,
+     "time": 58.33,
      "runs": 3,
      "fails": 0
     },
@@ -3385,24 +3401,24 @@
     {
      "instance": "eil51",
      "method": "OpenJij-SA",
-     "mean_gap": 55.634,
-     "best": 634.0,
-     "mean_obj": 663.0,
+     "mean_gap": 73.005,
+     "best": 684.0,
+     "mean_obj": 737.0,
      "ref": 426.0,
      "lb": null,
-     "time": 58.49,
+     "time": 59.03,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "eil51",
      "method": "OpenJij-SQA",
-     "mean_gap": 92.254,
-     "best": 790.0,
-     "mean_obj": 819.0,
+     "mean_gap": 102.034,
+     "best": 841.0,
+     "mean_obj": 860.67,
      "ref": 426.0,
      "lb": null,
-     "time": 55.97,
+     "time": 54.38,
      "runs": 3,
      "fails": 0
     },
@@ -3469,12 +3485,12 @@
     {
      "instance": "st70",
      "method": "DWave-SA",
-     "mean_gap": 116.494,
-     "best": 1455.0,
-     "mean_obj": 1461.33,
+     "mean_gap": 114.469,
+     "best": 1405.0,
+     "mean_obj": 1447.67,
      "ref": 675.0,
      "lb": null,
-     "time": 55.27,
+     "time": 56.39,
      "runs": 3,
      "fails": 0
     },
@@ -3529,24 +3545,24 @@
     {
      "instance": "st70",
      "method": "OpenJij-SA",
-     "mean_gap": 117.531,
-     "best": 1397.0,
-     "mean_obj": 1468.33,
+     "mean_gap": 99.21,
+     "best": 1286.0,
+     "mean_obj": 1344.67,
      "ref": 675.0,
      "lb": null,
-     "time": 56.93,
+     "time": 56.76,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "st70",
      "method": "OpenJij-SQA",
-     "mean_gap": 184.099,
-     "best": 1745.0,
-     "mean_obj": 1917.67,
+     "mean_gap": 182.667,
+     "best": 1843.0,
+     "mean_obj": 1908.0,
      "ref": 675.0,
      "lb": null,
-     "time": 50.02,
+     "time": 50.19,
      "runs": 3,
      "fails": 0
     },
@@ -3613,12 +3629,12 @@
     {
      "instance": "ulysses16",
      "method": "DWave-SA",
-     "mean_gap": 2.581,
-     "best": 7036.0,
-     "mean_obj": 7036.0,
+     "mean_gap": 3.8,
+     "best": 6985.0,
+     "mean_obj": 7119.67,
      "ref": 6859.0,
      "lb": null,
-     "time": 59.96,
+     "time": 59.98,
      "runs": 3,
      "fails": 0
     },
@@ -3673,24 +3689,24 @@
     {
      "instance": "ulysses16",
      "method": "OpenJij-SA",
-     "mean_gap": 2.911,
-     "best": 6911.0,
-     "mean_obj": 7058.67,
+     "mean_gap": 4.908,
+     "best": 6970.0,
+     "mean_obj": 7195.67,
      "ref": 6859.0,
      "lb": null,
-     "time": 59.93,
+     "time": 59.95,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "ulysses16",
      "method": "OpenJij-SQA",
-     "mean_gap": 11.197,
-     "best": 7126.0,
-     "mean_obj": 7627.0,
+     "mean_gap": 14.492,
+     "best": 7583.0,
+     "mean_obj": 7853.0,
      "ref": 6859.0,
      "lb": null,
-     "time": 59.68,
+     "time": 59.69,
      "runs": 3,
      "fails": 0
     },
@@ -3757,12 +3773,12 @@
     {
      "instance": "ulysses22",
      "method": "DWave-SA",
-     "mean_gap": 11.792,
-     "best": 7840.0,
-     "mean_obj": 7840.0,
+     "mean_gap": 21.056,
+     "best": 8355.0,
+     "mean_obj": 8489.67,
      "ref": 7013.0,
      "lb": null,
-     "time": 59.94,
+     "time": 59.9,
      "runs": 3,
      "fails": 0
     },
@@ -3817,9 +3833,9 @@
     {
      "instance": "ulysses22",
      "method": "OpenJij-SA",
-     "mean_gap": 21.341,
-     "best": 7996.0,
-     "mean_obj": 8509.67,
+     "mean_gap": 18.342,
+     "best": 7813.0,
+     "mean_obj": 8299.33,
      "ref": 7013.0,
      "lb": null,
      "time": 59.92,
@@ -3829,12 +3845,12 @@
     {
      "instance": "ulysses22",
      "method": "OpenJij-SQA",
-     "mean_gap": 38.457,
-     "best": 9471.0,
-     "mean_obj": 9710.0,
+     "mean_gap": 42.73,
+     "best": 9724.0,
+     "mean_obj": 10009.67,
      "ref": 7013.0,
      "lb": null,
-     "time": 59.56,
+     "time": 59.57,
      "runs": 3,
      "fails": 0
     },
@@ -3875,9 +3891,6 @@
    ],
    "methods": [
     "Amplify-AE",
-    "DWave-SA",
-    "OpenJij-SQA",
-    "OpenJij-SA",
     "nn+ls",
     "SA",
     "LKH(elkai)",
@@ -3885,7 +3898,10 @@
     "CP-SAT",
     "CP-SAT-4w",
     "MIP-HiGHS",
-    "MIP-HiGHS-4w"
+    "MIP-HiGHS-4w",
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA"
    ]
   },
   "20261025T050501Z-cloud-atsp": {
@@ -4409,7 +4425,7 @@
    "run_id": "20261025T081323Z-tiamat-atsp",
    "problem": "atsp",
    "started_at": "2026-10-25T08:13:23+00:00",
-   "finished_at": "2026-10-25T20:59:50+00:00",
+   "finished_at": "2026-10-25T21:43:58+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -4452,10 +4468,10 @@
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
     "PyVRP-HGS": 1,
+    "Amplify-AE": 1,
     "OpenJij-SQA": 1,
     "OpenJij-SA": 1,
-    "DWave-SA": 1,
-    "Amplify-AE": 1
+    "DWave-SA": 1
    },
    "solvers": {
     "nn+ls": "nn+ls",
@@ -4467,10 +4483,10 @@
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
     "PyVRP-HGS": "PyVRP-HGS",
+    "Amplify-AE": "Amplify-AE",
     "OpenJij-SQA": "OpenJij-SQA",
     "OpenJij-SA": "OpenJij-SA",
-    "DWave-SA": "DWave-SA",
-    "Amplify-AE": "Amplify-AE"
+    "DWave-SA": "DWave-SA"
    },
    "seeds": {
     "nn+ls": 1,
@@ -4482,10 +4498,10 @@
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
     "PyVRP-HGS": 3,
+    "Amplify-AE": 1,
     "OpenJij-SQA": 3,
     "OpenJij-SA": 3,
-    "DWave-SA": 3,
-    "Amplify-AE": 1
+    "DWave-SA": 3
    },
    "instance_sha256": {
     "ftv33": "1ba8bdaf6e319ca9155b31e9fe5e2f235a2134fd89edb260223d08869abb8de9",
@@ -4510,21 +4526,6 @@
      "command": "python.exe src/run_bench.py atsp 60 --run 20261025T081323Z-tiamat-atsp --only PyVRP-HGS"
     },
     {
-     "at": "2026-10-25T20:47:48+00:00",
-     "methods": [
-      "OpenJij-SQA",
-      "OpenJij-SA",
-      "DWave-SA"
-     ],
-     "git": {
-      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-      "branch": "claude/project-thread-wq8605",
-      "dirty": false,
-      "dirty_files": []
-     },
-     "command": "python.exe src/run_bench.py atsp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
-    },
-    {
      "at": "2026-10-25T20:58:48+00:00",
      "methods": [
       "Amplify-AE"
@@ -4536,6 +4537,21 @@
       "dirty_files": []
      },
      "command": "python.exe src/run_bench.py atsp 60 --run latest --only Amplify-AE"
+    },
+    {
+     "at": "2026-10-25T21:37:05+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py atsp 60 --run 20261025T081323Z-tiamat-atsp --only OpenJij-SQA,OpenJij-SA,DWave-SA"
     }
    ],
    "cells": [
@@ -4578,12 +4594,12 @@
     {
      "instance": "ft70",
      "method": "DWave-SA",
-     "mean_gap": 44.719,
-     "best": 53530.0,
-     "mean_obj": 55967.33,
+     "mean_gap": 46.14,
+     "best": 52531.0,
+     "mean_obj": 56516.67,
      "ref": 38673.0,
      "lb": null,
-     "time": 56.35,
+     "time": 54.6,
      "runs": 3,
      "fails": 0
     },
@@ -4638,24 +4654,24 @@
     {
      "instance": "ft70",
      "method": "OpenJij-SA",
-     "mean_gap": 55.35,
-     "best": 57791.0,
-     "mean_obj": 60078.67,
+     "mean_gap": 51.345,
+     "best": 56643.0,
+     "mean_obj": 58529.67,
      "ref": 38673.0,
      "lb": null,
-     "time": 54.75,
+     "time": 58.76,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "ft70",
      "method": "OpenJij-SQA",
-     "mean_gap": 61.179,
-     "best": 60423.0,
-     "mean_obj": 62332.67,
+     "mean_gap": 61.196,
+     "best": 59523.0,
+     "mean_obj": 62339.33,
      "ref": 38673.0,
      "lb": null,
-     "time": 52.84,
+     "time": 50.54,
      "runs": 3,
      "fails": 0
     },
@@ -4734,12 +4750,12 @@
     {
      "instance": "ftv33",
      "method": "DWave-SA",
-     "mean_gap": 40.591,
-     "best": 1808.0,
-     "mean_obj": 1808.0,
+     "mean_gap": 34.578,
+     "best": 1640.0,
+     "mean_obj": 1730.67,
      "ref": 1286.0,
      "lb": null,
-     "time": 59.55,
+     "time": 59.58,
      "runs": 3,
      "fails": 0
     },
@@ -4794,24 +4810,24 @@
     {
      "instance": "ftv33",
      "method": "OpenJij-SA",
-     "mean_gap": 46.838,
-     "best": 1796.0,
-     "mean_obj": 1888.33,
+     "mean_gap": 47.019,
+     "best": 1835.0,
+     "mean_obj": 1890.67,
      "ref": 1286.0,
      "lb": null,
-     "time": 59.71,
+     "time": 59.85,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "ftv33",
      "method": "OpenJij-SQA",
-     "mean_gap": 69.44,
-     "best": 2020.0,
-     "mean_obj": 2179.0,
+     "mean_gap": 76.179,
+     "best": 2138.0,
+     "mean_obj": 2265.67,
      "ref": 1286.0,
      "lb": null,
-     "time": 58.84,
+     "time": 58.88,
      "runs": 3,
      "fails": 0
     },
@@ -4890,12 +4906,12 @@
     {
      "instance": "ftv70",
      "method": "DWave-SA",
-     "mean_gap": 117.504,
-     "best": 4189.0,
-     "mean_obj": 4241.33,
+     "mean_gap": 105.949,
+     "best": 3879.0,
+     "mean_obj": 4016.0,
      "ref": 1950.0,
      "lb": null,
-     "time": 55.5,
+     "time": 53.55,
      "runs": 3,
      "fails": 0
     },
@@ -4950,24 +4966,24 @@
     {
      "instance": "ftv70",
      "method": "OpenJij-SA",
-     "mean_gap": 143.863,
-     "best": 4550.0,
-     "mean_obj": 4755.33,
+     "mean_gap": 142.735,
+     "best": 4460.0,
+     "mean_obj": 4733.33,
      "ref": 1950.0,
      "lb": null,
-     "time": 55.04,
+     "time": 59.0,
      "runs": 3,
      "fails": 0
     },
     {
      "instance": "ftv70",
      "method": "OpenJij-SQA",
-     "mean_gap": 224.308,
-     "best": 6021.0,
-     "mean_obj": 6324.0,
+     "mean_gap": 200.513,
+     "best": 5519.0,
+     "mean_obj": 5860.0,
      "ref": 1950.0,
      "lb": null,
-     "time": 41.96,
+     "time": 53.55,
      "runs": 3,
      "fails": 0
     },
@@ -5494,10 +5510,10 @@
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
     "PyVRP-HGS",
+    "Amplify-AE",
     "OpenJij-SQA",
     "OpenJij-SA",
-    "DWave-SA",
-    "Amplify-AE"
+    "DWave-SA"
    ]
   },
   "20261025T104324Z-cloud-atsptw": {
@@ -8481,7 +8497,7 @@
    "run_id": "20261025T082601Z-tiamat-jssp",
    "problem": "jssp",
    "started_at": "2026-10-25T08:26:01+00:00",
-   "finished_at": "2026-10-25T21:00:44+00:00",
+   "finished_at": "2026-10-25T21:47:00+00:00",
    "status": "complete",
    "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
    "migrated": false,
@@ -8523,10 +8539,10 @@
     "CP-SAT-4w": 4,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 4,
+    "Amplify-AE": 1,
     "OpenJij-SQA": 1,
     "OpenJij-SA": 1,
-    "DWave-SA": 1,
-    "Amplify-AE": 1
+    "DWave-SA": 1
    },
    "solvers": {
     "SPT": "SPT",
@@ -8537,10 +8553,10 @@
     "CP-SAT-4w": "CP-SAT",
     "MIP-HiGHS": "MIP-HiGHS",
     "MIP-HiGHS-4w": "MIP-HiGHS",
+    "Amplify-AE": "Amplify-AE",
     "OpenJij-SQA": "OpenJij-SQA",
     "OpenJij-SA": "OpenJij-SA",
-    "DWave-SA": "DWave-SA",
-    "Amplify-AE": "Amplify-AE"
+    "DWave-SA": "DWave-SA"
    },
    "seeds": {
     "SPT": 1,
@@ -8551,10 +8567,10 @@
     "CP-SAT-4w": 1,
     "MIP-HiGHS": 1,
     "MIP-HiGHS-4w": 1,
+    "Amplify-AE": 1,
     "OpenJij-SQA": 3,
     "OpenJij-SA": 3,
-    "DWave-SA": 3,
-    "Amplify-AE": 1
+    "DWave-SA": 3
    },
    "instance_sha256": {
     "ft06": "63dc6573bbfbd418dbb3bf6a2ad2062001b8d4fa0eae2c32e119b9e532e9f6f9",
@@ -8570,21 +8586,6 @@
    },
    "additions": [
     {
-     "at": "2026-10-25T20:54:34+00:00",
-     "methods": [
-      "OpenJij-SQA",
-      "OpenJij-SA",
-      "DWave-SA"
-     ],
-     "git": {
-      "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-      "branch": "claude/project-thread-wq8605",
-      "dirty": false,
-      "dirty_files": []
-     },
-     "command": "python.exe src/run_bench.py jssp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
-    },
-    {
      "at": "2026-10-25T20:59:51+00:00",
      "methods": [
       "Amplify-AE"
@@ -8596,6 +8597,21 @@
       "dirty_files": []
      },
      "command": "python.exe src/run_bench.py jssp 60 --run latest --only Amplify-AE"
+    },
+    {
+     "at": "2026-10-25T21:43:59+00:00",
+     "methods": [
+      "OpenJij-SQA",
+      "OpenJij-SA",
+      "DWave-SA"
+     ],
+     "git": {
+      "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+      "branch": "claude/project-thread-wq8605",
+      "dirty": false,
+      "dirty_files": []
+     },
+     "command": "python.exe src/run_bench.py jssp 60 --run 20261025T082601Z-tiamat-jssp --only OpenJij-SQA,OpenJij-SA,DWave-SA"
     }
    ],
    "cells": [
@@ -8782,12 +8798,12 @@
     {
      "instance": "ft06",
      "method": "DWave-SA",
-     "mean_gap": 16.364,
-     "best": 64.0,
-     "mean_obj": 64.0,
+     "mean_gap": 12.121,
+     "best": 61.0,
+     "mean_obj": 61.67,
      "ref": 55.0,
      "lb": null,
-     "time": 59.43,
+     "time": 59.8,
      "runs": 3,
      "fails": 0
     },
@@ -8842,12 +8858,12 @@
     {
      "instance": "ft06",
      "method": "OpenJij-SA",
-     "mean_gap": 12.727,
-     "best": 62.0,
-     "mean_obj": 62.0,
+     "mean_gap": 17.576,
+     "best": 64.0,
+     "mean_obj": 64.67,
      "ref": 55.0,
      "lb": null,
-     "time": 59.69,
+     "time": 59.75,
      "runs": 3,
      "fails": 0
     },
@@ -8859,9 +8875,9 @@
      "mean_obj": 68.0,
      "ref": 55.0,
      "lb": null,
-     "time": 58.48,
+     "time": 58.33,
      "runs": 3,
-     "fails": 0
+     "fails": 2
     },
     {
      "instance": "ft06",
@@ -10061,10 +10077,10 @@
     "CP-SAT-4w",
     "MIP-HiGHS",
     "MIP-HiGHS-4w",
+    "Amplify-AE",
     "OpenJij-SQA",
     "OpenJij-SA",
-    "DWave-SA",
-    "Amplify-AE"
+    "DWave-SA"
    ]
   },
   "20261025T050501Z-cloud-nsp": {

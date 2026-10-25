@@ -2,7 +2,7 @@
  "run_id": "20261025T082601Z-tiamat-jssp",
  "problem": "jssp",
  "started_at": "2026-10-25T08:26:01+00:00",
- "finished_at": "2026-10-25T21:00:44+00:00",
+ "finished_at": "2026-10-25T21:47:00+00:00",
  "status": "complete",
  "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
  "command": "python.exe src/run_bench.py jssp 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
@@ -45,10 +45,10 @@
    "CP-SAT-4w": 4,
    "MIP-HiGHS": 1,
    "MIP-HiGHS-4w": 4,
+   "Amplify-AE": 1,
    "OpenJij-SQA": 1,
    "OpenJij-SA": 1,
-   "DWave-SA": 1,
-   "Amplify-AE": 1
+   "DWave-SA": 1
   },
   "solvers": {
    "SPT": "SPT",
@@ -59,10 +59,10 @@
    "CP-SAT-4w": "CP-SAT",
    "MIP-HiGHS": "MIP-HiGHS",
    "MIP-HiGHS-4w": "MIP-HiGHS",
+   "Amplify-AE": "Amplify-AE",
    "OpenJij-SQA": "OpenJij-SQA",
    "OpenJij-SA": "OpenJij-SA",
-   "DWave-SA": "DWave-SA",
-   "Amplify-AE": "Amplify-AE"
+   "DWave-SA": "DWave-SA"
   },
   "instances": [
    "ft06",
@@ -105,6 +105,9 @@
    "MIP-HiGHS-4w": [
     1
    ],
+   "Amplify-AE": [
+    1
+   ],
    "OpenJij-SQA": [
     1,
     2,
@@ -119,9 +122,6 @@
     1,
     2,
     3
-   ],
-   "Amplify-AE": [
-    1
    ]
   }
  },
@@ -140,24 +140,10 @@
  "resumed_at": [
   "2026-10-25T09:13:49+00:00",
   "2026-10-25T20:54:34+00:00",
-  "2026-10-25T20:59:51+00:00"
+  "2026-10-25T20:59:51+00:00",
+  "2026-10-25T21:43:59+00:00"
  ],
  "additions": [
-  {
-   "at": "2026-10-25T20:54:34+00:00",
-   "methods": [
-    "OpenJij-SQA",
-    "OpenJij-SA",
-    "DWave-SA"
-   ],
-   "git": {
-    "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
-    "branch": "claude/project-thread-wq8605",
-    "dirty": false,
-    "dirty_files": []
-   },
-   "command": "python.exe src/run_bench.py jssp 60 --run latest --only OpenJij-SQA,OpenJij-SA,DWave-SA"
-  },
   {
    "at": "2026-10-25T20:59:51+00:00",
    "methods": [
@@ -170,6 +156,21 @@
     "dirty_files": []
    },
    "command": "python.exe src/run_bench.py jssp 60 --run latest --only Amplify-AE"
+  },
+  {
+   "at": "2026-10-25T21:43:59+00:00",
+   "methods": [
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA"
+   ],
+   "git": {
+    "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+    "branch": "claude/project-thread-wq8605",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "command": "python.exe src/run_bench.py jssp 60 --run 20261025T082601Z-tiamat-jssp --only OpenJij-SQA,OpenJij-SA,DWave-SA"
   }
  ]
 }

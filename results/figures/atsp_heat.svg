@@ -36,11 +36,11 @@
 <rect x="961" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="1008.0" y="83.0" text-anchor="middle" fill="#0b0b0b">0</text>
 <rect x="1057" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1104.0" y="83.0" text-anchor="middle" fill="#ffffff">40.6</text>
+<text x="1104.0" y="83.0" text-anchor="middle" fill="#ffffff">34.6</text>
 <rect x="1153" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1200.0" y="83.0" text-anchor="middle" fill="#ffffff">46.8</text>
+<text x="1200.0" y="83.0" text-anchor="middle" fill="#ffffff">47.0</text>
 <rect x="1249" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1296.0" y="83.0" text-anchor="middle" fill="#ffffff">69.4</text>
+<text x="1296.0" y="83.0" text-anchor="middle" fill="#ffffff">76.2</text>
 <text x="88.0" y="113.0" text-anchor="end" fill="#0b0b0b">ftv70</text>
 <rect x="97" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="113.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -63,11 +63,11 @@
 <rect x="961" y="95" width="94" height="28" rx="3" fill="#184f95"/>
 <text x="1008.0" y="113.0" text-anchor="middle" fill="#ffffff">6.62</text>
 <rect x="1057" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1104.0" y="113.0" text-anchor="middle" fill="#ffffff">117.5</text>
+<text x="1104.0" y="113.0" text-anchor="middle" fill="#ffffff">105.9</text>
 <rect x="1153" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1200.0" y="113.0" text-anchor="middle" fill="#ffffff">143.9</text>
+<text x="1200.0" y="113.0" text-anchor="middle" fill="#ffffff">142.7</text>
 <rect x="1249" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1296.0" y="113.0" text-anchor="middle" fill="#ffffff">224.3</text>
+<text x="1296.0" y="113.0" text-anchor="middle" fill="#ffffff">200.5</text>
 <text x="88.0" y="143.0" text-anchor="end" fill="#0b0b0b">kro124p</text>
 <rect x="97" y="125" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="143.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -117,9 +117,9 @@
 <rect x="961" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
 <text x="1008.0" y="173.0" text-anchor="middle" fill="#ffffff">13.5</text>
 <rect x="1057" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1104.0" y="173.0" text-anchor="middle" fill="#ffffff">44.7</text>
+<text x="1104.0" y="173.0" text-anchor="middle" fill="#ffffff">46.1</text>
 <rect x="1153" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="1200.0" y="173.0" text-anchor="middle" fill="#ffffff">55.4</text>
+<text x="1200.0" y="173.0" text-anchor="middle" fill="#ffffff">51.3</text>
 <rect x="1249" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
 <text x="1296.0" y="173.0" text-anchor="middle" fill="#ffffff">61.2</text>
 <text x="88.0" y="203.0" text-anchor="end" fill="#0b0b0b">rbg323</text>

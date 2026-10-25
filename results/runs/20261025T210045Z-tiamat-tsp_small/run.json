@@ -2,7 +2,7 @@
  "run_id": "20261025T210045Z-tiamat-tsp_small",
  "problem": "tsp_small",
  "started_at": "2026-10-25T21:00:45+00:00",
- "finished_at": "2026-10-25T21:30:50+00:00",
+ "finished_at": "2026-10-25T22:05:05+00:00",
  "status": "complete",
  "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。QUBO で扱える 14〜70 都市の TSP",
  "command": "python.exe src/run_bench.py tsp_small 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。QUBO で扱える 14〜70 都市の TSP",
@@ -38,9 +38,6 @@
   "workers": 4,
   "threads": {
    "Amplify-AE": 1,
-   "DWave-SA": 1,
-   "OpenJij-SQA": 1,
-   "OpenJij-SA": 1,
    "nn+ls": 1,
    "SA": 1,
    "LKH(elkai)": 1,
@@ -48,13 +45,13 @@
    "CP-SAT": 1,
    "CP-SAT-4w": 4,
    "MIP-HiGHS": 1,
-   "MIP-HiGHS-4w": 4
+   "MIP-HiGHS-4w": 4,
+   "OpenJij-SQA": 1,
+   "OpenJij-SA": 1,
+   "DWave-SA": 1
   },
   "solvers": {
    "Amplify-AE": "Amplify-AE",
-   "DWave-SA": "DWave-SA",
-   "OpenJij-SQA": "OpenJij-SQA",
-   "OpenJij-SA": "OpenJij-SA",
    "nn+ls": "nn+ls",
    "SA": "SA",
    "LKH(elkai)": "LKH(elkai)",
@@ -62,7 +59,10 @@
    "CP-SAT": "CP-SAT",
    "CP-SAT-4w": "CP-SAT",
    "MIP-HiGHS": "MIP-HiGHS",
-   "MIP-HiGHS-4w": "MIP-HiGHS"
+   "MIP-HiGHS-4w": "MIP-HiGHS",
+   "OpenJij-SQA": "OpenJij-SQA",
+   "OpenJij-SA": "OpenJij-SA",
+   "DWave-SA": "DWave-SA"
   },
   "instances": [
    "burma14",
@@ -77,21 +77,6 @@
   "methods": {
    "Amplify-AE": [
     1
-   ],
-   "DWave-SA": [
-    1,
-    2,
-    3
-   ],
-   "OpenJij-SQA": [
-    1,
-    2,
-    3
-   ],
-   "OpenJij-SA": [
-    1,
-    2,
-    3
    ],
    "nn+ls": [
     1
@@ -118,6 +103,21 @@
    ],
    "MIP-HiGHS-4w": [
     1
+   ],
+   "OpenJij-SQA": [
+    1,
+    2,
+    3
+   ],
+   "OpenJij-SA": [
+    1,
+    2,
+    3
+   ],
+   "DWave-SA": [
+    1,
+    2,
+    3
    ]
   }
  },
@@ -130,5 +130,25 @@
   "eil51": "2081d397a69ef55b88a50a9c96d96462bcb74a3367ca969fde71573b53779bc2",
   "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
   "st70": "1ed07159d9148d7d275815a8bd34828c4bff3bfd1b932b8415359e47ff07bee0"
- }
+ },
+ "additions": [
+  {
+   "at": "2026-10-25T21:47:02+00:00",
+   "methods": [
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA"
+   ],
+   "git": {
+    "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+    "branch": "claude/project-thread-wq8605",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "command": "python.exe src/run_bench.py tsp_small 60 --run 20261025T210045Z-tiamat-tsp_small --only OpenJij-SQA,OpenJij-SA,DWave-SA"
+  }
+ ],
+ "resumed_at": [
+  "2026-10-25T21:47:02+00:00"
+ ]
 }
