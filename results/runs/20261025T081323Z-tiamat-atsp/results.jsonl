@@ -1,0 +1,60 @@
+{"obj": 1340, "lb": null, "time": 0.18583919999946374, "verified": true, "problem": "atsp", "method": "nn+ls", "solver": "nn+ls", "threads": 1, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": null, "time": 0.01637750000008964, "verified": true, "problem": "atsp", "method": "LKH(elkai)", "solver": "LKH(elkai)", "threads": 1, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": null, "time": 60.01119299999846, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ftv33", "seed": 2, "time_limit": 60.0}
+{"obj": 1286, "lb": null, "time": 60.0116205000013, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": null, "time": 60.01133690000279, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ftv33", "seed": 3, "time_limit": 60.0}
+{"obj": 1286, "lb": 1286, "iters": 3, "time": 0.23034480000205804, "verified": true, "problem": "atsp", "method": "MIP-HiGHS", "solver": "MIP-HiGHS", "threads": 1, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 2017, "lb": null, "time": 0.24552179999955115, "verified": true, "problem": "atsp", "method": "nn+ls", "solver": "nn+ls", "threads": 1, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": null, "time": 60.05976450000162, "verified": true, "problem": "atsp", "method": "ORTools-GLS", "solver": "ORTools-GLS", "threads": 1, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": 1286, "time": 1.2934396999989985, "verified": true, "problem": "atsp", "method": "CP-SAT", "solver": "CP-SAT", "threads": 1, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1950, "lb": null, "time": 0.20789420000073733, "verified": true, "problem": "atsp", "method": "LKH(elkai)", "solver": "LKH(elkai)", "threads": 1, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 1959, "lb": null, "time": 60.011028000000806, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 1959, "lb": null, "time": 60.01139569999941, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ftv70", "seed": 2, "time_limit": 60.0}
+{"obj": 1957, "lb": null, "time": 60.01167929999792, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ftv70", "seed": 3, "time_limit": 60.0}
+{"obj": 1950, "lb": null, "time": 60.05741699999999, "verified": true, "problem": "atsp", "method": "ORTools-GLS", "solver": "ORTools-GLS", "threads": 1, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 37966, "lb": null, "time": 0.4244771000012406, "verified": true, "problem": "atsp", "method": "nn+ls", "solver": "nn+ls", "threads": 1, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 1950, "lb": 1950, "iters": 5, "time": 2.7737407999993593, "verified": true, "problem": "atsp", "method": "MIP-HiGHS", "solver": "MIP-HiGHS", "threads": 1, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 1950, "lb": 1950, "time": 20.32010530000116, "verified": true, "problem": "atsp", "method": "CP-SAT", "solver": "CP-SAT", "threads": 1, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 36230, "lb": null, "time": 0.2785671000019647, "verified": true, "problem": "atsp", "method": "LKH(elkai)", "solver": "LKH(elkai)", "threads": 1, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 36230, "lb": null, "time": 60.01096510000207, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 36230, "lb": null, "time": 60.011765499999456, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "kro124p", "seed": 2, "time_limit": 60.0}
+{"obj": 36230, "lb": null, "time": 60.01114560000133, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "kro124p", "seed": 3, "time_limit": 60.0}
+{"obj": 39414, "lb": null, "time": 0.2673925999988569, "verified": true, "problem": "atsp", "method": "nn+ls", "solver": "nn+ls", "threads": 1, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 36230, "lb": 36230, "iters": 5, "time": 10.206894899998588, "verified": true, "problem": "atsp", "method": "MIP-HiGHS", "solver": "MIP-HiGHS", "threads": 1, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 36960, "lb": null, "time": 60.056174100001954, "verified": true, "problem": "atsp", "method": "ORTools-GLS", "solver": "ORTools-GLS", "threads": 1, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 39476, "lb": 33978, "time": 60.502692000001844, "verified": true, "problem": "atsp", "method": "CP-SAT", "solver": "CP-SAT", "threads": 1, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 38673, "lb": null, "time": 0.09573380000074394, "verified": true, "problem": "atsp", "method": "LKH(elkai)", "solver": "LKH(elkai)", "threads": 1, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 38707, "lb": null, "time": 60.01226790000146, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 38673, "lb": 38673, "time": 3.0261113999986264, "verified": true, "problem": "atsp", "method": "CP-SAT", "solver": "CP-SAT", "threads": 1, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 38673, "lb": 38673, "iters": 5, "time": 1.741362000000663, "verified": true, "problem": "atsp", "method": "MIP-HiGHS", "solver": "MIP-HiGHS", "threads": 1, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 38673, "lb": null, "time": 60.011879199999385, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ft70", "seed": 2, "time_limit": 60.0}
+{"obj": 38673, "lb": null, "time": 60.010945699999866, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "ft70", "seed": 3, "time_limit": 60.0}
+{"obj": 1371, "lb": null, "time": 12.830759200001921, "verified": true, "problem": "atsp", "method": "nn+ls", "solver": "nn+ls", "threads": 1, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": 38830, "lb": null, "time": 60.0560876999989, "verified": true, "problem": "atsp", "method": "ORTools-GLS", "solver": "ORTools-GLS", "threads": 1, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 1327, "lb": null, "time": 60.01546099999905, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": 1326, "lb": null, "time": 60.01646289999917, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "rbg323", "seed": 2, "time_limit": 60.0}
+{"obj": 1326, "lb": null, "time": 19.521609600000374, "verified": true, "problem": "atsp", "method": "LKH(elkai)", "solver": "LKH(elkai)", "threads": 1, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": 1326, "lb": null, "time": 60.01637450000271, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "rbg323", "seed": 3, "time_limit": 60.0}
+{"obj": 1326, "lb": 1326, "time": 9.343059700000595, "verified": true, "problem": "atsp", "method": "CP-SAT", "solver": "CP-SAT", "threads": 1, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": 2732, "lb": null, "time": 24.60728459999882, "verified": true, "problem": "atsp", "method": "nn+ls", "solver": "nn+ls", "threads": 1, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": 1362, "lb": null, "time": 60.059740699998656, "verified": true, "problem": "atsp", "method": "ORTools-GLS", "solver": "ORTools-GLS", "threads": 1, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 1326, "iters": 8, "time": 61.99542890000157, "problem": "atsp", "method": "MIP-HiGHS", "solver": "MIP-HiGHS", "threads": 1, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": 2720, "lb": null, "time": 60.02113770000142, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": 2720, "lb": null, "time": 60.023349099999905, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "rbg443", "seed": 2, "time_limit": 60.0}
+{"obj": 2720, "lb": null, "time": 28.0328128000001, "verified": true, "problem": "atsp", "method": "LKH(elkai)", "solver": "LKH(elkai)", "threads": 1, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": 2720, "lb": null, "time": 60.022053500000766, "verified": true, "problem": "atsp", "method": "SA", "solver": "SA", "threads": 1, "instance": "rbg443", "seed": 3, "time_limit": 60.0}
+{"obj": 2737, "lb": null, "time": 60.062891800000216, "verified": true, "problem": "atsp", "method": "ORTools-GLS", "solver": "ORTools-GLS", "threads": 1, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": 5558, "lb": 2683, "time": 63.463982000001124, "verified": true, "problem": "atsp", "method": "CP-SAT", "solver": "CP-SAT", "threads": 1, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 2720, "iters": 4, "time": 60.42166509999879, "problem": "atsp", "method": "MIP-HiGHS", "solver": "MIP-HiGHS", "threads": 1, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": 1286, "time": 0.8911068999987037, "verified": true, "problem": "atsp", "method": "CP-SAT-4w", "solver": "CP-SAT", "threads": 4, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1286, "lb": 1286, "iters": 3, "time": 0.20824219999849447, "verified": true, "problem": "atsp", "method": "MIP-HiGHS-4w", "solver": "MIP-HiGHS", "threads": 4, "instance": "ftv33", "seed": 1, "time_limit": 60.0}
+{"obj": 1950, "lb": 1950, "time": 12.458687799997278, "verified": true, "problem": "atsp", "method": "CP-SAT-4w", "solver": "CP-SAT", "threads": 4, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 1950, "lb": 1950, "iters": 5, "time": 2.3000533000013093, "verified": true, "problem": "atsp", "method": "MIP-HiGHS-4w", "solver": "MIP-HiGHS", "threads": 4, "instance": "ftv70", "seed": 1, "time_limit": 60.0}
+{"obj": 36230, "lb": 36230, "time": 32.80420509999749, "verified": true, "problem": "atsp", "method": "CP-SAT-4w", "solver": "CP-SAT", "threads": 4, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 36230, "lb": 36230, "iters": 5, "time": 8.8864272000028, "verified": true, "problem": "atsp", "method": "MIP-HiGHS-4w", "solver": "MIP-HiGHS", "threads": 4, "instance": "kro124p", "seed": 1, "time_limit": 60.0}
+{"obj": 38673, "lb": 38673, "time": 3.4293595000017376, "verified": true, "problem": "atsp", "method": "CP-SAT-4w", "solver": "CP-SAT", "threads": 4, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 38673, "lb": 38673, "iters": 5, "time": 1.482955999999831, "verified": true, "problem": "atsp", "method": "MIP-HiGHS-4w", "solver": "MIP-HiGHS", "threads": 4, "instance": "ft70", "seed": 1, "time_limit": 60.0}
+{"obj": 1326, "lb": 1326, "time": 12.704271399998106, "verified": true, "problem": "atsp", "method": "CP-SAT-4w", "solver": "CP-SAT", "threads": 4, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 1326, "iters": 9, "time": 65.37348609999754, "problem": "atsp", "method": "MIP-HiGHS-4w", "solver": "MIP-HiGHS", "threads": 4, "instance": "rbg323", "seed": 1, "time_limit": 60.0}
+{"obj": 4324, "lb": 2720, "time": 63.25142760000017, "verified": true, "problem": "atsp", "method": "CP-SAT-4w", "solver": "CP-SAT", "threads": 4, "instance": "rbg443", "seed": 1, "time_limit": 60.0}
+{"obj": null, "lb": 2720, "iters": 5, "time": 59.62291670000195, "problem": "atsp", "method": "MIP-HiGHS-4w", "solver": "MIP-HiGHS", "threads": 4, "instance": "rbg443", "seed": 1, "time_limit": 60.0}

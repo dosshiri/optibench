@@ -1,0 +1,113 @@
+{
+ "run_id": "20261025T082601Z-tiamat-jssp",
+ "problem": "jssp",
+ "started_at": "2026-10-25T08:26:01+00:00",
+ "finished_at": "2026-10-25T09:14:50+00:00",
+ "status": "complete",
+ "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "command": "python.exe src/run_bench.py jssp 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "environment": {
+  "machine": "tiamat",
+  "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+  "cpu_count": 16,
+  "memory_gb": 31.4,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.9",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.4",
+   "pandas": "3.1.0",
+   "tsplib95": "0.7.1"
+  }
+ },
+ "git": {
+  "commit": "bffb27c179f5b5f84a3732222a2ce35f39d9e8f5",
+  "branch": "claude/project-thread-qnue7y",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "SPT": 1,
+   "MWKR": 1,
+   "GA": 1,
+   "Tabu-N5": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1,
+   "MIP-HiGHS-4w": 4
+  },
+  "solvers": {
+   "SPT": "SPT",
+   "MWKR": "MWKR",
+   "GA": "GA",
+   "Tabu-N5": "Tabu-N5",
+   "CP-SAT": "CP-SAT",
+   "CP-SAT-4w": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS",
+   "MIP-HiGHS-4w": "MIP-HiGHS"
+  },
+  "instances": [
+   "ft06",
+   "ft10",
+   "la16",
+   "la21",
+   "abz5",
+   "orb01",
+   "ta01",
+   "swv01",
+   "ta11",
+   "ta21"
+  ],
+  "methods": {
+   "SPT": [
+    1
+   ],
+   "MWKR": [
+    1
+   ],
+   "GA": [
+    1,
+    2,
+    3
+   ],
+   "Tabu-N5": [
+    1,
+    2,
+    3
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ],
+   "MIP-HiGHS-4w": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "ft06": "63dc6573bbfbd418dbb3bf6a2ad2062001b8d4fa0eae2c32e119b9e532e9f6f9",
+  "ft10": "d732b55ff074d6785f7914dc5967a949f321631146c781116de08a929bbc141a",
+  "la16": "50f8424e9e8cf39576bbd18361ea8877993449be34762abba0a3c447dd280845",
+  "la21": "77abee1404fe6bbab9ab6e2fcc9aa2b72b1f90a524140d7f52f2c855d08bbcdb",
+  "abz5": "614a08937d995408ed52814a883ce331f8a8b934a6a016510be28309ac3e91f1",
+  "orb01": "cbae80fb0482458dcdc87628ad0813faa9b7f7bc9f2a0147af8d818cef5cf4da",
+  "ta01": "6d85ea3d9ad45ac1c96f5ee8fba1d697284449e4e5daa0c09ae9b8aa8e581891",
+  "swv01": "ba2f32e0b8279f6611aea40da382995aff1c3ec197141131eed48ad7b4fa1cd8",
+  "ta11": "b35abe2d538c35facba5feb1908ffbc316ef7d3839962d34a1e7c316bcfa0a24",
+  "ta21": "7b235984be1131995d471d19705ef2901a3fcf0ed214ebe164a3c045195814e7"
+ },
+ "resumed_at": [
+  "2026-10-25T09:13:49+00:00"
+ ]
+}

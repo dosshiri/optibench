@@ -197,7 +197,7 @@ def lkh(D, tl, seed):
     return dict(obj=tour_cost(D, tour), lb=None, solution=tour)
 
 
-# ---------------------------------------------------------------- OR-Tools Routing
+# ---------------------------------------------------------------- 誘導局所探索 (OR-Tools Routing)
 @solver("ORTools-GLS", problems=ROUTING, packages=["ortools"])
 def ortools_gls(D, tl, seed):
     from ortools.constraint_solver import pywrapcp, routing_enums_pb2
@@ -218,7 +218,7 @@ def ortools_gls(D, tl, seed):
     return dict(obj=tour_cost(D, tour), lb=None, solution=tour)
 
 
-# ---------------------------------------------------------------- CP-SAT AddCircuit
+# ---------------------------------------------------------------- 制約プログラミング (CP-SAT, AddCircuit 制約)
 @solver("CP-SAT", problems=ROUTING, parallel=True, packages=["ortools"])
 def cpsat_circuit(D, tl, seed, threads=1):
     from ortools.sat.python import cp_model
