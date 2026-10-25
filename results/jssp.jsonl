@@ -1,0 +1,110 @@
+{"obj": 67, "lb": null, "time": 0.13980974200012497, "problem": "jssp", "method": "MWKR", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 94, "lb": null, "time": 0.15385953999998492, "problem": "jssp", "method": "SPT", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 55, "lb": null, "time": 60.000108442000055, "problem": "jssp", "method": "Tabu-N5", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 55, "lb": null, "time": 60.00021972200011, "problem": "jssp", "method": "Tabu-N5", "instance": "ft06", "seed": 2, "time_limit": 60.0}
+{"obj": 55, "lb": null, "time": 60.001191341999856, "problem": "jssp", "method": "Tabu-N5", "instance": "ft06", "seed": 3, "time_limit": 60.0}
+{"obj": 55, "lb": null, "time": 60.0001412470001, "problem": "jssp", "method": "GA", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 55, "lb": 55, "optimal": true, "time": 0.21861329700004717, "problem": "jssp", "method": "CP-SAT", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 55, "lb": 55, "optimal": true, "time": 0.45929849200001627, "problem": "jssp", "method": "MIP-HiGHS", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 1429, "lb": null, "time": 0.130455548999862, "problem": "jssp", "method": "SPT", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 1178, "lb": null, "time": 0.19467659099996126, "problem": "jssp", "method": "MWKR", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 55, "lb": null, "time": 60.00050464900005, "problem": "jssp", "method": "GA", "instance": "ft06", "seed": 2, "time_limit": 60.0}
+{"obj": 55, "lb": null, "time": 60.000744079000015, "problem": "jssp", "method": "GA", "instance": "ft06", "seed": 3, "time_limit": 60.0}
+{"obj": 930, "lb": null, "time": 60.00093812099999, "problem": "jssp", "method": "Tabu-N5", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 930, "lb": null, "time": 60.001613818999886, "problem": "jssp", "method": "Tabu-N5", "instance": "ft10", "seed": 2, "time_limit": 60.0}
+{"obj": 930, "lb": null, "time": 60.00193044299999, "problem": "jssp", "method": "Tabu-N5", "instance": "ft10", "seed": 3, "time_limit": 60.0}
+{"obj": 1010, "lb": null, "time": 60.00096782900005, "problem": "jssp", "method": "GA", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 1009, "lb": null, "time": 60.001509639999995, "problem": "jssp", "method": "GA", "instance": "ft10", "seed": 2, "time_limit": 60.0}
+{"obj": 974, "lb": null, "time": 60.000998756999934, "problem": "jssp", "method": "GA", "instance": "ft10", "seed": 3, "time_limit": 60.0}
+{"obj": 1464, "lb": null, "time": 0.13692125200009286, "problem": "jssp", "method": "SPT", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 1219, "lb": null, "time": 0.12831295000000864, "problem": "jssp", "method": "MWKR", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 930, "lb": 930, "optimal": true, "time": 31.658911653999894, "problem": "jssp", "method": "CP-SAT", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 1056, "lb": 737, "optimal": false, "time": 60.05268848700007, "problem": "jssp", "method": "MIP-HiGHS", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 945, "lb": null, "time": 60.001578464999966, "problem": "jssp", "method": "Tabu-N5", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 974, "lb": null, "time": 60.00145801100007, "problem": "jssp", "method": "Tabu-N5", "instance": "la16", "seed": 2, "time_limit": 60.0}
+{"obj": 945, "lb": null, "time": 60.0044242309998, "problem": "jssp", "method": "Tabu-N5", "instance": "la16", "seed": 3, "time_limit": 60.0}
+{"obj": 945, "lb": 945, "optimal": true, "time": 1.258365337999976, "problem": "jssp", "method": "CP-SAT", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 995, "lb": null, "time": 60.000168609999946, "problem": "jssp", "method": "GA", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 1657, "lb": null, "time": 0.14055458600000748, "problem": "jssp", "method": "SPT", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1267, "lb": null, "time": 0.13352472800011128, "problem": "jssp", "method": "MWKR", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1008, "lb": null, "time": 60.00104635999992, "problem": "jssp", "method": "GA", "instance": "la16", "seed": 2, "time_limit": 60.0}
+{"obj": 995, "lb": null, "time": 60.00092636700015, "problem": "jssp", "method": "GA", "instance": "la16", "seed": 3, "time_limit": 60.0}
+{"obj": 997, "lb": 803, "optimal": false, "time": 60.05966310000008, "problem": "jssp", "method": "MIP-HiGHS", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 1053, "lb": null, "time": 60.00652803000003, "problem": "jssp", "method": "Tabu-N5", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1053, "lb": null, "time": 60.005005271999835, "problem": "jssp", "method": "Tabu-N5", "instance": "la21", "seed": 2, "time_limit": 60.0}
+{"obj": 1053, "lb": null, "time": 60.00653460800004, "problem": "jssp", "method": "Tabu-N5", "instance": "la21", "seed": 3, "time_limit": 60.0}
+{"obj": 1144, "lb": null, "time": 60.00036739799998, "problem": "jssp", "method": "GA", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1174, "lb": null, "time": 60.000163078000014, "problem": "jssp", "method": "GA", "instance": "la21", "seed": 2, "time_limit": 60.0}
+{"obj": 1733, "lb": null, "time": 0.13065208400007577, "problem": "jssp", "method": "SPT", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1451, "lb": null, "time": 0.12710290500012889, "problem": "jssp", "method": "MWKR", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1150, "lb": null, "time": 60.00092002300016, "problem": "jssp", "method": "GA", "instance": "la21", "seed": 3, "time_limit": 60.0}
+{"obj": 1046, "lb": 1024, "optimal": false, "time": 60.289041634000114, "problem": "jssp", "method": "CP-SAT", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1231, "lb": 761, "optimal": false, "time": 60.077946553999936, "problem": "jssp", "method": "MIP-HiGHS", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1234, "lb": null, "time": 60.00363947799997, "problem": "jssp", "method": "Tabu-N5", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1236, "lb": null, "time": 60.00091445499993, "problem": "jssp", "method": "Tabu-N5", "instance": "abz5", "seed": 2, "time_limit": 60.0}
+{"obj": 1234, "lb": null, "time": 60.00059486500004, "problem": "jssp", "method": "Tabu-N5", "instance": "abz5", "seed": 3, "time_limit": 60.0}
+{"obj": 1234, "lb": 1234, "optimal": true, "time": 10.012019934000136, "problem": "jssp", "method": "CP-SAT", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1298, "lb": null, "time": 60.001050293999924, "problem": "jssp", "method": "GA", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1481, "lb": null, "time": 0.1334214510000038, "problem": "jssp", "method": "SPT", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1450, "lb": null, "time": 0.13307736599995224, "problem": "jssp", "method": "MWKR", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1310, "lb": null, "time": 60.00129156800017, "problem": "jssp", "method": "GA", "instance": "abz5", "seed": 2, "time_limit": 60.0}
+{"obj": 1314, "lb": null, "time": 60.00014772500026, "problem": "jssp", "method": "GA", "instance": "abz5", "seed": 3, "time_limit": 60.0}
+{"obj": 1241, "lb": 1009, "optimal": false, "time": 60.04754676699986, "problem": "jssp", "method": "MIP-HiGHS", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1059, "lb": null, "time": 60.00185207499999, "problem": "jssp", "method": "Tabu-N5", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1059, "lb": null, "time": 60.00234077999994, "problem": "jssp", "method": "Tabu-N5", "instance": "orb01", "seed": 2, "time_limit": 60.0}
+{"obj": 1059, "lb": null, "time": 60.00137078900025, "problem": "jssp", "method": "Tabu-N5", "instance": "orb01", "seed": 3, "time_limit": 60.0}
+{"obj": 1126, "lb": null, "time": 60.00020141599998, "problem": "jssp", "method": "GA", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1132, "lb": null, "time": 60.00012795700013, "problem": "jssp", "method": "GA", "instance": "orb01", "seed": 2, "time_limit": 60.0}
+{"obj": 1966, "lb": null, "time": 0.15966340699969805, "problem": "jssp", "method": "SPT", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1589, "lb": null, "time": 0.13965667599995868, "problem": "jssp", "method": "MWKR", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1128, "lb": null, "time": 60.000388326999655, "problem": "jssp", "method": "GA", "instance": "orb01", "seed": 3, "time_limit": 60.0}
+{"obj": 1059, "lb": 930, "optimal": false, "time": 60.18389063400036, "problem": "jssp", "method": "CP-SAT", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1256, "lb": 791, "optimal": false, "time": 60.04351507000001, "problem": "jssp", "method": "MIP-HiGHS", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1248, "lb": null, "time": 60.00240960600013, "problem": "jssp", "method": "Tabu-N5", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1259, "lb": null, "time": 60.00283889499997, "problem": "jssp", "method": "Tabu-N5", "instance": "ta01", "seed": 2, "time_limit": 60.0}
+{"obj": 1248, "lb": null, "time": 60.013045133000105, "problem": "jssp", "method": "Tabu-N5", "instance": "ta01", "seed": 3, "time_limit": 60.0}
+{"obj": 1387, "lb": null, "time": 60.0007617629999, "problem": "jssp", "method": "GA", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1397, "lb": null, "time": 60.00123531600002, "problem": "jssp", "method": "GA", "instance": "ta01", "seed": 2, "time_limit": 60.0}
+{"obj": 2256, "lb": null, "time": 0.13872749599977396, "problem": "jssp", "method": "SPT", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 2101, "lb": null, "time": 0.1393479009998373, "problem": "jssp", "method": "MWKR", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 1231, "lb": 1231, "optimal": true, "time": 40.692632114999924, "problem": "jssp", "method": "CP-SAT", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1460, "lb": null, "time": 60.00050956599989, "problem": "jssp", "method": "GA", "instance": "ta01", "seed": 3, "time_limit": 60.0}
+{"obj": 1527, "lb": 963, "optimal": false, "time": 60.144870527999956, "problem": "jssp", "method": "MIP-HiGHS", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1518, "lb": null, "time": 60.00943581699994, "problem": "jssp", "method": "Tabu-N5", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 1493, "lb": null, "time": 60.006556634999924, "problem": "jssp", "method": "Tabu-N5", "instance": "swv01", "seed": 2, "time_limit": 60.0}
+{"obj": 1525, "lb": null, "time": 60.01246694099973, "problem": "jssp", "method": "Tabu-N5", "instance": "swv01", "seed": 3, "time_limit": 60.0}
+{"obj": 1638, "lb": null, "time": 60.0006508030001, "problem": "jssp", "method": "GA", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 1598, "lb": null, "time": 60.00292165500014, "problem": "jssp", "method": "GA", "instance": "swv01", "seed": 2, "time_limit": 60.0}
+{"obj": 2106, "lb": null, "time": 0.11008379999975659, "problem": "jssp", "method": "SPT", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 1796, "lb": null, "time": 0.11318741800005228, "problem": "jssp", "method": "MWKR", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 1610, "lb": null, "time": 60.00266847600005, "problem": "jssp", "method": "GA", "instance": "swv01", "seed": 3, "time_limit": 60.0}
+{"obj": 1472, "lb": 1366, "optimal": false, "time": 60.211241916999825, "problem": "jssp", "method": "CP-SAT", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 2168, "lb": 727, "optimal": false, "time": 60.15321175200006, "problem": "jssp", "method": "MIP-HiGHS", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 1389, "lb": null, "time": 60.00273715900039, "problem": "jssp", "method": "Tabu-N5", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 1435, "lb": null, "time": 60.008216259000164, "problem": "jssp", "method": "Tabu-N5", "instance": "ta11", "seed": 2, "time_limit": 60.0}
+{"obj": 1394, "lb": null, "time": 60.01171315400006, "problem": "jssp", "method": "Tabu-N5", "instance": "ta11", "seed": 3, "time_limit": 60.0}
+{"obj": 1608, "lb": null, "time": 60.00344026199991, "problem": "jssp", "method": "GA", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 1635, "lb": null, "time": 60.000716012999874, "problem": "jssp", "method": "GA", "instance": "ta11", "seed": 2, "time_limit": 60.0}
+{"obj": 2598, "lb": null, "time": 0.1304794329998913, "problem": "jssp", "method": "SPT", "instance": "ta21", "seed": 1, "time_limit": 60.0}
+{"obj": 2145, "lb": null, "time": 0.10222488899989912, "problem": "jssp", "method": "MWKR", "instance": "ta21", "seed": 1, "time_limit": 60.0}
+{"obj": 1636, "lb": null, "time": 60.00255335100019, "problem": "jssp", "method": "GA", "instance": "ta11", "seed": 3, "time_limit": 60.0}
+{"obj": 1445, "lb": 1254, "optimal": false, "time": 60.19029599400028, "problem": "jssp", "method": "CP-SAT", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 2052, "lb": 949, "optimal": false, "time": 60.20320076200005, "problem": "jssp", "method": "MIP-HiGHS", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 1713, "lb": null, "time": 60.01110777899976, "problem": "jssp", "method": "Tabu-N5", "instance": "ta21", "seed": 1, "time_limit": 60.0}
+{"obj": 1743, "lb": null, "time": 60.02484578599979, "problem": "jssp", "method": "Tabu-N5", "instance": "ta21", "seed": 2, "time_limit": 60.0}
+{"obj": 1741, "lb": null, "time": 60.01754238800004, "problem": "jssp", "method": "Tabu-N5", "instance": "ta21", "seed": 3, "time_limit": 60.0}
+{"obj": 1990, "lb": null, "time": 60.003424604999964, "problem": "jssp", "method": "GA", "instance": "ta21", "seed": 1, "time_limit": 60.0}
+{"obj": 1973, "lb": null, "time": 60.00087677600004, "problem": "jssp", "method": "GA", "instance": "ta21", "seed": 2, "time_limit": 60.0}
+{"obj": 2025, "lb": null, "time": 60.00058123000008, "problem": "jssp", "method": "GA", "instance": "ta21", "seed": 3, "time_limit": 60.0}
+{"obj": 1735, "lb": 1434, "optimal": false, "time": 60.21725920400013, "problem": "jssp", "method": "CP-SAT", "instance": "ta21", "seed": 1, "time_limit": 60.0}
+{"obj": 2973, "lb": 1241, "optimal": false, "time": 60.355096731999765, "problem": "jssp", "method": "MIP-HiGHS", "instance": "ta21", "seed": 1, "time_limit": 60.0}
+{"obj": 55, "lb": 55, "optimal": true, "time": 0.22110817800012228, "problem": "jssp", "method": "CP-SAT-4w", "instance": "ft06", "seed": 1, "time_limit": 60.0}
+{"obj": 930, "lb": 930, "optimal": true, "time": 2.897120877999896, "problem": "jssp", "method": "CP-SAT-4w", "instance": "ft10", "seed": 1, "time_limit": 60.0}
+{"obj": 945, "lb": 945, "optimal": true, "time": 0.4956999209998685, "problem": "jssp", "method": "CP-SAT-4w", "instance": "la16", "seed": 1, "time_limit": 60.0}
+{"obj": 1046, "lb": 1046, "optimal": true, "time": 52.10361993000015, "problem": "jssp", "method": "CP-SAT-4w", "instance": "la21", "seed": 1, "time_limit": 60.0}
+{"obj": 1234, "lb": 1234, "optimal": true, "time": 1.2299945650001973, "problem": "jssp", "method": "CP-SAT-4w", "instance": "abz5", "seed": 1, "time_limit": 60.0}
+{"obj": 1059, "lb": 1059, "optimal": true, "time": 8.938798268000028, "problem": "jssp", "method": "CP-SAT-4w", "instance": "orb01", "seed": 1, "time_limit": 60.0}
+{"obj": 1231, "lb": 1231, "optimal": true, "time": 4.771339158000046, "problem": "jssp", "method": "CP-SAT-4w", "instance": "ta01", "seed": 1, "time_limit": 60.0}
+{"obj": 1433, "lb": 1366, "optimal": false, "time": 60.22085210199975, "problem": "jssp", "method": "CP-SAT-4w", "instance": "swv01", "seed": 1, "time_limit": 60.0}
+{"obj": 1377, "lb": 1254, "optimal": false, "time": 60.22477393000008, "problem": "jssp", "method": "CP-SAT-4w", "instance": "ta11", "seed": 1, "time_limit": 60.0}
+{"obj": 1677, "lb": 1434, "optimal": false, "time": 60.24700972299979, "problem": "jssp", "method": "CP-SAT-4w", "instance": "ta21", "seed": 1, "time_limit": 60.0}

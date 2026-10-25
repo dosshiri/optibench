@@ -1,0 +1,375 @@
+{
+ "name": "nsp01",
+ "horizon": 14,
+ "shifts": [
+  "D"
+ ],
+ "length": [
+  480
+ ],
+ "forbid": [
+  [
+   0
+  ]
+ ],
+ "employees": [
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 3360,
+   "max_minutes": 5280,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    0,
+    2
+   ],
+   "on_req": [
+    [
+     13,
+     0,
+     1
+    ],
+    [
+     5,
+     0,
+     1
+    ]
+   ],
+   "off_req": [
+    [
+     4,
+     0,
+     3
+    ],
+    [
+     11,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 3360,
+   "max_minutes": 5280,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    5,
+    12
+   ],
+   "on_req": [
+    [
+     11,
+     0,
+     2
+    ],
+    [
+     6,
+     0,
+     3
+    ]
+   ],
+   "off_req": [
+    [
+     11,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 3360,
+   "max_minutes": 5280,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    4,
+    5
+   ],
+   "on_req": [
+    [
+     2,
+     0,
+     2
+    ],
+    [
+     10,
+     0,
+     1
+    ]
+   ],
+   "off_req": [
+    [
+     3,
+     0,
+     1
+    ],
+    [
+     3,
+     0,
+     2
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 1440,
+   "max_minutes": 3360,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    1,
+    6
+   ],
+   "on_req": [
+    [
+     4,
+     0,
+     2
+    ],
+    [
+     10,
+     0,
+     1
+    ]
+   ],
+   "off_req": [
+    [
+     12,
+     0,
+     1
+    ],
+    [
+     4,
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 3360,
+   "max_minutes": 5280,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    5,
+    8
+   ],
+   "on_req": [
+    [
+     10,
+     0,
+     2
+    ],
+    [
+     12,
+     0,
+     2
+    ]
+   ],
+   "off_req": [
+    [
+     8,
+     0,
+     3
+    ],
+    [
+     0,
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 3360,
+   "max_minutes": 5280,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    6,
+    13
+   ],
+   "on_req": [
+    [
+     10,
+     0,
+     3
+    ],
+    [
+     11,
+     0,
+     1
+    ]
+   ],
+   "off_req": [
+    [
+     3,
+     0,
+     2
+    ],
+    [
+     4,
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 3360,
+   "max_minutes": 5280,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    10,
+    12
+   ],
+   "on_req": [
+    [
+     2,
+     0,
+     2
+    ],
+    [
+     9,
+     0,
+     3
+    ]
+   ],
+   "off_req": [
+    [
+     11,
+     0,
+     1
+    ],
+    [
+     11,
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "max_type": [
+    10
+   ],
+   "min_minutes": 1440,
+   "max_minutes": 3360,
+   "max_consec": 5,
+   "min_consec": 2,
+   "min_off": 2,
+   "max_weekends": 2,
+   "days_off": [
+    2,
+    6
+   ],
+   "on_req": [
+    [
+     3,
+     0,
+     3
+    ],
+    [
+     11,
+     0,
+     3
+    ]
+   ],
+   "off_req": [
+    [
+     9,
+     0,
+     3
+    ],
+    [
+     4,
+     0,
+     2
+    ]
+   ]
+  }
+ ],
+ "cover": [
+  [
+   3
+  ],
+  [
+   2
+  ],
+  [
+   5
+  ],
+  [
+   5
+  ],
+  [
+   5
+  ],
+  [
+   2
+  ],
+  [
+   2
+  ],
+  [
+   5
+  ],
+  [
+   5
+  ],
+  [
+   6
+  ],
+  [
+   3
+  ],
+  [
+   4
+  ],
+  [
+   4
+  ],
+  [
+   3
+  ]
+ ],
+ "w_under": 100,
+ "w_over": 1
+}
