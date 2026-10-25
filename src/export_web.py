@@ -11,19 +11,11 @@ import sys
 import pandas as pd
 
 import export_report
+import registry
 import runmeta
 from analyze import summarize
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジトリ直下
-
-META = {
-    "tsp": dict(label="TSP（対称巡回セールスマン）", ref="TSPLIB 公表最適値", unit="距離"),
-    "atsp": dict(label="ATSP（非対称巡回セールスマン）", ref="TSPLIB 公表最適値", unit="距離"),
-    "jssp": dict(label="JSSP（ジョブショップ）", ref="既知最適値（JSPLIB, ta11/ta21 は文献値）", unit="メイクスパン"),
-    "nsp": dict(label="ナーススケジューリング", ref="全 run・全手法中の最良値（合成インスタンス、最適値未知）", unit="ペナルティ",
-                display="value"),
-}
-
 
 def run_summary(meta):
     """ビューに載せる run のメタデータ."""
@@ -52,7 +44,8 @@ def run_cells(run_id):
 def main(out):
     data = dict(generated=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
                 problems={}, runs={})
-    for prob in ["tsp", "atsp", "jssp", "nsp"]:
+    for p in registry.problems():
+        prob = p.name
         ids = []
         for meta in runmeta.list_runs(prob):
             cells, methods, insts = run_cells(meta["run_id"])
@@ -66,7 +59,12 @@ def main(out):
         if not ids:
             continue
         # run は既定で表示する最新の run（results/README.md もこれを使う）、runs は古い順の一覧
-        data["problems"][prob] = dict(META[prob], run=ids[-1], runs=ids)
+        info = dict(label=p.label, ref=p.ref_label, unit=p.unit)
+        if p.display != "gap":
+            info["display"] = p.display
+        if p.sense != "min":
+            info["sense"] = p.sense
+        data["problems"][prob] = dict(info, run=ids[-1], runs=ids)
     with open(out, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
     # file:// で開くと fetch がブロックされるため、同じ内容をスクリプトとしても書き出す

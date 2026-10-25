@@ -5,6 +5,8 @@ Curtois & Qu (2014) "Computational results on new staff scheduling benchmark ins
   ハード制約: 1日1勤務, 禁止勤務遷移, 勤務種別ごとの上限回数, 総勤務時間の上下限,
               最大連続勤務日数, 最小連続勤務日数, 最小連続休日数, 最大勤務週末数, 指定休日
   ソフト制約: 勤務希望 (on) / 勤務回避希望 (off), 必要人数の不足 (重み100/人) と超過 (重み1/人)
+解法に渡すデータはインスタンスの dict, 解は R[e][d] = 勤務種別 index または -1（休み）.
+インスタンスの再生成: python src/make_instances.py nsp
 """
 import json
 import os
@@ -13,6 +15,7 @@ import numpy as np
 from numba import njit
 
 from common import INST
+from registry import Problem, register_problem
 
 HARD = 10000  # 局所探索でハード制約違反に課すペナルティ
 NSP_DIR = os.path.join(INST, "nsp")
@@ -80,7 +83,7 @@ def generate(name):
 
 
 def _employee_feasible(emp, H, shifts, length, forbid):
-    from nsp_methods import _cpsat
+    from solvers.nsp import _cpsat
     sub = dict(name="chk", horizon=H, shifts=shifts, length=length, forbid=forbid, employees=[emp],
                cover=[[0] * len(shifts)] * H, w_under=100, w_over=1)
     return _cpsat(sub, 10, 1, 1)["obj"] is not None
@@ -198,7 +201,20 @@ def evaluate(inst, R):
     return int(hard), int(soft + cover_cost(cnt, A["cover"], A["w_under"], A["w_over"]))
 
 
-if __name__ == "__main__":
+def check(inst, R):
+    """解の検証用: 実行可能（ハード制約違反なし）なら目的関数値、そうでなければ None."""
+    hard, obj = evaluate(inst, np.asarray(R, np.int64))
+    return obj if hard == 0 else None
+
+
+def generate_all():
     for n in SIZES:
         inst = generate(n)
         print(n, len(inst["employees"]), inst["horizon"], inst["shifts"], np.array(inst["cover"]).sum())
+
+
+register_problem(Problem(
+    name="nsp", label="ナーススケジューリング", unit="ペナルティ",
+    ref_label="全 run・全手法中の最良値（合成インスタンス、最適値未知）", instance_file="nsp/{}.json",
+    instances=lambda: sorted(f[:-5] for f in os.listdir(NSP_DIR) if f.endswith(".json")),
+    load=load_instance, evaluate=check, generate=generate_all, display="value", order=40))

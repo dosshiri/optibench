@@ -7,12 +7,10 @@ import sys
 import numpy as np
 import pandas as pd
 
+import registry
 import runmeta
-from common import ATSP_OPT, TSP_OPT, jssp_ref
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジトリ直下
-# JSPLIB の instances.json は ta11/ta21 を未解決扱いだが、その後最適性が証明された文献値を使う
-JSSP_BKS_OVERRIDE = {"ta11": 1357, "ta21": 1642}
 
 
 def load(run_id):
@@ -25,26 +23,29 @@ def load(run_id):
     return df.drop_duplicates(["method", "instance", "seed"], keep="last")
 
 
-def nsp_best(inst, sha256):
-    """NSP の参照値: 同じ内容のインスタンスを解いた全 run・全手法の最良値（run 間でギャップを比べられるように）."""
-    objs = [load(m["run_id"]).query("instance == @inst").obj for m in runmeta.list_runs("nsp")
+def best_known(problem, inst, sha256):
+    """既知の参照値が無い問題の参照値: 同じ内容のインスタンスを解いた全 run・全手法の最良値
+    （run 間でギャップを比べられるように）."""
+    objs = [load(m["run_id"]).query("instance == @inst").obj for m in runmeta.list_runs(problem)
             if m["instance_sha256"].get(inst) == sha256]
-    return pd.concat(objs).dropna().min() if objs else np.nan
+    if not objs:
+        return np.nan
+    v = pd.concat(objs).dropna()
+    return v.max() if registry.get_problem(problem).sense == "max" else v.min()
 
 
 def reference(problem, df, meta=None):
+    p = registry.get_problem(problem)
     ref = {}
     for inst in df.instance.unique():
-        if problem == "tsp":
-            ref[inst] = TSP_OPT[inst]
-        elif problem == "atsp":
-            ref[inst] = ATSP_OPT[inst]
-        elif problem == "jssp":
-            ref[inst] = JSSP_BKS_OVERRIDE.get(inst) or jssp_ref(inst)[1]
-        elif meta is not None:  # NSP: 既知最適値なし
-            ref[inst] = nsp_best(inst, meta["instance_sha256"][inst])
+        r = p.reference(inst)
+        if r is not None:
+            ref[inst] = r
+        elif meta is not None:
+            ref[inst] = best_known(problem, inst, meta["instance_sha256"][inst])
         else:
-            ref[inst] = df[df.instance == inst].obj.dropna().min()
+            v = df[df.instance == inst].obj.dropna()
+            ref[inst] = v.max() if p.sense == "max" else v.min()
     return ref
 
 
@@ -54,12 +55,14 @@ def summarize(run_id):
     df = load(run_id)
     ref = reference(problem, df, meta)
     df["ref"] = df.instance.map(ref)
-    df["gap"] = (df.obj - df.ref) / df.ref * 100
+    # ギャップは参照値より悪い方向を正にとる（最大化問題では符号を反転）
+    sgn = -1 if registry.get_problem(problem).sense == "max" else 1
+    df["gap"] = sgn * (df.obj - df.ref) / df.ref * 100
     df["failed"] = df.obj.isna().astype(int)
     if "lb" not in df:
         df["lb"] = np.nan
     s = df.groupby(["instance", "method"], as_index=False).agg(
-        best=("obj", "min"), mean_obj=("obj", "mean"), mean_gap=("gap", "mean"), best_gap=("gap", "min"), lb=("lb", "max"),
+        best=("obj", "max" if sgn < 0 else "min"), mean_obj=("obj", "mean"), mean_gap=("gap", "mean"), best_gap=("gap", "min"), lb=("lb", "min" if sgn < 0 else "max"),
         time=("time", "mean"), runs=("seed", "count"), fails=("failed", "sum"))
     s["ref"] = s.instance.map(ref)
     s.to_csv(os.path.join(runmeta.run_dir(run_id), "summary.csv"), index=False)
@@ -86,8 +89,7 @@ def to_md(t):
 
 
 if __name__ == "__main__":
-    from run_bench import PLAN
-    runs = sys.argv[1:] or [r for r in (runmeta.latest_run(p) for p in PLAN) if r]
+    runs = sys.argv[1:] or [r for r in (runmeta.latest_run(p.name) for p in registry.problems()) if r]
     for run_id in runs:
         meta = runmeta.read_meta(run_id)
         prob = meta["problem"]

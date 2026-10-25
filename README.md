@@ -8,22 +8,30 @@
 
 ## 構成
 
+問題種別と解法はプラグイン方式で、`src/problems/` と `src/solvers/` にファイルを追加するだけで増やせます（既存コードの変更は不要）。手順は [`docs/extending.md`](docs/extending.md) を参照してください。
+
 ```
 src/            実行スクリプト
-  common.py       インスタンス読込・既知最適値
-  tsp_methods.py  TSP/ATSP の解法
-  jssp_methods.py JSSP の解法
-  nsp_model.py    NSP のモデル・評価関数・合成インスタンス生成
-  nsp_methods.py  NSP の解法
-  run_one.py      1 ジョブ実行（JSON 1 行を出力）
+  registry.py     問題・解法の登録簿（python src/registry.py で登録内容を一覧）
+  problems/       問題種別（インスタンス読込・参照値・解の評価・インスタンス生成）
+    routing.py      TSP / ATSP
+    jssp.py         JSSP
+    nsp.py          NSP のモデル・評価関数・合成インスタンス生成
+  solvers/        解法（@solver で登録）
+    routing.py      TSP / ATSP の解法
+    jssp.py         JSSP の解法
+    nsp.py          NSP の解法
+  common.py       共通ユーティリティ（パス・時間計測）
+  run_one.py      1 ジョブ実行（JSON 1 行を出力。解法が解を返したら目的関数値を評価関数で検証）
   run_bench.py    一括実行（1 回の実行を 1 つの run として results/runs/<run_id>/ に保存）
   runmeta.py      run のメタデータ（実行環境・条件・git コミット）の収集と読み書き
   analyze.py      集計（results/runs/<run_id>/summary.csv）
   export_web.py   ビュー用データ（docs/data.json, docs/data.js）と結果ページの書き出し
   export_report.py 結果ページ（results/README.md, results/figures/*.svg）の生成
+  make_instances.py 合成インスタンスの（再）生成
 instances/      ベンチマークインスタンス
 results/        run ごとの実行結果（runs/）と結果ページ（README.md と figures/）
-docs/           対話型のグラフビュー（index.html）
+docs/           対話型のグラフビュー（index.html）と追加手順（extending.md）
 ```
 
 ## インスタンス
@@ -33,7 +41,7 @@ docs/           対話型のグラフビュー（index.html）
 | TSP | berlin52, kroA100, ch150, a280, pcb442, rat783 | TSPLIB95 | 公表最適値 |
 | ATSP | ftv33, ftv70, kro124p, ft70, rbg323, rbg443 | TSPLIB95 | 公表最適値 |
 | JSSP | ft06, ft10, la16, la21, abz5, orb01, ta01, swv01, ta11, ta21 | JSPLIB（OR-Library 形式） | 既知最適値（ta11=1357, ta21=1642 は文献値） |
-| NSP | nsp01–nsp06（8〜50 人, 14〜42 日, 1〜4 勤務種別） | 合成（`nsp_model.py` で再生成可能） | 全 run・全手法中の最良値 |
+| NSP | nsp01–nsp06（8〜50 人, 14〜42 日, 1〜4 勤務種別） | 合成（`make_instances.py` で再生成可能） | 全 run・全手法中の最良値 |
 
 NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmarks.org）と同じ制約体系を持つ合成インスタンスです。ハード制約は 1 日 1 勤務、禁止勤務遷移、勤務種別ごとの上限回数、総勤務時間の上下限、最大・最小連続勤務日数、最小連続休日数、最大勤務週末数、指定休日。ソフト制約は勤務希望・回避希望と、必要人数の不足（重み 100/人）・超過（重み 1/人）です。公式インスタンスへの差し替えは今後の課題です。
 
@@ -90,13 +98,13 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 ```bash
 python -m venv .venv && . .venv/bin/activate   # Windows (PowerShell) は .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python src/nsp_model.py              # NSP インスタンスを再生成（同一 seed で同じものが出ます）
+python src/make_instances.py nsp      # NSP インスタンスを再生成（同一 seed で同じものが出ます）
 python src/run_bench.py tsp 60       # tsp / atsp / jssp / nsp
 python src/analyze.py                # 問題ごとに最新の run の集計表を表示・CSV 出力（run_id を渡すとその run）
 python src/export_web.py             # docs/data.json・data.js と results/README.md・figures を更新
 ```
 
-`--only` で手法を絞れます。`--note "メモ"` で run にメモを、`--machine 名前` で実行環境の名前（省略時はホスト名）を付けられます。
+`--only` で手法を、`--instances` でインスタンスを絞れます。`--note "メモ"` で run にメモを、`--machine 名前` で実行環境の名前（省略時はホスト名）を付けられます。
 
 ## 実験結果の履歴管理
 

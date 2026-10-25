@@ -33,6 +33,7 @@ def fmt(v, d=2):
 
 def method_stats(P):
     """index.html の methodStats と同じ集計・並び順."""
+    sgn = -1 if P.get("sense") == "max" else 1
     out = []
     for m in P["methods"]:
         cs = [c for c in P["cells"] if c["method"] == m]
@@ -45,7 +46,7 @@ def method_stats(P):
                 ranks.append(len(P["methods"]))
                 continue
             others = [c for c in P["cells"] if c["instance"] == inst and c["mean_obj"] is not None]
-            ranks.append(1 + sum(c["mean_obj"] < mine["mean_obj"] - 1e-9 for c in others))
+            ranks.append(1 + sum(sgn * (c["mean_obj"] - mine["mean_obj"]) < -1e-9 for c in others))
         out.append(dict(method=m, mean=mean, rank=sum(ranks) / len(ranks), solved=len(ok),
                         total=len(P["instances"]), nopt=sum(c["mean_gap"] <= 1e-9 for c in ok),
                         time=sum(c["time"] for c in cs) / len(cs) if cs else 0.0))
@@ -146,7 +147,7 @@ def heat_svg(P, order):
 def md_tables(P, st):
     by_value = P.get("display") == "value"
     order = [s["method"] for s in st]
-    lines = ["| 手法 | " + ("平均順位 | 平均ペナルティ差 (%)" if by_value else "平均ギャップ (%) | 平均順位")
+    lines = ["| 手法 | " + (f"平均順位 | 平均{P['unit']}差 (%)" if by_value else "平均ギャップ (%) | 平均順位")
              + " | 解あり | 最良値到達 | 平均時間 (秒) |", "|---|---:|---:|---:|---:|---:|"]
     for s in st:
         a, b = (fmt(s["rank"], 1), fmt(s["mean"])) if by_value else (fmt(s["mean"]), fmt(s["rank"], 1))
@@ -158,7 +159,7 @@ def md_tables(P, st):
         cs = {m: cell(P, inst, m) for m in order}
         vals = {m: (c["mean_obj"] if by_value else c["mean_gap"]) for m, c in cs.items()
                 if c and c["mean_gap"] is not None}
-        best = min(vals.values()) if vals else None
+        best = (max if by_value and P.get("sense") == "max" else min)(vals.values()) if vals else None
         row = []
         for m in order:
             if m not in vals:

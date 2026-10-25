@@ -15,10 +15,12 @@ import socket
 import subprocess
 import sys
 
+import registry
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジトリ直下
 RUNS = os.path.join(ROOT, "results", "runs")
+# 実行環境として必ずバージョンを記録するパッケージ（問題・解法が宣言したパッケージも追加で記録する）
 PACKAGES = ["ortools", "highspy", "elkai", "numba", "numpy", "pandas", "tsplib95"]
-INSTANCE_FILE = {"tsp": "tsp/{}.tsp", "atsp": "atsp/{}.atsp", "jssp": "jssp/{}", "nsp": "nsp/{}.json"}
 
 
 def now():
@@ -84,7 +86,7 @@ def memory_gb():
 def package_versions():
     from importlib.metadata import PackageNotFoundError, version
     out = {}
-    for p in PACKAGES:
+    for p in dict.fromkeys(PACKAGES + registry.packages()):
         try:
             out[p] = version(p)
         except PackageNotFoundError:
@@ -108,8 +110,9 @@ def git_info():
 
 def instance_hashes(problem, instances):
     out = {}
+    p = registry.get_problem(problem)
     for i in instances:
-        with open(os.path.join(ROOT, "instances", INSTANCE_FILE[problem].format(i)), "rb") as f:
+        with open(p.instance_path(i), "rb") as f:
             out[i] = hashlib.sha256(f.read()).hexdigest()
     return out
 

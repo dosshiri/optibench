@@ -1,9 +1,10 @@
-"""NSP の解法群. 各関数は (inst, time_limit, seed) -> dict(obj, lb, hard)."""
+"""NSP の解法群. 各関数は (inst, time_limit, seed) -> dict(obj, lb, hard, solution=勤務表)."""
 import numpy as np
 from numba import njit
 
 from common import Timer
-from nsp_model import HARD, cover_cost, emp_cost, evaluate, to_arrays
+from problems.nsp import HARD, cover_cost, emp_cost, evaluate, to_arrays
+from registry import solver
 
 _ARGS = ("length", "forbid", "max_type", "min_minutes", "max_minutes", "max_consec", "min_consec",
          "min_off", "max_weekends", "dayoff", "pref", "on_pen")
@@ -139,12 +140,14 @@ def _greedy_start(inst):
     return A, R, cnt, ec, args
 
 
+@solver("Greedy", problems="nsp")
 def greedy(inst, tl, seed):
     _, R, _, _, _ = _greedy_start(inst)
     h, obj = evaluate(inst, R)
-    return dict(obj=obj if h == 0 else None, hard=h, lb=None)
+    return dict(obj=obj if h == 0 else None, hard=h, lb=None, solution=R.tolist())
 
 
+@solver("SA", problems="nsp", seeds=3)
 def simulated_annealing(inst, tl, seed):
     tm = Timer(tl)
     A, R, cnt, ec, args = _greedy_start(inst)
@@ -159,7 +162,7 @@ def simulated_annealing(inst, tl, seed):
                          A["w_under"], A["w_over"], *args)
         k += 1
     h, obj = evaluate(inst, best_R)
-    return dict(obj=obj if h == 0 else None, hard=h, lb=None)
+    return dict(obj=obj if h == 0 else None, hard=h, lb=None, solution=best_R.tolist())
 
 
 # ---------------------------------------------------------------- 厳密モデル (CP-SAT / HiGHS 共通の線形定式化)
@@ -237,17 +240,20 @@ def _cpsat(inst, tl, seed, workers):
             R[e, d] = k
     h, o = evaluate(inst, R)
     return dict(obj=o, lb=int(np.ceil(s.BestObjectiveBound() - 1e-6)), hard=h,
-                optimal=st == cp_model.OPTIMAL)
+                optimal=st == cp_model.OPTIMAL, solution=R.tolist())
 
 
+@solver("CP-SAT", problems="nsp", packages=["ortools"])
 def cpsat1(inst, tl, seed):
     return _cpsat(inst, tl, seed, 1)
 
 
+@solver("CP-SAT-4w", problems="nsp", threads=4, packages=["ortools"])
 def cpsat4(inst, tl, seed):
     return _cpsat(inst, tl, seed, 4)
 
 
+@solver("MIP-HiGHS", problems="nsp", packages=["highspy"])
 def mip(inst, tl, seed):
     import highspy
     h = highspy.Highs()
@@ -272,13 +278,6 @@ def mip(inst, tl, seed):
         if val[v.index] > 0.5:
             R[e, d] = k
     hd, o = evaluate(inst, R)
-    return dict(obj=o, lb=lb, hard=hd, optimal=h.getModelStatus() == highspy.HighsModelStatus.kOptimal)
+    return dict(obj=o, lb=lb, hard=hd, optimal=h.getModelStatus() == highspy.HighsModelStatus.kOptimal,
+                solution=R.tolist())
 
-
-METHODS = {
-    "Greedy": greedy,
-    "SA": simulated_annealing,
-    "CP-SAT": cpsat1,
-    "CP-SAT-4w": cpsat4,
-    "MIP-HiGHS": mip,
-}
