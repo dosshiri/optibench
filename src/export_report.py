@@ -98,11 +98,6 @@ def bars_svg(P, st):
         w = 0 if val is None else max(2, x(val) - left)
         body.append(f'<rect x="{left}" y="{y + 7}" width="{w:.1f}" height="{row_h - 14}" rx="4" fill="{BAR}"/>')
         lab = f'{fmt(s["rank"], 1)}位' if by_rank else ("解なし" if s["mean"] is None else f'{fmt(s["mean"])}%')
-        zero = not by_rank and s["mean"] is not None and s["mean"] <= 1e-9
-        if zero:  # ギャップ 0 は棒が見えないので、丸印と注記で示す
-            body.append(f'<circle cx="{left + 6}" cy="{y + row_h / 2}" r="6" fill="{BAR}"/>')
-            w = 12
-            lab += "（解けた問題はすべて参照値）" if s["solved"] < s["total"] else "（全問で参照値に到達）"
         if s["solved"] < s["total"]:
             lab += f'（解なし{s["total"] - s["solved"]}問）'
         body.append(text(left + w + 6, y + row_h / 2 + 4, lab, fill=TEXT2))
