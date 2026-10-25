@@ -72,6 +72,11 @@ code,.mono{font-family:var(--f-mono);font-size:.88em}
 ul.pts{padding-left:1.3em;margin:6px 0 14px}
 ul.pts li{margin-bottom:6px;max-width:44em}
 .up{color:var(--ok)}
+dl.methods{margin:10px 0 14px;font-size:14px;line-height:1.75}
+dl.methods dt{font-weight:700;margin-top:10px}
+dl.methods dt:first-child{margin-top:0}
+dl.methods dt code{font-size:.92em}
+dl.methods dd{margin:2px 0 0;color:var(--muted);max-width:44em}
 footer{padding-block:24px;font-size:13px;color:var(--muted)}
 @media (max-width:520px){h2{font-size:22px} th,td{padding:7px 9px}}
 .pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 8px;padding:0;list-style:none}

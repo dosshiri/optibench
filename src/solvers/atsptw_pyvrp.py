@@ -6,7 +6,10 @@ from registry import solver
 from solvers.atsptw import _result
 
 
-@solver("PyVRP-HGS", problems="atsptw", seeds=3, packages=["pyvrp"])
+@solver("PyVRP-HGS", problems="atsptw", seeds=3, packages=["pyvrp"],
+        description=("配送計画ライブラリ PyVRP のハイブリッド遺伝的探索（HGS）。"
+                     "解の集団を交叉させ、生まれた子を局所探索で磨く遺伝的アルゴリズムで、Vidal の HGS を基にした最先端の配送計画ソルバー。"
+                     "車両 1 台・時間枠付きの配送計画として解く。"))
 def pyvrp_hgs(inst, tl, seed):
     """車両 1 台・容量なしの時間枠付き配送計画として解く. 距離と所要時間はどちらも移動時間行列."""
     from pyvrp import Model

@@ -59,14 +59,20 @@ def _giffler_thompson(M, P, prio_kind, keys):
     return mr.max(), seq
 
 
-@solver("SPT", problems="jssp")
+@solver("SPT", problems="jssp",
+        description=("ディスパッチングルール。"
+                     "Giffler–Thompson 法で、機械が空くたびに待っている作業のうち処理時間が最も短いもの（Shortest Processing Time）を割り当てる。"
+                     "一瞬で解が出るが、品質は低め。"))
 def spt(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     c, _ = _giffler_thompson(M, P, 0, np.zeros(1))
     return dict(obj=int(c), lb=None)
 
 
-@solver("MWKR", problems="jssp")
+@solver("MWKR", problems="jssp",
+        description=("ディスパッチングルール。"
+                     "SPT と同じ手順で、残りの作業時間が最も長いジョブ（Most Work Remaining）を優先する。"
+                     "遅れそうなジョブを先に進めるので、SPT より良いことが多い。"))
 def mwkr(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     c, _ = _giffler_thompson(M, P, 1, np.zeros(1))
@@ -74,7 +80,10 @@ def mwkr(data, tl, seed):
 
 
 # ---------------------------------------------------------------- 遺伝的アルゴリズム (乱数キー + GT 復号, BRKGA 型)
-@solver("GA", problems="jssp", seeds=3)
+@solver("GA", problems="jssp", seeds=3,
+        description=("遺伝的アルゴリズム（BRKGA 型）。"
+                     "各作業に乱数のキーを持たせ、キーの小さい順を優先度として Giffler–Thompson 法でスケジュールに直す。"
+                     "成績の良い個体（エリート）の遺伝子を多めに受け継ぐ交叉で世代を進める。"))
 def ga(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     tm = Timer(tl)
@@ -248,7 +257,10 @@ def _tabu(M, P, seq, iters, seed, tenure_lo, tenure_hi):
     return best, best_seq
 
 
-@solver("Tabu-N5", problems="jssp", seeds=3)
+@solver("Tabu-N5", problems="jssp", seeds=3,
+        description=("タブーサーチ。"
+                     "最も長い作業の連鎖（クリティカルパス）上で同じ機械に続く作業ブロックの端の 2 つを入れ替える N5 近傍（Nowicki & Smutnicki 1996）を使い、直前の入れ替えを一定期間禁じて同じ解への逆戻りを防ぐ。"
+                     "JSSP 専用の強力な手法。"))
 def tabu_n5(data, tl, seed):
     nj, nm, M, P = _arrays(*data)
     tm = Timer(tl)
@@ -298,13 +310,18 @@ def _cpsat(data, tl, seed, workers):
                 optimal=st == cp_model.OPTIMAL)
 
 
-@solver("CP-SAT", problems="jssp", threads=[1, 4], packages=["ortools"])
+@solver("CP-SAT", problems="jssp", threads=[1, 4], packages=["ortools"],
+        description=("各作業を区間変数で表し、同じ機械の作業は重ならない（NoOverlap）・ジョブ内の順序を守るという制約の下で、全作業の完了時刻（メイクスパン）を最小化する。"
+                     "スケジューリングは CP-SAT が最も得意とする分野。"))
 def cpsat(data, tl, seed, threads=1):
     return _cpsat(data, tl, seed, threads)
 
 
 # ---------------------------------------------------------------- MIP (Manne の離接定式化, HiGHS)
-@solver("MIP-HiGHS", problems="jssp", parallel=True, packages=["highspy"])
+@solver("MIP-HiGHS", problems="jssp", parallel=True, packages=["highspy"],
+        description=("Manne の離接定式化を HiGHS で解く。"
+                     "同じ機械の作業の組ごとに「どちらが先か」の 0-1 変数を置き、big-M 制約で順序を表す。"
+                     "変数が多く緩和も弱いため、大きな問題は苦手。"))
 def mip_disjunctive(data, tl, seed, threads=1):
     import highspy
     jobs, nm = data

@@ -114,7 +114,10 @@ def _local_search(D, t, symmetric):
     return t
 
 
-@solver("nn+ls", problems=ROUTING)
+@solver("nn+ls", problems=ROUTING,
+        description=("最近傍法（いちばん近い未訪問の都市へ順に進む）で巡回路を作り、2-opt（対称のときだけ）と Or-opt（1〜3 都市の区間の付け替え）で改善できなくなるまで局所探索する自作手法。"
+                     "始点を変えながら制限時間まで繰り返し、最良の巡回路を返す。"
+                     "実装が簡単で、他の手法を測る物差しになる。"))
 def nn_local_search(D, tl, seed):
     sym = bool((D == D.T).all())
     tm = Timer(tl)
@@ -166,7 +169,10 @@ def _sa_chunk(D, t, cur, best_t, best, T, iters, symmetric, seed):
     return cur, best
 
 
-@solver("SA", problems=ROUTING, seeds=3)
+@solver("SA", problems=ROUTING, seeds=3,
+        description=("焼きなまし法（Simulated Annealing）。"
+                     "2-opt や Or-opt のランダムな変更を、悪くなる場合も「温度」に応じた確率で受け入れ、温度を徐々に下げることで局所最適から抜け出す自作手法。"
+                     "最後に局所探索で仕上げる。"))
 def simulated_annealing(D, tl, seed):
     sym = bool((D == D.T).all())
     tm = Timer(tl)
@@ -188,7 +194,10 @@ def simulated_annealing(D, tl, seed):
 
 
 # ---------------------------------------------------------------- LKH (elkai)
-@solver("LKH(elkai)", problems=ROUTING, packages=["elkai"])
+@solver("LKH(elkai)", problems=ROUTING, packages=["elkai"],
+        description=("Lin–Kernighan 法を発展させた Helsgaun の LKH を elkai パッケージ経由で呼ぶ。"
+                     "複数の辺をまとめて入れ替える強力な局所探索で、TSP の近似解法では最強クラス。"
+                     "ここでは時間ではなく試行回数（runs=10）で止めている。"))
 def lkh(D, tl, seed):
     import elkai
     # elkai は時間制限を持たないので runs を固定 (LKH 既定の試行回数相当)
@@ -198,7 +207,10 @@ def lkh(D, tl, seed):
 
 
 # ---------------------------------------------------------------- 誘導局所探索 (OR-Tools Routing)
-@solver("ORTools-GLS", problems=ROUTING, packages=["ortools"])
+@solver("ORTools-GLS", problems=ROUTING, packages=["ortools"],
+        description=("Google OR-Tools の配送計画ソルバー（Routing）。"
+                     "安い弧から順につないで初期解を作り、誘導局所探索（GLS: 局所最適に何度も現れる辺にペナルティを課して別の解へ誘導する）で改善する。"
+                     "時間枠・容量・複数車両などの業務制約を足せる汎用性が強み。"))
 def ortools_gls(D, tl, seed):
     from ortools.constraint_solver import pywrapcp, routing_enums_pb2
     n = D.shape[0]
@@ -219,7 +231,10 @@ def ortools_gls(D, tl, seed):
 
 
 # ---------------------------------------------------------------- 制約プログラミング (CP-SAT, AddCircuit 制約)
-@solver("CP-SAT", problems=ROUTING, parallel=True, packages=["ortools"])
+@solver("CP-SAT", problems=ROUTING, parallel=True, packages=["ortools"],
+        description=("OR-Tools の制約プログラミングソルバー CP-SAT。"
+                     "各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。"
+                     "下界も出すので、時間内に最適性を証明できることもある。"))
 def cpsat_circuit(D, tl, seed, threads=1):
     from ortools.sat.python import cp_model
     n = D.shape[0]
@@ -270,7 +285,10 @@ def _components(n, succ_pairs):
     return comps
 
 
-@solver("MIP-HiGHS", problems=ROUTING, parallel=True, packages=["highspy"])
+@solver("MIP-HiGHS", problems=ROUTING, parallel=True, packages=["highspy"],
+        description=("混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。"
+                     "まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。"
+                     "最適性を証明できるが、時間切れになると巡回路を返せない。"))
 def mip_dfj(D, tl, seed, threads=1):
     """対称: 無向辺 x_e, 次数2. 非対称: 有向弧, 入出次数1. 部分巡回路を見つけるたびに除去制約を追加して再求解."""
     import highspy

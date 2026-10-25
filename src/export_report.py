@@ -209,6 +209,14 @@ def threads_tables(P):
     return lines
 
 
+def about_lines(P):
+    """手法の解説（解法の登録時の description）. スレッド数違いの手法はまとめて 1 つにする."""
+    about = P.get("about", {})
+    names = list(dict.fromkeys(P.get("solvers", {}).get(m, m) for m in P["methods"]))
+    lines = [f"- **{n}**: {about[n]}" for n in names if about.get(n)]
+    return ["### 手法の解説", ""] + lines + [""] if lines else []
+
+
 def threads_text(R):
     multi = sorted({n for n in R["threads"].values() if n > 1})
     if not multi:
@@ -261,7 +269,7 @@ def main(data):
                f"実行環境: {env_text(P)}", "",
                f"![{P['label']} 手法別](figures/{k}_bars.svg)", "",
                f"![{P['label']} ヒートマップ](figures/{k}_heat.svg)", ""]
-        md += md_tables(P, st) + [""] + threads_tables(P)
+        md += md_tables(P, st) + [""] + threads_tables(P) + about_lines(P)
     md += ['<a id="history"></a>', ""] + history(data)
     with open(os.path.join(OUT_DIR, "README.md"), "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(md))

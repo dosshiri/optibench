@@ -134,7 +134,9 @@ def _edd_tour(r, d):
     return np.array([0] + rest, dtype=np.int64)
 
 
-@solver("EDD+LS", problems="atsptw")
+@solver("EDD+LS", problems="atsptw",
+        description=("時間枠の締め切りが早い順（Earliest Due Date）に並べた巡回路から始め、Or-opt（1〜3 地点の付け替え）と 2 地点の交換で、まず遅れの合計を、次に総移動時間を減らす局所探索。"
+                     "決定的で一瞬で終わる、実務でまず試す素朴な方法。"))
 def edd_local_search(inst, tl, seed):
     """締め切り順に並べてから局所探索. 決定的で速い、実務でまず試す素朴な方法."""
     D, r, d = inst["D"], inst["r"], inst["d"]
@@ -173,7 +175,10 @@ def _vns_chunk(D, r, d, t, cur, best_t, best, k, kmax, iters, seed):
     return cur, best, k
 
 
-@solver("GVNS", problems="atsptw", seeds=3)
+@solver("GVNS", problems="atsptw", seeds=3,
+        description=("一般化変近傍探索（General Variable Neighborhood Search）。"
+                     "いまの解をランダムに k 回崩してから局所探索をかけ、良くなれば受け入れて k=1 に戻し、だめなら k を増やしてより大きく崩す。"
+                     "da Silva & Urrutia (2010) にならった自作版。"))
 def gvns(inst, tl, seed):
     D, r, d = inst["D"], inst["r"], inst["d"]
     tm = Timer(tl)
@@ -191,7 +196,9 @@ def gvns(inst, tl, seed):
 
 
 # ---------------------------------------------------------------- LKH-3（elkai 同梱版. TYPE: TSPTW）
-@solver("LKH-3(elkai)", problems="atsptw", seeds=3, packages=["elkai"])
+@solver("LKH-3(elkai)", problems="atsptw", seeds=3, packages=["elkai"],
+        description=("LKH の後継で、制約付きの巡回路問題を扱える LKH-3 を時間枠付き巡回セールスマン問題（TSPTW）として呼ぶ。"
+                     "時間枠の違反をペナルティとして扱いながら LK 型の局所探索を行い、制限時間いっぱい試行を繰り返す。"))
 def lkh3(inst, tl, seed):
     """elkai に同梱の LKH-3.0.8 を TSPTW として呼ぶ. 1 run の試行回数は既定（都市数）のまま、
     制限時間いっぱいまで run を繰り返す（runs=10 で止めると、時間枠を守れる解が出ないまま終わることがあるため）."""
@@ -223,7 +230,9 @@ def lkh3(inst, tl, seed):
 
 
 # ---------------------------------------------------------------- OR-Tools Routing（時間の次元 + 誘導局所探索）
-@solver("ORTools-GLS", problems="atsptw", packages=["ortools"])
+@solver("ORTools-GLS", problems="atsptw", packages=["ortools"],
+        description=("OR-Tools の配送計画ソルバー（Routing）に「時刻」の次元を加えて、各地点の到着時刻を時間枠に収める。"
+                     "挿入法で初期解を作り、誘導局所探索（GLS）で改善する。"))
 def ortools_gls(inst, tl, seed):
     from ortools.constraint_solver import pywrapcp, routing_enums_pb2
     D, r, d = inst["D"], inst["r"], inst["d"]
@@ -255,7 +264,9 @@ def ortools_gls(inst, tl, seed):
 
 
 # ---------------------------------------------------------------- 制約プログラミング（CP-SAT, AddCircuit + 時刻変数）
-@solver("CP-SAT", problems="atsptw", threads=[1, 4], packages=["ortools"])
+@solver("CP-SAT", problems="atsptw", threads=[1, 4], packages=["ortools"],
+        description=("CP-SAT で、弧の 0-1 変数と AddCircuit 制約で巡回路を表し、各地点の開始時刻の整数変数に「弧を使うなら次の地点は移動時間ぶん後に始まる」条件を付けたモデル。"
+                     "解と同時に下界を出し、最適性を証明できる。"))
 def cpsat(inst, tl, seed, threads=1):
     from ortools.sat.python import cp_model
     D, r, d = inst["D"], inst["r"], inst["d"]
@@ -290,7 +301,10 @@ def cpsat(inst, tl, seed, threads=1):
 
 
 # ---------------------------------------------------------------- MIP（HiGHS, 時刻変数の big-M 定式化）
-@solver("MIP-HiGHS", problems="atsptw", threads=[1, 4], packages=["highspy"])
+@solver("MIP-HiGHS", problems="atsptw", threads=[1, 4], packages=["highspy"],
+        description=("弧の 0-1 変数と各地点の開始時刻の連続変数を、big-M 制約（弧を使うときだけ時刻の順序を強制する）で結んだ定式化を HiGHS で解く。"
+                     "時刻の制約が部分巡回路も防ぐ。"
+                     "big-M は緩和が弱く、大きな問題は苦手。"))
 def mip_bigm(inst, tl, seed, threads=1):
     """x_ij（弧を通るか）と T_i（都市 i の開始時刻）. 入次数・出次数 1 と
     T_j >= T_i + D_ij - M_ij (1 - x_ij)（M_ij = d_i + D_ij - r_j）. 時刻の制約が部分巡回路も除く."""
