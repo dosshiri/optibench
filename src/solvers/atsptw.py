@@ -193,7 +193,8 @@ def gvns(inst, tl, seed):
 # ---------------------------------------------------------------- LKH-3（elkai 同梱版. TYPE: TSPTW）
 @solver("LKH-3(elkai)", problems="atsptw", seeds=3, packages=["elkai"])
 def lkh3(inst, tl, seed):
-    """elkai に同梱の LKH-3.0.8 を TSPTW として呼ぶ. 試行回数は既定（都市数）で runs=10、制限時間で打ち切る."""
+    """elkai に同梱の LKH-3.0.8 を TSPTW として呼ぶ. 1 run の試行回数は既定（都市数）のまま、
+    制限時間いっぱいまで run を繰り返す（runs=10 で止めると、時間枠を守れる解が出ないまま終わることがあるため）."""
     from elkai import _elkai
     D, r, d = inst["D"], inst["r"], inst["d"]
     n = D.shape[0]
@@ -207,7 +208,7 @@ def lkh3(inst, tl, seed):
         with os.fdopen(fd, "w") as f:
             f.write("\n".join(lines))
         # elkai は問題を標準入力（:stdin:）から読むと時間枠を読めないので、一時ファイルを渡す
-        params = (f"PROBLEM_FILE = {path}\nRUNS = 10\nSEED = {seed}\n"
+        params = (f"PROBLEM_FILE = {path}\nRUNS = 1000000\nSEED = {seed}\n"
                   f"TIME_LIMIT = {tl:.1f}\nTOTAL_TIME_LIMIT = {tl:.1f}\n")
         tour = _elkai.solve_problem(params, "")
     finally:

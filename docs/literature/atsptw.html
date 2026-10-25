@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATSP-TW の文献レビュー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+<!-- ATSP-TW（時間枠付き非対称巡回セールスマン問題）の文献レビュー。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の「要点」に 1 項目足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">文献レビューのトップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
+  <div class="eyebrow">文献レビュー · Asymmetric TSP with Time Windows · 2026-10-25 時点</div>
+  <h1>ATSP-TW（時間枠付き非対称巡回セールスマン問題）</h1>
+  <p class="lead">各地点を決められた時間帯の中で訪れる巡回路を求める問題です。文献では TSPTW と呼ばれることが多く、配送・訪問サービス・倉庫内の搬送機の制御などに直結します。厳密解は専用の分枝カットや動的計画法、近似解は変近傍探索（GVNS）などのメタヒューリスティクスが強く、汎用 MIP は中規模まで、CP と OR-Tools Routing は時間枠が厳しいと実行可能解を見つけること自体に苦労する、というのが文献から読み取れる構図です。</p>
+  <div class="legend">
+    <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / DP)</span>
+    <span class="tag t-mh">メタヒューリスティクス</span>
+    <span class="tag t-sp">専用ヒューリスティクス</span>
+    <span class="tag t-ml">機械学習</span>
+  </div>
+</header>
+
+<nav class="idx" aria-label="目次">
+  <a href="#overview">概要</a>
+  <a href="#studies">主要な比較研究</a>
+  <a href="#matrix">手法ごとの評価</a>
+  <a href="#plan">手元ベンチマークへの示唆</a>
+  <a href="#refs">文献</a>
+</nav>
+
+<section id="overview">
+  <h2>概要</h2>
+  <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、スレッド数、ソルバー版）での結果です。論文間で直接比較することはできません。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
+  <div class="facts">
+    <div class="fact"><div class="k">標準インスタンス</div><div class="v">非対称: Ascheuer の rbg 系 50 件（AFG セット。倉庫の搬送クレーン制御から作られた実データ、12〜233 地点）。対称（ユークリッド距離）: Dumas ら、Gendreau ら、Ohlmann–Thomas、da Silva–Urrutia（最大 400 地点）など。López-Ibáñez がまとめた一覧に最良既知解と下界が載っています</div></div>
+    <div class="fact"><div class="k">代表ソルバー</div><div class="v">専用の分枝カット（Ascheuer ら、Dash らの時間バケット定式化）、状態空間緩和の動的計画法（Baldacci ら）、GVNS（da Silva–Urrutia）、圧縮焼きなまし（Ohlmann–Thomas）、Beam-ACO、LKH-3（TSPTW を直接扱える）、汎用 MIP・CP・OR-Tools Routing</div></div>
+    <div class="fact"><div class="k">目的関数の種類</div><div class="v">移動時間の合計（AFG セットの標準、本ベンチマークもこれ）、戻り時刻（makespan）、待ち時間を含む所要時間（duration）の 3 通りがあり、同じインスタンスでも最適解も難しさも変わります。論文を読むときは、どの目的か必ず確かめてください</div></div>
+  </div>
+</section>
+
+<section id="studies">
+  <h2>主要な比較研究</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Ascheuer, Fischetti, Grötschel<span class="yr">Math. Program. 2001</span></td>
+        <td><span class="tag t-mp">big-M + 時刻変数の MIP</span> <span class="tag t-mp">弧変数 + 実行不能パス制約</span> <span class="tag t-mp">弧の整数変数を加えた MIP</span></td>
+        <td>AFG セット（12〜233 地点）</td>
+        <td>3 つの定式化を 27〜69 地点の 11 件で比べ、時刻変数を使わず「時間枠を守れない経路」を制約で禁止する定式化が総合的に最もよいと結論。これを使った分枝カットは 5 時間の制限で、結果の表に載る 46 件中 28 件の最適性を証明し、最大は 127 地点（rbg125a、約 4 分）。rbg233 などは未解決でした。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Dash, Günlük, Lodi, Tramontani<span class="yr">INFORMS J. Comput. 2012</span></td>
+        <td><span class="tag t-mp">時間バケット定式化の分枝カット（CPLEX 10）</span></td>
+        <td>AFG セットの難しい 18 件、対称の乱数インスタンス</td>
+        <td>時間枠を細かい区間（バケット）に分けた拡張定式化で LP 緩和を強め、AFG の難問 18 件中 13 件の最適性を証明（うち 12 件は初めての証明）。rbg233 は 749 秒、rbg172a は 426 秒でした（5 時間制限）。<span class="note">（プレプリント本文で確認）</span></td></tr>
+      <tr><td class="ref">Baldacci, Mingozzi, Roberti<span class="yr">INFORMS J. Comput. 2012</span></td>
+        <td><span class="tag t-mp">状態空間緩和による動的計画法の厳密解法</span></td>
+        <td>AFG を含む主要な TSPTW ベンチマーク</td>
+        <td>動的計画法の状態を緩和して強い下界を作る厳密解法。López-Ibáñez の一覧では、AFG の未解決 4 件の下界がこの論文の値になっています。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
+      <tr><td class="ref">da Silva, Urrutia<span class="yr">Discrete Optim. 2010</span></td>
+        <td><span class="tag t-mh">GVNS（変近傍探索）</span> 対 圧縮焼きなまし ほか</td>
+        <td>Dumas, Gendreau, Ohlmann–Thomas、新設の 200〜400 地点 125 件</td>
+        <td>実行可能解を探す段階と改善する段階に分けた GVNS。自身が作った 125 件すべてと、Gendreau・Ohlmann 系の約 15 グループで最良既知解を持ちます。その後の TSPTW ヒューリスティクスの標準的な比較相手です。<span class="note">（最良既知解の帰属は公開一覧で確認、比較表の数値は未確認）</span></td></tr>
+      <tr><td class="ref">Ohlmann, Thomas<span class="yr">INFORMS J. Comput. 2007</span></td>
+        <td><span class="tag t-mh">圧縮焼きなまし</span></td>
+        <td>Dumas, Gendreau, 新設の 150〜200 地点</td>
+        <td>時間枠の違反に掛ける罰則を少しずつ強める焼きなまし。Gendreau 系の 12 グループで最良既知解を持ちます。<span class="note">（最良既知解の帰属は公開一覧で確認）</span></td></tr>
+      <tr><td class="ref">Kuroiwa, Beck<span class="yr">ICAPS 2023</span></td>
+        <td><span class="tag t-mp">Gurobi 9.5（MIP）</span> <span class="tag t-mp">CP Optimizer 22.1</span> <span class="tag t-mp">汎用の動的計画法ソルバー（DIDP）</span></td>
+        <td>TSPTW 340 件（AFG を含む）</td>
+        <td>30 分・1 スレッドで最適性（または実行不能性）を証明できた件数は、MIP 227 件、CP Optimizer 47 件、DIDP の各ソルバー 239〜259 件。汎用 MIP はかなり戦える一方、汎用 CP は大きく劣りました。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Cappart ら<span class="yr">AAAI 2021</span></td>
+        <td><span class="tag t-ml">強化学習 + CP</span> 対 <span class="tag t-sp">OR-Tools</span> <span class="tag t-mp">素の CP（Gecode）</span></td>
+        <td>時間枠を狭く作った乱数インスタンス 20/50/100 地点 × 100 件</td>
+        <td>OR-Tools（1 台の VRPTW として解く公式の例）は 20 地点では 100 件すべてで実行可能解を得たものの、50 地点と 100 地点では 1 件も得られませんでした。素の CP も 50 地点で 0 件。学習した分岐規則を CP に組み込むと 100 地点でも全件で解を得ました。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Bi ら<span class="yr">NeurIPS 2024</span></td>
+        <td><span class="tag t-ml">POMO・AM（ニューラル構築法）とその改良 PIP</span> 対 <span class="tag t-sp">LKH-3</span> <span class="tag t-sp">OR-Tools</span></td>
+        <td>時間枠の厳しさ 3 段階の乱数インスタンス 50/100 地点</td>
+        <td>最も厳しい 100 地点 1 万件で、LKH-3 は 0.07% の件でしか解を逃さず最良でしたが、合計 1.4 日かかりました。OR-Tools は 89% の件で実行可能解を得られず、素のニューラル解法は全件で実行不能。改良版でも 6.5% の件で実行不能が残りました。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Kool ら（DPDP）<span class="yr">CPAIOR 2022</span></td>
+        <td><span class="tag t-ml">学習 + 動的計画法</span> 対 <span class="tag t-mh">GVNS</span> <span class="tag t-sp">LKH-3</span></td>
+        <td>100 地点の乱数インスタンス（狭い時間枠 / 広い時間枠）</td>
+        <td>狭い時間枠では GVNS が 1 回の実行（1 秒未満）で全件最適。LKH-3 は 1 件で実行可能解を逃しました。広い時間枠では LKH-3 と DPDP が GVNS 1 回より 1% ほどよい解を出しています。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Soulignac<span class="yr">Comput. Oper. Res. 2026</span></td>
+        <td><span class="tag t-mp">単純な厳密探索</span> 対 最新の厳密解法 3 種</td>
+        <td>古典的な TSPTW ベンチマーク 7 系統（AFG を含む）ほか</td>
+        <td>戻り時刻（makespan）を目的にすると、古典インスタンスの 50 地点以上はすべて 1 件 10 秒未満で厳密に解けると示し、「古典インスタンスだけで手法を評価すべきでない」と警告しています。移動時間の合計を目的とする場合も注意が必要だとしています。<span class="note">（要旨・本文の要約で確認）</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="caveat"><b>ATSP-TW の空白。</b> 実務でよく使われる無償ソルバー（OR-Tools Routing、CP-SAT、HiGHS、PyVRP、LKH-3）を、AFG のような非対称の実データで同じ条件に揃えて比べた研究は、本調査では見つかりませんでした。ニューラル解法の論文が比較相手として LKH-3 と OR-Tools を使っていますが、対象は一様乱数のユークリッド距離インスタンスに限られます。</div>
+</section>
+
+<section id="matrix">
+  <h2>手法ごとの評価</h2>
+  <p>上の文献に基づく定性的な整理です。<span class="lvl l3">◎</span> 最前線、<span class="lvl l2">○</span> 実用的に強い、<span class="lvl l1">△</span> 条件付きで有効、<span class="lvl l0">–</span> 現状では不利または実証が少ない。</p>
+  <div class="tbl"><table class="matrix">
+    <thead><tr><th>手法</th><th>評価</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-mp">専用 分枝カット / 動的計画法</span></td><td class="lvl l3">◎ 時間バケット / 状態空間緩和</td></tr>
+      <tr><td><span class="tag t-mp">汎用MIP（そのまま定式化）</span></td><td class="lvl l2">○ 中規模まで</td></tr>
+      <tr><td><span class="tag t-mp">CP / CP-SAT</span></td><td class="lvl l1">△ 小規模・工夫次第</td></tr>
+      <tr><td><span class="tag t-sp">専用局所探索（LKH-3）・OR-Tools Routing</span></td><td class="lvl l2">○ LKH-3（OR-Tools は △）</td></tr>
+      <tr><td><span class="tag t-mh">GVNS・焼きなまし・Beam-ACO・HGS 等</span></td><td class="lvl l3">◎ GVNS</td></tr>
+      <tr><td><span class="tag t-ml">ニューラル構築 / 改善型</span></td><td class="lvl l0">– 実行不能が残る</td></tr>
+      <tr><td><span class="tag t-ml">ML + 古典の混合（RL+CP、DPDP 等）</span></td><td class="lvl l1">△</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="plan">
+  <h2>手元ベンチマークへの示唆</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
+    <tbody>
+      <tr><td>AFG セットから 19〜232 地点の 9 件（すべて最適値が証明済み）。目的は移動時間の合計</td><td>GVNS（自作）、LKH-3、PyVRP（HGS）、OR-Tools Routing、CP-SAT、MIP（HiGHS, big-M 定式化）、締め切り順 + 局所探索</td><td>無償ソルバーを非対称の実データで横並びにした比較がない。Soulignac（2026）の警告どおり古典インスタンスは構造が素直な面があるので、結果は「このくらいの時間枠の厳しさなら」という条件付きで読む</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="refs">
+  <h2>文献</h2>
+  <ol class="refs">
+    <li>N. Ascheuer, M. Fischetti, M. Grötschel. Solving the Asymmetric Travelling Salesman Problem with time windows by branch-and-cut. Math. Program. 90, 475–506, 2001. <a href="https://doi.org/10.1007/PL00011432" target="_blank" rel="noopener">doi:10.1007/PL00011432</a></li>
+    <li>S. Dash, O. Günlük, A. Lodi, A. Tramontani. A Time Bucket Formulation for the Traveling Salesman Problem with Time Windows. INFORMS J. Comput. 24(1), 132–147, 2012. <a href="https://doi.org/10.1287/ijoc.1100.0432" target="_blank" rel="noopener">doi:10.1287/ijoc.1100.0432</a></li>
+    <li>R. Baldacci, A. Mingozzi, R. Roberti. New State-Space Relaxations for Solving the Traveling Salesman Problem with Time Windows. INFORMS J. Comput. 24(3), 356–371, 2012. <a href="https://doi.org/10.1287/ijoc.1110.0456" target="_blank" rel="noopener">doi:10.1287/ijoc.1110.0456</a></li>
+    <li>F. Focacci, A. Lodi, M. Milano. A Hybrid Exact Algorithm for the TSPTW. INFORMS J. Comput. 14(4), 2002.</li>
+    <li>R. F. da Silva, S. Urrutia. A General VNS heuristic for the traveling salesman problem with time windows. Discrete Optim. 7(4), 2010.</li>
+    <li>N. Mladenović, R. Todosijević, D. Urošević. An efficient General Variable Neighborhood Search for large Travelling Salesman Problem with Time Windows. Yugosl. J. Oper. Res. 23(1), 2013. <a href="https://yujor.erc.fon.bg.ac.rs/index.php/yujor/article/view/348" target="_blank" rel="noopener">yujor</a></li>
+    <li>J. W. Ohlmann, B. W. Thomas. A Compressed-Annealing Heuristic for the Traveling Salesman Problem with Time Windows. INFORMS J. Comput. 19(1), 80–90, 2007. <a href="https://doi.org/10.1287/ijoc.1050.0145" target="_blank" rel="noopener">doi:10.1287/ijoc.1050.0145</a></li>
+    <li>M. López-Ibáñez, C. Blum. Beam-ACO for the travelling salesman problem with time windows. Comput. Oper. Res. 37(9), 2010.</li>
+    <li>K. Helsgaun. An Extension of the Lin-Kernighan-Helsgaun TSP Solver for Constrained Traveling Salesman and Vehicle Routing Problems (LKH-3). Technical report, Roskilde University, 2017.</li>
+    <li>R. Kuroiwa, J. C. Beck. Solving Domain-Independent Dynamic Programming Problems with Anytime Heuristic Search. ICAPS 2023. <a href="https://ojs.aaai.org/index.php/ICAPS/article/view/27201" target="_blank" rel="noopener">ICAPS 33</a></li>
+    <li>Q. Cappart, T. Moisan, L.-M. Rousseau, I. Prémont-Schwarz, A. A. Cire. Combining Reinforcement Learning and Constraint Programming for Combinatorial Optimization. AAAI 2021. <a href="https://arxiv.org/abs/2006.01610" target="_blank" rel="noopener">arXiv:2006.01610</a></li>
+    <li>J. Bi, Y. Ma, J. Zhou, W. Song, Z. Cao, Y. Wu, J. Zhang. Learning to Handle Complex Constraints for Vehicle Routing Problems. NeurIPS 2024. <a href="https://arxiv.org/abs/2410.21066" target="_blank" rel="noopener">arXiv:2410.21066</a></li>
+    <li>W. Kool, H. van Hoof, J. Gromicho, M. Welling. Deep Policy Dynamic Programming for Vehicle Routing Problems. CPAIOR 2022. <a href="https://arxiv.org/abs/2102.11756" target="_blank" rel="noopener">arXiv:2102.11756</a></li>
+    <li>F. J. Soulignac. Beware of the Classical Benchmark Instances for the Traveling Salesman Problem with Time Windows. Comput. Oper. Res., 2026. <a href="https://doi.org/10.1016/j.cor.2026.107461" target="_blank" rel="noopener">doi:10.1016/j.cor.2026.107461</a></li>
+    <li>M. López-Ibáñez. TSPTW のベンチマークインスタンスと最良既知解の一覧. <a href="https://lopez-ibanez.eu/tsptw-instances" target="_blank" rel="noopener">lopez-ibanez.eu/tsptw-instances</a></li>
+    <li>N. A. Wouda, L. Lan, W. Kool. PyVRP: A High-Performance VRP Solver Package. INFORMS J. Comput., 2024. <a href="https://doi.org/10.1287/ijoc.2023.0055" target="_blank" rel="noopener">doi:10.1287/ijoc.2023.0055</a></li>
+  </ol>
+  <p class="note">比較の進め方に関する文献（Accorsi ら、Dolan–Moré）は<a href="index.html#refs">トップ</a>にあります。</p>
+</section>
+
+<footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>
