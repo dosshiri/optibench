@@ -2,7 +2,7 @@
 
 組合せ最適化ベンチマーク。実務で使われる代表的な組合せ最適化問題について、数理計画・制約プログラミング・メタヒューリスティクスなどの解法を、同じ条件で手元比較するためのリポジトリです。
 
-- 対象問題: TSP（対称巡回セールスマン）、ATSP（非対称）、ATSP-TW（時間枠付き非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
+- 対象問題: TSP（対称巡回セールスマン）、TSP 小規模（量子・疑似量子アニーリングと比べるための 14〜70 都市）、ATSP（非対称）、ATSP-TW（時間枠付き非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
 - 入口: `docs/index.html`（文献調査・結果・考察の 3 ページへのリンク集。ダブルクリックで開きます）
 - 文献調査: `docs/literature/`（既存研究における解法比較のレビュー。`index.html` が全体の要点、`<問題>.html` が問題ごとのページ）
 - 考察: `docs/discussion/`（問題ごとの手法の選び方と、その根拠・限界・次の一手。`index.html` が早見表、`<問題>.html` が問題ごとのページ）
@@ -16,7 +16,7 @@
 src/            実行スクリプト
   registry.py     問題・解法の登録簿（python src/registry.py で登録内容を一覧）
   problems/       問題種別（インスタンス読込・参照値・解の評価・インスタンス生成）
-    routing.py      TSP / ATSP
+    routing.py      TSP / TSP 小規模 / ATSP
     atsptw.py       ATSP-TW（時間枠の評価を含む）
     jssp.py         JSSP
     nsp.py          NSP のモデル・評価関数・合成インスタンス生成
@@ -24,8 +24,10 @@ src/            実行スクリプト
     routing.py      TSP / ATSP の解法
     atsptw.py       ATSP-TW の解法（PyVRP 版は atsptw_pyvrp.py）
     jssp.py         JSSP の解法
+    qubo_*.py       量子・疑似量子アニーリング系の解法（OpenJij, dwave-samplers, Amplify AE）
     nsp.py          NSP の解法
   common.py       共通ユーティリティ（パス・時間計測）
+  qubo.py         TSP / ATSP / JSSP の QUBO 定式化と、アニーラを制限時間まで繰り返し呼ぶ枠組み
   run_one.py      1 ジョブ実行（JSON 1 行を出力。解法が解を返したら目的関数値を評価関数で検証）
   run_bench.py    一括実行（1 回の実行を 1 つの run として results/runs/<run_id>/ に保存）
   runmeta.py      run のメタデータ（実行環境・条件・git コミット）の収集と読み書き
@@ -43,6 +45,7 @@ docs/           入口（index.html）、対話型のグラフビュー（benchm
 | 問題 | インスタンス | 出典 | 参照値 |
 |---|---|---|---|
 | TSP | berlin52, kroA100, ch150, a280, pcb442, rat783 | TSPLIB95 | 公表最適値 |
+| TSP 小規模 | burma14, ulysses16, ulysses22, bayg29, att48, eil51, berlin52, st70 | TSPLIB95 | 公表最適値 |
 | ATSP | ftv33, ftv70, kro124p, ft70, rbg323, rbg443 | TSPLIB95 | 公表最適値 |
 | ATSP-TW | rbg019a, rbg027a, rbg041a, rbg055a, rbg067a, rbg092a, rbg125a, rbg172a, rbg233 | Ascheuer の AFG セット（López-Ibáñez の一覧） | 公表最適値（9 問とも証明済み） |
 | JSSP | ft06, ft10, la16, la21, abz5, orb01, ta01, swv01, ta11, ta21 | JSPLIB（OR-Library 形式） | 既知最適値（ta11=1357, ta21=1642 は文献値） |
@@ -60,6 +63,9 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 | | `ORTools-GLS` OR-Tools Routing + 誘導局所探索 | メタヒューリスティクス |
 | | `CP-SAT` AddCircuit 制約 | 制約プログラミング |
 | | `MIP-HiGHS` DFJ 定式化 + 部分巡回路除去制約の逐次追加 | 数理計画（厳密解法） |
+| TSP/ATSP/JSSP | `OpenJij-SQA` 疑似量子アニーリング（OpenJij） | 量子・疑似量子アニーリング（QUBO） |
+| | `OpenJij-SA`, `DWave-SA` QUBO に対する焼きなまし法（OpenJij, dwave-samplers） | 量子・疑似量子アニーリング（QUBO） |
+| | `Amplify-AE` Fixstars Amplify AE（GPU, クラウド。API トークンが必要） | 量子・疑似量子アニーリング（QUBO） |
 | ATSP-TW | `EDD+LS` 締め切り順 + Or-opt/2 点交換の局所探索 | 構築法 + 局所探索（自作, numba） |
 | | `GVNS` 一般化変近傍探索（遅れの合計を最優先に評価） | メタヒューリスティクス（自作, numba） |
 | | `LKH-3(elkai)` elkai 同梱の LKH-3.0.8 を TSPTW として実行 | 専用ヒューリスティクス |
@@ -81,7 +87,8 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 
 - 制限時間 60 秒（`LKH(elkai)` は時間制限を持たないため runs=10 固定、構築法は収束まで）
 - 全手法 1 スレッド（`-4w` のみ 4 スレッド、単独実行）。1 スレッド手法は 4 ジョブ並列で実行。手法名の `-<n>w` は同じ解法を n スレッドで実行したもの（`--threads` で任意のスレッド数を追加できます。[`docs/extending.md`](docs/extending.md#スレッド数を変えて実行する)）
-- 確率的手法（`SA`, `GA`, `Tabu-N5`）は 3 シードの平均
+- 確率的手法（`SA`, `GA`, `Tabu-N5`, `OpenJij-SQA`, `OpenJij-SA`, `DWave-SA`）は 3 シードの平均
+- 量子・疑似量子アニーリング系は、QUBO の変数が 5,000 個を超えるインスタンス（TSP・ATSP は 72 都市以上、JSSP は ft06 以外）を解かずに「解なし」とする
 - 指標: 参照値に対するギャップ (%) = (得られた値 − 参照値) / 参照値 × 100
 - 実行環境: 4 vCPU / 16 GB のクラウドコンテナ、Python 3.13、OR-Tools 9.15、HiGHS 1.15（run ごとの詳細は各 `run.json`）
 
@@ -92,6 +99,7 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 | 問題 | 1 位 | 主な結果 |
 |---|---|---|
 | TSP（6 問） | `LKH(elkai)` 0.00% | LKH は全問で最適値に平均 8.5 秒で到達。`MIP-HiGHS` は a280 まで最適性を証明したが、pcb442 以上は 60 秒で巡回路が得られず。自作 `SA` 0.42%、`nn+ls` 0.83%、`ORTools-GLS` 0.97%。`CP-SAT`（1 ワーカー）は 15.4% と苦手 |
+| TSP 小規模（8 問, 手元PC） | `LKH(elkai)` ほか 6 手法 0.00% | QUBO 系は `DWave-SA` 45.3%、`OpenJij-SA` 47.3%、`OpenJij-SQA` 74.3%。QUBO 系は 14 都市で数%差だが 50 都市前後から大きく崩れる。既存の TSP・ATSP・JSSP で QUBO に載るのは berlin52・ftv33・ftv70・ft70・ft06 だけ。`Amplify-AE` は計測したが公開可否が未確認のため載せていない |
 | ATSP（6 問） | `LKH(elkai)` 0.00% | `MIP-HiGHS` は 124 都市まで最適性を証明、rbg323/443 は時間切れ。`SA` 0.04%、`ORTools-GLS` 0.47%、`nn+ls` 3.03%。`CP-SAT` は rbg323 で最適性を証明する一方、rbg443 で 104% と不安定 |
 | JSSP（10 問） | `CP-SAT-4w` 0.55% | `CP-SAT` は 1 ワーカーでも 1.68%（10 問中 5 問で最適性を証明、4 ワーカーで 7 問）。自作 `Tabu-N5` 2.00% が肉薄。`GA` 10.7%、`MIP-HiGHS`（big-M）26.6%、ディスパッチ則 29〜55% |
 | NSP（合成 6 問） | `MIP-HiGHS`（5 問で最良） | `MIP-HiGHS` は nsp01〜05 で最良値（3 問で最適性を証明）だが、最大の nsp06 は解なし。`CP-SAT-4w` は全問で解を得て平均 2.7%。`CP-SAT`（1 ワーカー）は大規模 2 問で解なし。`SA` は全問で実行可能解を得るが 0〜84% 劣る。`Greedy` は 4 問でハード制約違反 |
@@ -110,6 +118,8 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 ```bash
 python -m venv .venv && . .venv/bin/activate   # Windows (PowerShell) は .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+pip install --no-deps dwave-samplers==1.8.0   # tsplib95 が networkx<3 を要求し、dwave-samplers の依存（networkx>=3）と衝突するため依存なしで入れる
+pip install amplify                            # Amplify-AE を使う場合（環境変数 AMPLIFY_TOKEN に API トークンを設定）
 python src/make_instances.py nsp      # NSP インスタンスを再生成（同一 seed で同じものが出ます）
 python src/run_bench.py tsp 60       # tsp / atsp / jssp / nsp
 python src/analyze.py                # 問題ごとに最新の run の集計表を表示・CSV 出力（run_id を渡すとその run）

@@ -2,7 +2,7 @@
  "run_id": "20261025T082601Z-tiamat-jssp",
  "problem": "jssp",
  "started_at": "2026-10-25T08:26:01+00:00",
- "finished_at": "2026-10-25T09:14:50+00:00",
+ "finished_at": "2026-10-25T21:47:00+00:00",
  "status": "complete",
  "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
  "command": "python.exe src/run_bench.py jssp 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
@@ -20,7 +20,11 @@
    "numba": "0.68.0",
    "numpy": "2.5.4",
    "pandas": "3.1.0",
-   "tsplib95": "0.7.1"
+   "tsplib95": "0.7.1",
+   "pyvrp": "0.14.1",
+   "amplify": "1.7.3",
+   "dwave-samplers": "1.8.0",
+   "openjij": "0.12.2"
   }
  },
  "git": {
@@ -40,7 +44,11 @@
    "CP-SAT": 1,
    "CP-SAT-4w": 4,
    "MIP-HiGHS": 1,
-   "MIP-HiGHS-4w": 4
+   "MIP-HiGHS-4w": 4,
+   "Amplify-AE": 1,
+   "OpenJij-SQA": 1,
+   "OpenJij-SA": 1,
+   "DWave-SA": 1
   },
   "solvers": {
    "SPT": "SPT",
@@ -50,7 +58,11 @@
    "CP-SAT": "CP-SAT",
    "CP-SAT-4w": "CP-SAT",
    "MIP-HiGHS": "MIP-HiGHS",
-   "MIP-HiGHS-4w": "MIP-HiGHS"
+   "MIP-HiGHS-4w": "MIP-HiGHS",
+   "Amplify-AE": "Amplify-AE",
+   "OpenJij-SQA": "OpenJij-SQA",
+   "OpenJij-SA": "OpenJij-SA",
+   "DWave-SA": "DWave-SA"
   },
   "instances": [
    "ft06",
@@ -92,6 +104,24 @@
    ],
    "MIP-HiGHS-4w": [
     1
+   ],
+   "Amplify-AE": [
+    1
+   ],
+   "OpenJij-SQA": [
+    1,
+    2,
+    3
+   ],
+   "OpenJij-SA": [
+    1,
+    2,
+    3
+   ],
+   "DWave-SA": [
+    1,
+    2,
+    3
    ]
   }
  },
@@ -108,6 +138,39 @@
   "ta21": "7b235984be1131995d471d19705ef2901a3fcf0ed214ebe164a3c045195814e7"
  },
  "resumed_at": [
-  "2026-10-25T09:13:49+00:00"
+  "2026-10-25T09:13:49+00:00",
+  "2026-10-25T20:54:34+00:00",
+  "2026-10-25T20:59:51+00:00",
+  "2026-10-25T21:43:59+00:00"
+ ],
+ "additions": [
+  {
+   "at": "2026-10-25T20:59:51+00:00",
+   "methods": [
+    "Amplify-AE"
+   ],
+   "git": {
+    "commit": "8e07417b3baeef2989b836fff09e90b530028d07",
+    "branch": "claude/project-thread-wq8605",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "command": "python.exe src/run_bench.py jssp 60 --run latest --only Amplify-AE"
+  },
+  {
+   "at": "2026-10-25T21:43:59+00:00",
+   "methods": [
+    "OpenJij-SQA",
+    "OpenJij-SA",
+    "DWave-SA"
+   ],
+   "git": {
+    "commit": "e142fd266b930032f4cb259f7c9dc55a10efd868",
+    "branch": "claude/project-thread-wq8605",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "command": "python.exe src/run_bench.py jssp 60 --run 20261025T082601Z-tiamat-jssp --only OpenJij-SQA,OpenJij-SA,DWave-SA"
+  }
  ]
 }

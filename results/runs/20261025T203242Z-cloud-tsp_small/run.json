@@ -1,0 +1,118 @@
+{
+ "run_id": "20261025T203242Z-cloud-tsp_small",
+ "problem": "tsp_small",
+ "started_at": "2026-10-25T20:32:42+00:00",
+ "finished_at": "2026-10-25T20:59:50+00:00",
+ "status": "complete",
+ "note": "クラウドでの試走（量子・疑似量子アニーリング系の追加に合わせた小規模 TSP）",
+ "command": "python src/run_bench.py tsp_small 60 --note クラウドでの試走（量子・疑似量子アニーリング系の追加に合わせた小規模 TSP）",
+ "environment": {
+  "machine": "cloud",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpu_count": 4,
+  "memory_gb": 15.7,
+  "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "python": "3.13.17",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.3",
+   "pandas": "3.0.5",
+   "tsplib95": "0.7.1",
+   "pyvrp": "0.14.1",
+   "dwave-samplers": "1.8.0",
+   "openjij": "0.12.2"
+  }
+ },
+ "git": {
+  "commit": "cc0f5984f1833948ace7f76a7912c61f897e122e",
+  "branch": "claude/project-thread-wq8605",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "DWave-SA": 1,
+   "OpenJij-SQA": 1,
+   "OpenJij-SA": 1,
+   "nn+ls": 1,
+   "SA": 1,
+   "LKH(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "MIP-HiGHS": 1
+  },
+  "solvers": {
+   "DWave-SA": "DWave-SA",
+   "OpenJij-SQA": "OpenJij-SQA",
+   "OpenJij-SA": "OpenJij-SA",
+   "nn+ls": "nn+ls",
+   "SA": "SA",
+   "LKH(elkai)": "LKH(elkai)",
+   "ORTools-GLS": "ORTools-GLS",
+   "CP-SAT": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS"
+  },
+  "instances": [
+   "burma14",
+   "ulysses16",
+   "ulysses22",
+   "bayg29",
+   "att48",
+   "eil51",
+   "berlin52",
+   "st70"
+  ],
+  "methods": {
+   "DWave-SA": [
+    1,
+    2,
+    3
+   ],
+   "OpenJij-SQA": [
+    1,
+    2,
+    3
+   ],
+   "OpenJij-SA": [
+    1,
+    2,
+    3
+   ],
+   "nn+ls": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "LKH(elkai)": [
+    1
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "burma14": "c2f10b100ad1a00bba19094e33ab3c05fb50203352151e23252eba6f85d5c3e7",
+  "ulysses16": "46064545dbb24b7f53b9b26802b422a903d92bc51ab835a73ec15733ab3cac46",
+  "ulysses22": "5d78d3131b51d4130c28495ecc558da9208fbb9a8f4f7d38535421371ba79898",
+  "bayg29": "6b6a501a2a4933e9b6614f905b79e1d3f9e5093a56ef0d3deaf8fbf440a17a3b",
+  "att48": "7a7b04423c4463e873ec5d1f0592ad4a5cba168018e3f4edfd7f7e541fde03ac",
+  "eil51": "66c05ad077ffd64d5778e358bbd16be049f8c8ae880cbd24f034487331d1ccce",
+  "berlin52": "8496a5838133e3c3eb25a9fa8893b1ac302593fc8dc325350643a0cabd8abadc",
+  "st70": "60c09e8886609bf22d6dc699fe7d7aa1924207d084578aad1a377ec65cf15b1b"
+ }
+}

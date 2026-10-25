@@ -54,6 +54,9 @@
     <dt><code>ORTools-GLS</code></dt><dd>Google OR-Tools の配送計画ソルバー（Routing）。安い弧から順につないで初期解を作り、誘導局所探索（GLS: 局所最適に何度も現れる辺にペナルティを課して別の解へ誘導する）で改善する。時間枠・容量・複数車両などの業務制約を足せる汎用性が強み。</dd>
     <dt><code>CP-SAT</code></dt><dd>OR-Tools の制約プログラミングソルバー CP-SAT。各弧を使うかどうかを 0-1 変数にし、AddCircuit 制約で「全都市を 1 本の巡回路で回る」ことを表して総距離を最小化する。下界も出すので、時間内に最適性を証明できることもある。</dd>
     <dt><code>MIP-HiGHS</code></dt><dd>混合整数計画（MIP）をオープンソースのソルバー HiGHS で解く。まず各都市の次数の制約だけで解き、小さな輪（部分巡回路）が出るたびにそれを禁じる制約（DFJ）を足して解き直す。最適性を証明できるが、時間切れになると巡回路を返せない。</dd>
+    <dt><code>OpenJij-SQA</code></dt><dd>疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。</dd>
+    <dt><code>OpenJij-SA</code></dt><dd>QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。</dd>
+    <dt><code>DWave-SA</code></dt><dd>D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。</dd>
   </dl>
 
   <h3 id="results">手元の結果</h3>
@@ -69,10 +72,13 @@
       <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">0.00%*</td><td class="num">3/6</td><td class="num">3</td><td class="num">35.0 秒</td></tr>
       <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">291.62%</td><td class="num">6/6</td><td class="num">1</td><td class="num">53.4 秒</td></tr>
       <tr><td class="m"><code>CP-SAT</code></td><td class="num">20.33%*</td><td class="num">5/6</td><td class="num">1</td><td class="num">53.9 秒</td></tr>
+      <tr><td class="m"><code>DWave-SA</code></td><td class="num">73.42%*</td><td class="num">1/6</td><td class="num">–</td><td class="num">9.8 秒</td></tr>
+      <tr><td class="m"><code>OpenJij-SA</code></td><td class="num">82.23%*</td><td class="num">1/6</td><td class="num">–</td><td class="num">9.8 秒</td></tr>
+      <tr><td class="m"><code>OpenJij-SQA</code></td><td class="num">111.15%*</td><td class="num">1/6</td><td class="num">–</td><td class="num">9.4 秒</td></tr>
     </tbody>
   </table>
   </div>
-  <p class="note">* 解が得られた問題だけの平均。CP-SAT-4w の 291.62% は rat783 の 1721% 1 問による値で、残り 5 問の平均は 5.72%。</p>
+  <p class="note">* 解が得られた問題だけの平均。CP-SAT-4w の 291.62% は rat783 の 1721% 1 問による値で、残り 5 問の平均は 5.72%。QUBO 系 3 手法は berlin52 の 1 問だけの値（ほかは QUBO が大きすぎて解いていない）。</p>
 
   <h3 id="literature">文献との突き合わせ</h3>
   <div class="legend">
@@ -96,6 +102,8 @@
   <h3 id="discussion">考察</h3>
   <p>LKH は 783 都市までのすべての問題で最適値に到達しました。この規模で比べる意味があるのは「LKH が何秒で最適値に着くか」と「他の手法が同じ時間で何 % まで寄るか」です。自作の <code>nn+ls</code>（多始点の最近傍法 + 2-opt/Or-opt）は 0.83% で、OR-Tools の誘導局所探索（1.06%）より良い結果でした。OR-Tools Routing の強みは時間枠や容量などの業務制約を足せる汎用性なので、制約のない純粋な TSP で劣るのは自然です。</p>
   <p>MIP は小さいうちは最適性まで出せますが、ある規模で急に何も出なくなります。今回は 280 都市付近が境目で、a280 は 1 スレッドで時間切れ、4 スレッドで 56 秒で証明できました。部分巡回路除去制約を逐次足す実装は途中で巡回路を持たないため、時間切れになると答えが空になります。実務では初期解を渡すのが普通なので、この「解なし」は実装の仕方による部分もあります。</p>
+
+  <p>量子・疑似量子アニーリング系の 3 手法は、QUBO の変数が都市数の 2 乗で増えるため、6 問のうち berlin52（2,601 変数）しか解けませんでした。その berlin52 でも、手元の CPU で動く 3 手法は 73〜111% で、8 手法が最適値に届いた中で最下位です。QUBO に載る 14〜70 都市で全手法を比べた結果と理由は、<a href="qubo.html">量子・疑似量子アニーリングのページ</a>にまとめました。Amplify AE の結果は、公開可否を確認できていないため載せていません。</p>
 
   <h3 id="threads">スレッド数の効果</h3>
   <div class="frame">

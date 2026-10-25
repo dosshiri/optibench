@@ -54,6 +54,9 @@
     <dt><code>Tabu-N5</code></dt><dd>タブーサーチ。最も長い作業の連鎖（クリティカルパス）上で同じ機械に続く作業ブロックの端の 2 つを入れ替える N5 近傍（Nowicki &amp; Smutnicki 1996）を使い、直前の入れ替えを一定期間禁じて同じ解への逆戻りを防ぐ。JSSP 専用の強力な手法。</dd>
     <dt><code>CP-SAT</code></dt><dd>各作業を区間変数で表し、同じ機械の作業は重ならない（NoOverlap）・ジョブ内の順序を守るという制約の下で、全作業の完了時刻（メイクスパン）を最小化する。スケジューリングは CP-SAT が最も得意とする分野。</dd>
     <dt><code>MIP-HiGHS</code></dt><dd>Manne の離接定式化を HiGHS で解く。同じ機械の作業の組ごとに「どちらが先か」の 0-1 変数を置き、big-M 制約で順序を表す。変数が多く緩和も弱いため、大きな問題は苦手。</dd>
+    <dt><code>OpenJij-SQA</code></dt><dd>疑似量子アニーリング（SQA）。量子アニーリングの量子揺らぎを、解のコピー（Trotter スライス）を並べて互いに引き合わせる形で古典計算機上に再現する、OpenJij の実装。問題を QUBO（0/1 変数の二次式）に直し、1000 スイープ、Trotter 数 4、逆温度 20 で10 解ずつ求める呼び出しを制限時間まで繰り返して、制約を満たす最良の解を採る。</dd>
+    <dt><code>OpenJij-SA</code></dt><dd>QUBO に対する焼きなまし法（SA）を OpenJij で実行する。変数を 1 つずつ反転させる単純な近傍で、温度を下げながらエネルギー（目的関数と罰金の和）を最小化する。OpenJij-SQA と同じ QUBO・同じ繰り返し方で、量子揺らぎの有無だけが違う比較対象。</dd>
+    <dt><code>DWave-SA</code></dt><dd>D-Wave 社が公開している QUBO 向け焼きなまし法（dwave-samplers、旧 neal）。量子アニーラ実機の前に問題の定式化を確かめる用途で広く使われる、古典計算機上の基準となるソルバー。OpenJij と同じ QUBO を既定のスケジュール（1000 スイープ）で 10 解ずつ解き、制限時間まで繰り返す。</dd>
   </dl>
 
   <h3 id="results">手元の結果</h3>
@@ -69,9 +72,13 @@
       <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">26.74%</td><td class="num">10/10</td><td class="num">1</td><td class="num">54.3 秒</td></tr>
       <tr><td class="m"><code>MWKR</code></td><td class="num">29.45%</td><td class="num">10/10</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
       <tr><td class="m"><code>SPT</code></td><td class="num">55.17%</td><td class="num">10/10</td><td class="num">–</td><td class="num">0.2 秒</td></tr>
+      <tr><td class="m"><code>DWave-SA</code></td><td class="num">12.12%*</td><td class="num">1/10</td><td class="num">–</td><td class="num">6.0 秒</td></tr>
+      <tr><td class="m"><code>OpenJij-SA</code></td><td class="num">17.58%*</td><td class="num">1/10</td><td class="num">–</td><td class="num">6.0 秒</td></tr>
+      <tr><td class="m"><code>OpenJij-SQA</code></td><td class="num">23.64%*</td><td class="num">1/10</td><td class="num">–</td><td class="num">5.8 秒</td></tr>
     </tbody>
   </table>
   </div>
+  <p class="note">* QUBO 系 3 手法は ft06 の 1 問だけの値（ほかは QUBO が大きすぎて解いていない）。OpenJij-SQA は 3 シード中 1 回だけ解が出た。</p>
 
   <h3 id="literature">文献との突き合わせ</h3>
   <div class="legend">
@@ -96,6 +103,8 @@
   <h3 id="discussion">考察</h3>
   <p>CP-SAT は未証明の swv01・ta11・ta21 でも 1.6〜3.6% でした。自作の <code>Tabu-N5</code> は最適性を証明できませんが、平均 2.03% と CP-SAT の 1 スレッド（1.63%）に近く、問題専用の近傍の強さがよく出ています。同じメタヒューリスティクスでも、汎用の乱数キー GA は 10.7% で、手法族の名前より近傍の設計が効くという文献の指摘どおりです。</p>
   <p>MIP（Manne の離接定式化、big-M）は ft06（6×6）以外で最適性を証明できず、ta21（20×20）では 81% でした。Ku–Beck は 3600 秒・CPLEX で ta11–ta20 の MIP を約 6.2% と報告しており、手元はそれより大きく劣ります。ただし時間は 60 分の 1、ソルバーも違うため、数値の差よりも「CP との差が規模とともに広がる」という傾向の一致を見るべきです。ディスパッチングルールは 0.2 秒で終わるので、初期解やリアルタイムの再スケジュール用です。</p>
+
+  <p>量子・疑似量子アニーリング系の 3 手法は、工程 × 開始時刻の時間添字の QUBO を使うため、変数が 5,000 個に収まる ft06（1,302 変数）しか解けませんでした。ft10 でも 7.5 万変数になります。ft06 では CPU で動く 3 手法が 61〜68（最適値 55）で、OpenJij-SQA は 3 シード中 2 回で制約を満たす解を出せませんでした。詳しくは<a href="qubo.html">量子・疑似量子アニーリングのページ</a>にあります。Amplify AE の結果は、公開可否を確認できていないため載せていません。</p>
 
   <h3 id="threads">スレッド数の効果</h3>
   <div class="frame">

@@ -453,7 +453,8 @@ function render(key) {
     ? `セルの値は${P.unit}の平均値（小さいほど良い）。色は全 run・全手法中の最良値からの差 (%) を示します。`
     : "セルの値は参照値に対する平均ギャップ (%)。") + "「×」は制限時間内に実行可能解が得られなかったことを示します。";
   document.getElementById("n1").textContent =
-    `参照値: ${P.ref}。制限時間 ${P.time_limit} 秒、${R ? threadsText(R) : "全手法 1 スレッド（-4w は 4 スレッド）"}。確率的手法は複数シードの平均。`;
+    `参照値: ${P.ref}。制限時間 ${P.time_limit} 秒、${R ? threadsText(R) : "全手法 1 スレッド（-4w は 4 スレッド）"}。確率的手法は複数シードの平均。` +
+    Object.entries(P.hidden || {}).map(([m, why]) => `${m} の結果は、${why}、載せていません（結果は results/runs/ に保存しています）。`).join("");
   // スレッド数で絞り込む（run に複数のスレッド数があるときだけ選べる）
   const counts = R ? [...new Set(P.methods.map(m => R.threads[m] ?? 1))].sort((a, b) => a - b) : [];
   const thrSel = document.getElementById("thrSel");

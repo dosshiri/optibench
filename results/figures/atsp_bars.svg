@@ -1,16 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="332" viewBox="0 0 720 332" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
-<rect width="720" height="332" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="422" viewBox="0 0 720 422" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
+<rect width="720" height="422" fill="#ffffff"/>
 <text x="8.0" y="20.0" text-anchor="start" fill="#0b0b0b" font-weight="600">ATSP（非対称巡回セールスマン）: 手法別の平均ギャップ (%)</text>
-<line x1="110.0" x2="110.0" y1="36" y2="312" stroke="#c3c2b7"/>
-<text x="110.0" y="327.0" text-anchor="middle" fill="#52514e">0.0%</text>
-<line x1="215.0" x2="215.0" y1="36" y2="312" stroke="#e1e0d9"/>
-<text x="215.0" y="327.0" text-anchor="middle" fill="#52514e">5.0%</text>
-<line x1="320.0" x2="320.0" y1="36" y2="312" stroke="#e1e0d9"/>
-<text x="320.0" y="327.0" text-anchor="middle" fill="#52514e">9.9%</text>
-<line x1="425.0" x2="425.0" y1="36" y2="312" stroke="#e1e0d9"/>
-<text x="425.0" y="327.0" text-anchor="middle" fill="#52514e">15%</text>
-<line x1="530.0" x2="530.0" y1="36" y2="312" stroke="#e1e0d9"/>
-<text x="530.0" y="327.0" text-anchor="middle" fill="#52514e">20%</text>
+<line x1="110.0" x2="110.0" y1="36" y2="402" stroke="#c3c2b7"/>
+<text x="110.0" y="417.0" text-anchor="middle" fill="#52514e">0.0%</text>
+<line x1="215.0" x2="215.0" y1="36" y2="402" stroke="#e1e0d9"/>
+<text x="215.0" y="417.0" text-anchor="middle" fill="#52514e">30%</text>
+<line x1="320.0" x2="320.0" y1="36" y2="402" stroke="#e1e0d9"/>
+<text x="320.0" y="417.0" text-anchor="middle" fill="#52514e">59%</text>
+<line x1="425.0" x2="425.0" y1="36" y2="402" stroke="#e1e0d9"/>
+<text x="425.0" y="417.0" text-anchor="middle" fill="#52514e">89%</text>
+<line x1="530.0" x2="530.0" y1="36" y2="402" stroke="#e1e0d9"/>
+<text x="530.0" y="417.0" text-anchor="middle" fill="#52514e">118%</text>
 <text x="102.0" y="55.0" text-anchor="end" fill="#0b0b0b">LKH(elkai)</text>
 <rect x="110" y="43" width="2.0" height="16" rx="4" fill="#2a78d6"/>
 <text x="118.0" y="55.0" text-anchor="start" fill="#52514e">0.00%</text>
@@ -18,24 +18,33 @@
 <rect x="110" y="73" width="2.0" height="16" rx="4" fill="#2a78d6"/>
 <text x="118.0" y="85.0" text-anchor="start" fill="#52514e">0.08%</text>
 <text x="102.0" y="115.0" text-anchor="end" fill="#0b0b0b">PyVRP-HGS</text>
-<rect x="110" y="103" width="6.2" height="16" rx="4" fill="#2a78d6"/>
-<text x="122.2" y="115.0" text-anchor="start" fill="#52514e">0.29%</text>
+<rect x="110" y="103" width="2.0" height="16" rx="4" fill="#2a78d6"/>
+<text x="118.0" y="115.0" text-anchor="start" fill="#52514e">0.29%</text>
 <text x="102.0" y="145.0" text-anchor="end" fill="#0b0b0b">ORTools-GLS</text>
-<rect x="110" y="133" width="20.3" height="16" rx="4" fill="#2a78d6"/>
-<text x="136.3" y="145.0" text-anchor="start" fill="#52514e">0.96%</text>
+<rect x="110" y="133" width="3.4" height="16" rx="4" fill="#2a78d6"/>
+<text x="119.4" y="145.0" text-anchor="start" fill="#52514e">0.96%</text>
 <text x="102.0" y="175.0" text-anchor="end" fill="#0b0b0b">nn+ls</text>
-<rect x="110" y="163" width="64.2" height="16" rx="4" fill="#2a78d6"/>
-<text x="180.2" y="175.0" text-anchor="start" fill="#52514e">3.03%</text>
+<rect x="110" y="163" width="10.8" height="16" rx="4" fill="#2a78d6"/>
+<text x="126.8" y="175.0" text-anchor="start" fill="#52514e">3.03%</text>
 <text x="102.0" y="205.0" text-anchor="end" fill="#0b0b0b">CP-SAT-4w</text>
-<rect x="110" y="193" width="208.2" height="16" rx="4" fill="#2a78d6"/>
-<text x="324.2" y="205.0" text-anchor="start" fill="#52514e">9.83%</text>
+<rect x="110" y="193" width="34.9" height="16" rx="4" fill="#2a78d6"/>
+<text x="150.9" y="205.0" text-anchor="start" fill="#52514e">9.83%</text>
 <text x="102.0" y="235.0" text-anchor="end" fill="#0b0b0b">CP-SAT</text>
-<rect x="110" y="223" width="400.0" height="16" rx="4" fill="#2a78d6"/>
-<text x="516.0" y="235.0" text-anchor="start" fill="#52514e">18.88%</text>
+<rect x="110" y="223" width="67.1" height="16" rx="4" fill="#2a78d6"/>
+<text x="183.1" y="235.0" text-anchor="start" fill="#52514e">18.88%</text>
 <text x="102.0" y="265.0" text-anchor="end" fill="#0b0b0b">MIP-HiGHS</text>
 <rect x="110" y="253" width="2.0" height="16" rx="4" fill="#2a78d6"/>
 <text x="118.0" y="265.0" text-anchor="start" fill="#52514e">0.00%（解なし2問）</text>
 <text x="102.0" y="295.0" text-anchor="end" fill="#0b0b0b">MIP-HiGHS-4w</text>
 <rect x="110" y="283" width="2.0" height="16" rx="4" fill="#2a78d6"/>
 <text x="118.0" y="295.0" text-anchor="start" fill="#52514e">0.00%（解なし2問）</text>
+<text x="102.0" y="325.0" text-anchor="end" fill="#0b0b0b">DWave-SA</text>
+<rect x="110" y="313" width="221.0" height="16" rx="4" fill="#2a78d6"/>
+<text x="337.0" y="325.0" text-anchor="start" fill="#52514e">62.22%（解なし3問）</text>
+<text x="102.0" y="355.0" text-anchor="end" fill="#0b0b0b">OpenJij-SA</text>
+<rect x="110" y="343" width="285.4" height="16" rx="4" fill="#2a78d6"/>
+<text x="401.4" y="355.0" text-anchor="start" fill="#52514e">80.37%（解なし3問）</text>
+<text x="102.0" y="385.0" text-anchor="end" fill="#0b0b0b">OpenJij-SQA</text>
+<rect x="110" y="373" width="400.0" height="16" rx="4" fill="#2a78d6"/>
+<text x="516.0" y="385.0" text-anchor="start" fill="#52514e">112.63%（解なし3問）</text>
 </svg>
