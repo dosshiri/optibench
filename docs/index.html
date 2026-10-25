@@ -73,6 +73,7 @@ summary { cursor: pointer; color: var(--text-secondary); }
 .legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);
   margin-top: 8px; flex-wrap: wrap; }
 .runbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 16px; font-size: 14px; }
+[hidden] { display: none !important; }
 .runbar label { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); min-width: 0; max-width: 100%; }
 .runbar select { font: inherit; font-size: 13px; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--border);
   background: var(--surface-1); color: var(--text-primary); min-width: 0; max-width: 100%; }
@@ -95,6 +96,7 @@ table.envdiff th:first-child { width: 7em; }
   <div class="runbar">
     <label>run <select id="runSel"></select></label>
     <label>比較対象 <select id="cmpSel"></select></label>
+    <label id="thrLab">スレッド数 <select id="thrSel"></select></label>
   </div>
   <section class="card">
     <details id="runinfo">
@@ -111,6 +113,11 @@ table.envdiff th:first-child { width: 7em; }
       <summary>インスタンス別の比較</summary>
       <div class="scroll" id="cmpcells"></div>
     </details>
+  </section>
+  <section class="card" id="thr" hidden>
+    <h2>スレッド数による違い</h2>
+    <p class="note" id="n4"></p>
+    <div id="thrtables"></div>
   </section>
   <section class="card">
     <h2 id="t1">手法別の平均ギャップ</h2>
@@ -139,7 +146,7 @@ const NS = "http://www.w3.org/2000/svg";
 const BINS = [0.001, 0.5, 1, 2, 5, 10, 20];  // ギャップ (%) の段階
 const tip = document.getElementById("tip");
 let DATA, current;
-const chosen = {}, compare = {};  // 問題ごとに選んだ run と比較対象
+const chosen = {}, compare = {}, thrFilter = {};  // 問題ごとに選んだ run・比較対象・スレッド数の絞り込み
 
 function el(tag, attrs = {}, parent) {
   const e = document.createElementNS(NS, tag);
@@ -363,6 +370,35 @@ function drawCompare(P, A, B) {
     crow.join("") + `</tbody></table>`;
 }
 
+// 同じ解法を複数のスレッド数で実行した結果を、解法ごとに並べる
+function drawThreads(P, R) {
+  const groups = {};
+  P.methods.forEach(m => {
+    const s = (R.solvers || {})[m] ?? m;
+    (groups[s] = groups[s] || []).push(m);
+  });
+  const multi = Object.entries(groups).filter(([, ms]) => ms.length > 1);
+  document.getElementById("thr").hidden = !multi.length;
+  if (!multi.length) return;
+  const byValue = P.display === "value";
+  const cellOf = (i, m) => P.cells.find(c => c.instance === i && c.method === m);
+  const val = c => c && c.mean_gap != null ? (byValue ? String(Math.round(c.mean_obj)) : fmt(c.mean_gap)) : "×";
+  document.getElementById("n4").textContent = (byValue ? `${P.unit}の平均値` : "平均ギャップ (%) ") +
+    "と平均時間（秒）。「×」は制限時間内に実行可能解なし。平均は全スレッド数で解が得られたインスタンスのみ。";
+  document.getElementById("thrtables").innerHTML = multi.map(([s, ms]) => {
+    ms = ms.slice().sort((a, b) => (R.threads[a] ?? 1) - (R.threads[b] ?? 1));
+    const head = ms.map(m => `<th>${R.threads[m] ?? 1} スレッド</th><th>時間</th>`).join("");
+    const rows = P.instances.map(i => `<tr><td>${esc(i)}</td>` +
+      ms.map(m => { const c = cellOf(i, m); return `<td>${val(c)}</td><td>${c ? fmt(c.time, 1) : "—"}</td>`; }).join("") + "</tr>");
+    const both = P.instances.filter(i => ms.every(m => { const c = cellOf(i, m); return c && c.mean_gap != null; }));
+    const avg = (m, k) => both.length ? both.reduce((a, i) => a + cellOf(i, m)[k], 0) / both.length : null;
+    rows.push(`<tr><td>平均（${both.length} 問${byValue ? "、最良値との差 %" : ""}）</td>` + ms.map(m =>
+      `<td>${fmt(avg(m, "mean_gap"))}</td><td>${fmt(avg(m, "time"), 1)}</td>`).join("") + "</tr>");
+    return `<h3 style="font-size:14px;margin:12px 0 4px">${esc(s)}</h3><div class="scroll"><table><thead><tr><th>インスタンス</th>${head}</tr></thead><tbody>` +
+      rows.join("") + `</tbody></table></div>`;
+  }).join("");
+}
+
 function fillSelect(sel, ids, value, none) {
   sel.innerHTML = (none ? `<option value="">なし</option>` : "") +
     ids.slice().reverse().map(id => `<option value="${esc(id)}">${esc(runLabel(DATA.runs[id]))}</option>`).join("");
@@ -395,11 +431,25 @@ function render(key) {
     : "セルの値は参照値に対する平均ギャップ (%)。") + "「×」は制限時間内に実行可能解が得られなかったことを示します。";
   document.getElementById("n1").textContent =
     `参照値: ${P.ref}。制限時間 ${P.time_limit} 秒、${R ? threadsText(R) : "全手法 1 スレッド（-4w は 4 スレッド）"}。確率的手法は複数シードの平均。`;
-  drawBars(P); drawHeat(P); drawTable(P);
+  // スレッド数で絞り込む（run に複数のスレッド数があるときだけ選べる）
+  const counts = R ? [...new Set(P.methods.map(m => R.threads[m] ?? 1))].sort((a, b) => a - b) : [];
+  const thrSel = document.getElementById("thrSel");
+  if (!counts.includes(Number(thrFilter[key]))) thrFilter[key] = "";
+  thrSel.innerHTML = `<option value="">すべて</option>` + counts.map(t => `<option value="${t}">${t} スレッド</option>`).join("");
+  thrSel.value = thrFilter[key];
+  document.getElementById("thrLab").hidden = counts.length < 2;
+  let V = P;
+  if (thrFilter[key]) {
+    const keep = P.methods.filter(m => (R.threads[m] ?? 1) === Number(thrFilter[key]));
+    V = Object.assign({}, P, { methods: keep, cells: P.cells.filter(c => keep.includes(c.method)) });
+  }
+  drawBars(V); drawHeat(V); drawTable(V);
+  if (R) drawThreads(P, R);
   if (R) drawCompare(P, R, compare[key] ? DATA.runs[compare[key]] : null);
   try { localStorage.setItem("tab", key); } catch (e) {}
 }
 document.getElementById("runSel").onchange = e => { chosen[current] = e.target.value; render(current); };
+document.getElementById("thrSel").onchange = e => { thrFilter[current] = e.target.value; render(current); };
 document.getElementById("cmpSel").onchange = e => { compare[current] = e.target.value; render(current); };
 
 // data.js があればそれを使う（ダブルクリックで file:// として開いた場合も表示できる）
@@ -413,7 +463,7 @@ document.getElementById("cmpSel").onchange = e => { compare[current] = e.target.
   });
   // 問題名は登録されている問題から作る（表示名の括弧書きは省く）
   document.getElementById("sub").textContent = Object.values(d.problems).map(P => P.label.split("（")[0]).join("・") +
-    "に対する代表的解法の手元比較（全手法 1 スレッド・同一制限時間）";
+    "に対する代表的解法の手元比較（同一制限時間・スレッド数を明示して比較）";
   document.getElementById("foot").textContent = `データ生成: ${d.generated}` + (d.env ? `（Python ${d.env.python}, ${d.env.machine}）` : "");
   let first = Object.keys(d.problems)[0];
   try { const s = localStorage.getItem("tab"); if (s && d.problems[s]) first = s; } catch (e) {}

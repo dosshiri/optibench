@@ -172,6 +172,43 @@ def md_tables(P, st):
     return lines
 
 
+def threads_tables(P):
+    """同じ解法を複数のスレッド数で実行した結果を解法ごとに並べた表（index.html の drawThreads と同じ内容）."""
+    by_value = P.get("display") == "value"
+    groups = {}
+    for m in P["methods"]:
+        groups.setdefault(P.get("solvers", {}).get(m, m), []).append(m)
+    multi = [(s, ms) for s, ms in groups.items() if len(ms) > 1]
+    if not multi:
+        return []
+    lines = ["### スレッド数による違い", "",
+             (P["unit"] + "の平均値" if by_value else "平均ギャップ (%) ")
+             + "と平均時間（秒）。× は制限時間内に実行可能解なし。平均は全スレッド数で解が得られたインスタンスのみ。", ""]
+    for s, ms in multi:
+        ms = sorted(ms, key=lambda m: P["threads"].get(m, 1))
+        lines += [f"**{s}**", "", "| インスタンス | " + " | ".join(f'{P["threads"].get(m, 1)} スレッド | 時間' for m in ms) + " |",
+                  "|---" + "|---:|---:" * len(ms) + "|"]
+        both = []
+        for inst in P["instances"]:
+            cs = [cell(P, inst, m) for m in ms]
+            if all(c and c["mean_gap"] is not None for c in cs):
+                both.append(cs)
+            row = []
+            for c in cs:
+                ok = c and c["mean_gap"] is not None
+                row.append("×" if not ok else (str(round(c["mean_obj"])) if by_value else fmt(c["mean_gap"])))
+                row.append(fmt(c["time"], 1) if c else "—")
+            lines.append(f"| {inst} | " + " | ".join(row) + " |")
+        row = []
+        for k in range(len(ms)):
+            g = sum(cs[k]["mean_gap"] for cs in both) / len(both) if both else None
+            t = sum(cs[k]["time"] for cs in both) / len(both) if both else None
+            row += [fmt(g), fmt(t, 1)]
+        avg = f"平均（{len(both)} 問" + ("、最良値との差 %）" if by_value else "）")
+        lines += [f"| {avg} | " + " | ".join(row) + " |", ""]
+    return lines
+
+
 def threads_text(R):
     multi = sorted({n for n in R["threads"].values() if n > 1})
     if not multi:
@@ -224,7 +261,7 @@ def main(data):
                f"実行環境: {env_text(P)}", "",
                f"![{P['label']} 手法別](figures/{k}_bars.svg)", "",
                f"![{P['label']} ヒートマップ](figures/{k}_heat.svg)", ""]
-        md += md_tables(P, st) + [""]
+        md += md_tables(P, st) + [""] + threads_tables(P)
     md += ['<a id="history"></a>', ""] + history(data)
     with open(os.path.join(OUT_DIR, "README.md"), "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(md))

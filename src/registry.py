@@ -9,6 +9,7 @@ python registry.py   登録されている問題と解法の一覧を表示す�
 import glob
 import importlib
 import os
+import re
 import sys
 import traceback
 from dataclasses import dataclass, field
@@ -67,17 +68,34 @@ class Problem:
 @dataclass
 class Solver:
     """解法の定義. func(データ, 制限時間[秒], seed) -> dict(obj=目的関数値 or None, lb=下界 or None, ...).
+    並列実行できる解法（parallel=True）は func(データ, 制限時間, seed, threads=スレッド数) で呼ばれる.
 
     seeds     既定で回すシード数（確率的手法は 3 など）
-    threads   使用スレッド数. 2 以上の手法は他のジョブと並列にせず単独で実行する
+    threads   既定で回すスレッド数の一覧（例: [1, 4]）. run_bench.py --threads で変えられる
+    parallel  スレッド数を変えて実行できるか（threads=1 以外を指定すると自動で True）
     packages  run.json にバージョンを記録する追加パッケージ
+
+    結果の手法名（ラベル）は、1 スレッドなら name、それ以外は "name-4w" のようにスレッド数を付ける.
     """
     name: str
     problem: str
     func: Callable
     seeds: int = 1
-    threads: int = 1
+    threads: list = field(default_factory=lambda: [1])
+    parallel: bool = False
     packages: list = field(default_factory=list)
+
+    def run(self, data, tl, seed, threads=1):
+        if self.parallel:
+            return self.func(data, tl, seed, threads=threads)
+        if threads != 1:
+            raise ValueError(f"{self.name} は 1 スレッドでしか実行できません")
+        return self.func(data, tl, seed)
+
+
+def label(name, threads):
+    """結果に記録する手法名. 1 スレッドは解法名のまま、それ以外は "-<スレッド数>w" を付ける."""
+    return name if threads == 1 else f"{name}-{threads}w"
 
 
 PROBLEMS = {}
@@ -92,14 +110,19 @@ def register_problem(p):
     return p
 
 
-def solver(name, problems, seeds=1, threads=1, packages=()):
-    """解法を登録するデコレータ. 例: @solver("SA", problems=["tsp", "atsp"], seeds=3)"""
+def solver(name, problems, seeds=1, threads=1, parallel=None, packages=()):
+    """解法を登録するデコレータ.
+    例: @solver("SA", problems=["tsp", "atsp"], seeds=3)
+        @solver("CP-SAT", problems="jssp", threads=[1, 4])   # 1 スレッドと 4 スレッドで実行"""
+    threads = [threads] if isinstance(threads, int) else list(threads)
+    if parallel is None:
+        parallel = threads != [1]
     def deco(func):
         for prob in ([problems] if isinstance(problems, str) else problems):
             d = SOLVERS.setdefault(prob, {})
             if name in d:
                 raise ValueError(f"{prob} の解法 {name} は登録済みです")
-            d[name] = Solver(name, prob, func, seeds, threads, list(packages))
+            d[name] = Solver(name, prob, func, seeds, threads, parallel, list(packages))
         return func
     return deco
 
@@ -142,11 +165,15 @@ def solvers(problem):
     return SOLVERS.get(problem, {})
 
 
-def get_solver(problem, name):
+def resolve(problem, method):
+    """手法名（ラベル）から (Solver, スレッド数) を返す. 例: "CP-SAT-4w" -> (CP-SAT, 4)"""
     s = solvers(problem)
-    if name not in s:
-        sys.exit(f"{problem} の解法 {name} は登録されていません（登録済み: {', '.join(s)}）")
-    return s[name]
+    if method in s:
+        return s[method], 1
+    m = re.fullmatch(r"(.+)-(\d+)w", method)
+    if m and m.group(1) in s and s[m.group(1)].parallel:
+        return s[m.group(1)], int(m.group(2))
+    sys.exit(f"{problem} の手法 {method} は登録されていません（登録済み: {', '.join(s)}）")
 
 
 def packages():
@@ -161,7 +188,9 @@ def main():
     for p in problems():
         print(f"{p.name}: {p.label}（{len(p.default_instances())} インスタンス, 参照値: {p.ref_label}）")
         for s in solvers(p.name).values():
-            extra = [f"{s.seeds} シード"] * (s.seeds > 1) + [f"{s.threads} スレッド"] * (s.threads > 1)
+            extra = [f"{s.seeds} シード"] * (s.seeds > 1)
+            if s.parallel:
+                extra.append("並列可, 既定 " + "/".join(map(str, s.threads)) + " スレッド")
             print(f"  {s.name}" + (f"（{', '.join(extra)}）" if extra else ""))
     orphan = sorted(set(SOLVERS) - set(PROBLEMS))
     if orphan:
