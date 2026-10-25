@@ -1,4 +1,5 @@
 """巡回セールスマン問題（TSP: 対称, ATSP: 非対称）. インスタンスは TSPLIB95.
+tsp_small は、QUBO（量子・疑似量子アニーリング）で扱える数十都市までの TSP を全手法で比べるための小規模セット.
 解法に渡すデータは整数距離行列 D (0-index), 解は都市の巡回順のリスト."""
 import os
 
@@ -10,6 +11,8 @@ from registry import Problem, register_problem
 # TSPLIB 公式の最適値 (TSPLIB95 solutions)
 TSP_OPT = {"berlin52": 7542, "kroA100": 21282, "ch150": 6528, "a280": 2579,
            "pcb442": 50778, "rat783": 8806}
+TSP_SMALL_OPT = {"burma14": 3323, "ulysses16": 6859, "ulysses22": 7013, "bayg29": 1610, "att48": 10628,
+                 "eil51": 426, "berlin52": 7542, "st70": 675}
 ATSP_OPT = {"ftv33": 1286, "ftv70": 1950, "kro124p": 36230, "ft70": 38673,
             "rbg323": 1326, "rbg443": 2720}
 
@@ -17,8 +20,8 @@ ATSP_OPT = {"ftv33": 1286, "ftv70": 1950, "kro124p": 36230, "ft70": 38673,
 def load_tsplib_matrix(problem, name):
     """TSPLIB を読み込み、整数距離行列 (0-index) を返す."""
     import tsplib95
-    ext = "tsp" if problem == "tsp" else "atsp"
-    p = tsplib95.load(os.path.join(INST, ext, f"{name}.{ext}"))
+    ext = "atsp" if problem == "atsp" else "tsp"
+    p = tsplib95.load(os.path.join(INST, problem, f"{name}.{ext}"))
     nodes = list(p.get_nodes())
     n = len(nodes)
     D = np.zeros((n, n), dtype=np.int64)
@@ -52,3 +55,10 @@ register_problem(Problem(
     instance_file="atsp/{}.atsp", instances=["ftv33", "ftv70", "kro124p", "ft70", "rbg323", "rbg443"],
     load=lambda name: load_tsplib_matrix("atsp", name), reference=ATSP_OPT.get, evaluate=evaluate,
     order=20, packages=["tsplib95"]))
+
+register_problem(Problem(
+    name="tsp_small", label="TSP 小規模（QUBO 比較用）", unit="距離", ref_label="TSPLIB 公表最適値",
+    instance_file="tsp_small/{}.tsp",
+    instances=["burma14", "ulysses16", "ulysses22", "bayg29", "att48", "eil51", "berlin52", "st70"],
+    load=lambda name: load_tsplib_matrix("tsp_small", name), reference=TSP_SMALL_OPT.get, evaluate=evaluate,
+    order=15, packages=["tsplib95"]))

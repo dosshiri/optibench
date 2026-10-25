@@ -6,3 +6,4 @@ numpy
 pandas
 tsplib95==0.7.1
 pyvrp==0.14.1
+openjij==0.12.2

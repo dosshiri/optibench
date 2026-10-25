@@ -6,7 +6,7 @@ from common import Timer
 from problems.routing import tour_cost
 from registry import solver
 
-ROUTING = ["tsp", "atsp"]
+ROUTING = ["tsp", "tsp_small", "atsp"]
 
 
 # ---------------------------------------------------------------- 構築法・局所探索
