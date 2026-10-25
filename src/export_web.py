@@ -45,9 +45,18 @@ def hidden_methods(meta):
     return {m for m, n in names.items() if n in solvers and solvers[n].hidden}
 
 
-def drop_methods(summary, hide):
-    """run のメタデータから、載せない手法を除く."""
+def hidden_packages(prob):
+    """載せない手法だけが使うパッケージ（実行環境の一覧からも外す）."""
+    shown = {k for s in registry.solvers(prob).values() if not s.hidden for k in s.packages}
+    return {k for s in registry.solvers(prob).values() if s.hidden for k in s.packages} - shown
+
+
+def drop_methods(summary, hide, packages=()):
+    """run のメタデータから、載せない手法とそのパッケージを除く."""
     out = dict(summary)
+    env = summary.get("environment")
+    if env and "packages" in env:
+        out["environment"] = dict(env, packages={k: v for k, v in env["packages"].items() if k not in packages})
     for k in ("threads", "solvers", "seeds"):
         out[k] = {m: v for m, v in summary[k].items() if m not in hide}
     adds = [dict(a, methods=[m for m in a["methods"] if m not in hide]) for a in summary["additions"]]
@@ -83,7 +92,7 @@ def main(out):
             if not cells:
                 continue
             c = meta["conditions"]
-            data["runs"][meta["run_id"]] = dict(drop_methods(run_summary(meta), hide), cells=cells,
+            data["runs"][meta["run_id"]] = dict(drop_methods(run_summary(meta), hide, hidden_packages(prob)), cells=cells,
                                                 time_limit=c["time_limit"],
                                                 instances=[i for i in c["instances"] if i in insts],
                                                 methods=[m for m in c["methods"] if m in methods])
@@ -94,9 +103,6 @@ def main(out):
         info = dict(label=p.label, ref=p.ref_label, unit=p.unit,
                     about={s.name: s.description for s in registry.solvers(prob).values()
                            if s.description and not s.hidden})
-        hidden = {s.name: s.hidden for s in registry.solvers(prob).values() if s.hidden}
-        if hidden:
-            info["hidden"] = hidden  # 載せない手法と理由（結果は results/runs/ に残っている）
         if p.display != "gap":
             info["display"] = p.display
         if p.sense != "min":

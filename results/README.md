@@ -2,7 +2,7 @@
 
 このページは `python src/export_web.py` で自動生成しています（手で編集しないでください）。マウスオーバーで詳細が見られ、run を切り替えて比較できる対話型のビューは、手元で `docs/benchmark.html` をダブルクリックすると開きます（入口は `docs/index.html`）。
 
-データ生成: 2026-10-25T22:21:44+00:00
+データ生成: 2026-10-25T22:41:04+00:00
 
 - [TSP（対称巡回セールスマン）](#tsp) / [TSP 小規模（QUBO 比較用）](#tsp_small) / [ATSP（非対称巡回セールスマン）](#atsp) / [ATSP-TW（時間枠付き非対称巡回セールスマン）](#atsptw) / [JSSP（ジョブショップ）](#jssp) / [ナーススケジューリング](#nsp) / [実行履歴](#history)
 
@@ -13,8 +13,6 @@
 run `20261025T075502Z-tiamat-tsp`（2026-10-25 07:55 UTC 開始）。参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド（CP-SAT-4w・MIP-HiGHS-4w は 4 スレッド）。確率的手法は複数シードの平均。
 
 実行環境: tiamat: AMD Ryzen 9 5900HX with Radeon Graphics, 16 論理 CPU, メモリ 31.4 GB, Windows-11-10.0.26200-SP0, Python 3.12.9, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `bffb27c`
-
-Amplify-AE の結果は、Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため、載せていません（結果は `results/runs/` に保存しています）。
 
 ![TSP（対称巡回セールスマン） 手法別](figures/tsp_bars.svg)
 
@@ -92,8 +90,6 @@ Amplify-AE の結果は、Fixstars Amplify の無償プランの利用規約（�
 run `20261025T210045Z-tiamat-tsp_small`（2026-10-25 21:00 UTC 開始）。参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド（CP-SAT-4w・MIP-HiGHS-4w は 4 スレッド）。確率的手法は複数シードの平均。
 
 実行環境: tiamat: AMD Ryzen 9 5900HX with Radeon Graphics, 16 論理 CPU, メモリ 31.4 GB, Windows-11-10.0.26200-SP0, Python 3.12.9, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `8e07417`
-
-Amplify-AE の結果は、Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため、載せていません（結果は `results/runs/` に保存しています）。
 
 ![TSP 小規模（QUBO 比較用） 手法別](figures/tsp_small_bars.svg)
 
@@ -177,8 +173,6 @@ Amplify-AE の結果は、Fixstars Amplify の無償プランの利用規約（�
 run `20261025T081323Z-tiamat-atsp`（2026-10-25 08:13 UTC 開始）。参照値: TSPLIB 公表最適値。制限時間 60 秒、全手法 1 スレッド（CP-SAT-4w・MIP-HiGHS-4w は 4 スレッド）。確率的手法は複数シードの平均。
 
 実行環境: tiamat: AMD Ryzen 9 5900HX with Radeon Graphics, 16 論理 CPU, メモリ 31.4 GB, Windows-11-10.0.26200-SP0, Python 3.12.9, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `bffb27c`
-
-Amplify-AE の結果は、Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため、載せていません（結果は `results/runs/` に保存しています）。
 
 ![ATSP（非対称巡回セールスマン） 手法別](figures/atsp_bars.svg)
 
@@ -340,8 +334,6 @@ run `20261025T111518Z-tiamat-atsptw`（2026-10-25 11:15 UTC 開始）。参照�
 run `20261025T082601Z-tiamat-jssp`（2026-10-25 08:26 UTC 開始）。参照値: 既知最適値（JSPLIB, ta11/ta21 は文献値）。制限時間 60 秒、全手法 1 スレッド（CP-SAT-4w・MIP-HiGHS-4w は 4 スレッド）。確率的手法は複数シードの平均。
 
 実行環境: tiamat: AMD Ryzen 9 5900HX with Radeon Graphics, 16 論理 CPU, メモリ 31.4 GB, Windows-11-10.0.26200-SP0, Python 3.12.9, ortools 9.15.6755, highspy 1.15.1, elkai 2.0.1, numba 0.68.0。コード: commit `bffb27c`
-
-Amplify-AE の結果は、Fixstars Amplify の無償プランの利用規約（第 5 条第 2 項、第 6 条第 1 項第 1 号）では、動作確認以外の目的での利用に事前の同意が要るとされており、結果を公開してよいか確認できていないため、載せていません（結果は `results/runs/` に保存しています）。
 
 ![JSSP（ジョブショップ） 手法別](figures/jssp_bars.svg)
 

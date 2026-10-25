@@ -23,7 +23,7 @@
   </div>
   <div class="eyebrow">文献レビュー · Quantum / Quantum-inspired Annealing (QUBO) · 2026-10-25 時点</div>
   <h1>量子・疑似量子アニーリング</h1>
-  <p class="lead">量子アニーラ実機（D-Wave）と、GPU や専用回路で動く疑似量子アニーリング（富士通デジタルアニーラ、東芝 SQBM+、Fixstars Amplify AE、OpenJij など）を、このプロジェクトの 5 問題で古典解法と比べた文献を調べました。どの問題でも、実証されているのは数都市〜数十都市、数ジョブ程度の小規模に限られ、LKH・CP-SAT・MIP・分枝価格法を上回ったという中立的な報告は見つかりませんでした。主な理由は、問題を QUBO（0/1 変数の二次式）に直すときに変数が大きく増え、制約をペナルティ項でしか表せないことです。</p>
+  <p class="lead">量子アニーラ実機（D-Wave）と、GPU や専用回路で動く疑似量子アニーリング（富士通デジタルアニーラ、東芝 SQBM+、OpenJij など）を、このプロジェクトの 5 問題で古典解法と比べた文献を調べました。どの問題でも、実証されているのは数都市〜数十都市、数ジョブ程度の小規模に限られ、LKH・CP-SAT・MIP・分枝価格法を上回ったという中立的な報告は見つかりませんでした。主な理由は、問題を QUBO（0/1 変数の二次式）に直すときに変数が大きく増え、制約をペナルティ項でしか表せないことです。</p>
   <div class="legend">
     <span class="tag t-qa">アニーリング系 (QUBO)</span>
     <span class="tag t-mp">数理計画 (MIP / CP / B&amp;C / B&amp;P)</span>
@@ -49,7 +49,7 @@
   <h2>概要</h2>
   <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、ソルバー版）での結果です。論文間で直接比較することはできません。ベンダー自身による公開ベンチマークは、比較対象の設定が分からない場合が多いため、その旨を明記しています。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
   <div class="facts">
-    <div class="fact"><div class="k">対象の解法</div><div class="v">量子アニーラ実機（D-Wave 2000Q / Advantage）、D-Wave のハイブリッドソルバー（BQM / DQM / CQM）、富士通デジタルアニーラ（DA）、東芝 SQBM+（シミュレーテッド分岐）、Fixstars Amplify AE（GPU）、OpenJij（SA / SQA）、dwave-samplers（旧 neal、SA）</div></div>
+    <div class="fact"><div class="k">対象の解法</div><div class="v">量子アニーラ実機（D-Wave 2000Q / Advantage）、D-Wave のハイブリッドソルバー（BQM / DQM / CQM）、富士通デジタルアニーラ（DA）、東芝 SQBM+（シミュレーテッド分岐）、OpenJij（SA / SQA）、dwave-samplers（旧 neal、SA）</div></div>
     <div class="fact"><div class="k">共通の仕組み</div><div class="v">問題を QUBO に直し、エネルギー最小の 0/1 割当を探します。制約は「違反すると罰金」の二次のペナルティ項で表すので、罰金の重みの調整と、得られた解の実行可能性の確認が必要です</div></div>
     <div class="fact"><div class="k">文献の到達点</div><div class="v">ルーティング・スケジューリングで、強い古典解法を同じ条件で上回った中立的な報告は見つかりませんでした。優位の報告は、QUBO にそのまま書ける問題（最大カット、スピングラスなど）と、ベンダー自身のベンチマークに集中しています</div></div>
   </div>
@@ -185,10 +185,6 @@
         <td><span class="tag t-qa">D-Wave 2000Q</span> <span class="tag t-qa">逆アニーリング</span> 対 <span class="tag t-mh">SA</span> <span class="tag t-mh">qbsolv（タブーサーチ）</span></td>
         <td>看護師 3〜4 人 × 5〜14 日、2 交代</td>
         <td>4 人 × 10〜14 日では、制約をすべて満たす解を実機は 1 件も得られませんでした。SA は全規模で制約を満たす解を得て、qbsolv は 4 人 × 160 日でも解けました。著者は、現行の実機は現実の規模には足りないとしています。</td></tr>
-      <tr><td class="ref">Fixstars（Amplify AE 公式ベンチマーク）<span class="yr">公開日未確認</span></td>
-        <td><span class="tag t-qa">Amplify AE</span> 対 他社ソルバー 2 種（社名非公開）</td>
-        <td>人員シフト計画 730 変数</td>
-        <td><span class="num">60 s</span> での目的値は Amplify AE 23.7、A 社 24.5、B 社は実行可能解なし。中央値 11 回。比較対象が匿名で、汎用 MIP・CP-SAT は含まれていません。<span class="note">（ベンダーによる報告）</span></td></tr>
     </tbody>
   </table></div>
   <p>INRC-I・INRC-II・Curtois–Qu の共通ベンチマークで、アニーリング系を MIP や分枝価格法と比べた研究は、本調査では見つかりませんでした。勤務表はソフト制約が多く、ペナルティ型の QUBO と相性がよい面はありますが、「各日の必要人数」のような不等式はスラック変数を必要とし、規模が膨らみます。</p>
@@ -213,7 +209,7 @@
   <div class="tbl"><table>
     <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
     <tbody>
-      <tr><td>TSP・ATSP の 10〜50 都市程度の小規模（TSPLIB の burma14・ulysses22・berlin52 など、ATSP の ftv33 など）</td><td>OpenJij（SA / SQA）、dwave-samplers（SA）、Amplify AE（トークンがあれば）。比較対象に LKH-3、Concorde、OR-Tools、MIP</td><td>同じインスタンス・同じ時間で LKH と比べた中立的な研究がない。実行可能解の割合と、都市数に対する品質の落ち方</td></tr>
+      <tr><td>TSP・ATSP の 10〜50 都市程度の小規模（TSPLIB の burma14・ulysses22・berlin52 など、ATSP の ftv33 など）</td><td>OpenJij（SA / SQA）、dwave-samplers（SA）。比較対象に LKH-3、Concorde、OR-Tools、MIP</td><td>同じインスタンス・同じ時間で LKH と比べた中立的な研究がない。実行可能解の割合と、都市数に対する品質の落ち方</td></tr>
       <tr><td>JSSP の ft06 と、それより小さい人工問題</td><td>上記のアニーリング系（時間添字型 QUBO）と CP-SAT</td><td>CP-SAT と同じ条件で比べた研究がない</td></tr>
       <tr><td>勤務表 nsp01・nsp02（112〜392 変数）</td><td>上記のアニーリング系と CP-SAT・MIP</td><td>共通ベンチマークでの比較がない。スラック変数の入れ方による差</td></tr>
     </tbody>
@@ -241,7 +237,6 @@
     <li>P. Schworm, X. Wu, M. Glatt, J. C. Aurich. Solving flexible job shop scheduling problems in manufacturing with Quantum Annealing. Prod. Eng. 17, 105–115, 2023. <a href="https://link.springer.com/article/10.1007/s11740-022-01145-8" target="_blank" rel="noopener">doi:10.1007/s11740-022-01145-8</a></li>
     <li>H. Safi, K. Wintersperger, O. von Sicard, C. Niedermeier, W. Mauerer. A Reality Check on Quantum Optimisation: Evidence from an Industrial Case Study. <a href="https://arxiv.org/abs/2607.13325" target="_blank" rel="noopener">arXiv:2607.13325</a></li>
     <li>K. Ikeda, Y. Nakamura, T. S. Humble. Application of Quantum Annealing to Nurse Scheduling Problem. Sci. Rep. 9, 2019. <a href="https://arxiv.org/abs/1904.12139" target="_blank" rel="noopener">arXiv:1904.12139</a></li>
-    <li>Fixstars. Performance of Amplify AE（公式ベンチマーク）. <a href="https://amplify.fixstars.com/en/docs/amplify/v1/amplify_ae/benchmark.html" target="_blank" rel="noopener">ページ</a></li>
     <li>D. Bucher, N. Kraus, J. Blenninger, M. Lachner, J. Stein, C. Linnhoff-Popien. Towards Robust Benchmarking of Quantum Optimization Algorithms. <a href="https://arxiv.org/abs/2405.07624" target="_blank" rel="noopener">arXiv:2405.07624</a></li>
     <li>T. Koch ら. Quantum Optimization Benchmarking Library: The Intractable Decathlon. <a href="https://arxiv.org/abs/2504.03832" target="_blank" rel="noopener">arXiv:2504.03832</a></li>
   </ol>
