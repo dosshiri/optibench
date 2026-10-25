@@ -72,7 +72,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
 <header>
   <div class="eyebrow">optibench · 組合せ最適化ベンチマーク</div>
   <h1>optibench ポータル</h1>
-  <p class="lede">TSP・ATSP・ジョブショップ・ナーススケジューリングについて、数理計画・制約プログラミング・メタヒューリスティクスなどの解法を中立に比べる取り組みの入口です。既存研究を調べ、手元で測り、両者を突き合わせて考えた結果を、この順に読めるようにしています。</p>
+  <p class="lede">TSP・ATSP・ジョブショップ・ナーススケジューリングについて、数理計画・制約プログラミング・メタヒューリスティクスなどの解法を中立に比べる取り組みの入口です。目的は、実務で最適化を使うときに、問題に合った手法を選べるようにすることです。既存研究を調べ、手元で測り、両者を突き合わせて考えた結果を、この順に読めるようにしています。</p>
   <p class="hint">結論だけ知りたいときは <a href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a> から読み、根拠をたどるときに他の 2 つへ進むのが早道です。</p>
 </header>
 
@@ -103,27 +103,27 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
   <li class="step disc">
     <div class="k"><b>3</b>考える</div>
     <h2><a href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></h2>
-    <p>手元の結果が文献のどこと一致し、どこが違い、どこまで信じてよいか。</p>
+    <p>問題ごとに、どの手法を選ぶべきかと、その根拠をどこまで信じてよいか。</p>
     <ul>
-      <li>文献の主張 12 件と手元の結果の突き合わせ</li>
-      <li>スレッド数の効果、クラウドと手元PCの再現性</li>
-      <li>このベンチマークの限界、実務での使い分け、次の一手</li>
+      <li>TSP・ATSP・JSSP・ナースの章ごとに、手法の選び方を先頭に</li>
+      <li>手元の結果と文献の突き合わせ、スレッド数の効果、再現性</li>
+      <li>その問題での限界と次の一手</li>
     </ul>
     <div class="go"><a class="btn" href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">開く</a></div>
   </li>
 </ol>
 
 <section>
-  <h2>早見表</h2>
-  <p class="hint">手元ベンチマーク（手元PC、制限時間 60 秒）で最も良かった解法と、文献で最前線とされる解法。詳しくは考察を参照してください。</p>
+  <h2>手法選びの早見表</h2>
+  <p class="hint">各問題で最初に試す手法（手元PC、制限時間 60 秒の結果と文献に基づく暫定の指針）。根拠と注意点は考察の各章にあります。</p>
   <div class="frame">
   <table>
-    <thead><tr><th>問題</th><th>手元で最良</th><th>文献の最前線</th><th>ひとこと</th></tr></thead>
+    <thead><tr><th>問題</th><th>まず使う</th><th>条件によって切り替える</th><th>避けたい使い方</th></tr></thead>
     <tbody>
-      <tr><td>TSP</td><td><code>LKH(elkai)</code> 全 6 問で最適</td><td>Concorde（厳密）、LKH・EAX 型 GA（近似）</td><td>文献どおり。MIP は 280 都市付近が 60 秒での限界</td></tr>
-      <tr><td>ATSP</td><td><code>LKH(elkai)</code> 全 6 問で最適</td><td>分枝カット、パッチング系、LKH</td><td>文献に横並び比較がなかった領域。rbg 系で MIP と CP-SAT の得意不得意が逆転</td></tr>
-      <tr><td>JSSP</td><td><code>CP-SAT-4w</code> 平均 0.70%</td><td>CP Optimizer・CP-SAT、N5 近傍のタブーサーチ</td><td>文献どおり。自作タブーサーチが CP-SAT に迫る。big-M の MIP は大きく劣る</td></tr>
-      <tr><td>ナース</td><td><code>MIP-HiGHS-4w</code> 6 問中 5 問で最良</td><td>MIP 分解・分枝価格法、作り込んだメタヒューリスティクス</td><td>最大規模は CP-SAT（4 スレッド）だけが汎用ソルバーで解を出した</td></tr>
+      <tr><td>TSP</td><td>LKH</td><td>業務制約があれば OR-Tools Routing。数百ノードまでで証明が要れば MIP（初期解つき）</td><td>大規模での CP-SAT、初期解なしの MIP</td></tr>
+      <tr><td>ATSP</td><td>LKH</td><td>証明が要れば MIP と CP-SAT の両方を試す</td><td>2-opt 中心の自作局所探索</td></tr>
+      <tr><td>JSSP</td><td>CP-SAT（複数スレッド）</td><td>専用近傍を実装できればタブーサーチ。即答が必要ならディスパッチングルール</td><td>big-M の MIP、1 スレッドの CP-SAT</td></tr>
+      <tr><td>ナース</td><td>MIP</td><td>大規模で MIP が解を出せなければ CP-SAT（複数スレッド）</td><td>調整なしの汎用 SA、1 スレッドの CP-SAT</td></tr>
     </tbody>
   </table>
   </div>
