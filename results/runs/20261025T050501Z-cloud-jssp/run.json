@@ -1,0 +1,97 @@
+{
+ "run_id": "20261025T050501Z-cloud-jssp",
+ "problem": "jssp",
+ "started_at": "2026-10-25T05:05:01+00:00",
+ "finished_at": "2026-10-25T05:05:01+00:00",
+ "status": "complete",
+ "note": "既存結果（results/jssp.jsonl）からの移行。開始・終了日時は記録がないため、結果をコミットした時刻を入れている。環境情報は移行時に同型のクラウドコンテナで取得し、ソルバーのバージョンは requirements.txt の固定値。",
+ "command": "python src/run_bench.py jssp 60",
+ "migrated": true,
+ "environment": {
+  "machine": "cloud",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpu_count": 4,
+  "memory_gb": 15.7,
+  "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "python": "3.13.17",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.3",
+   "pandas": "3.0.5",
+   "tsplib95": "0.7.1"
+  }
+ },
+ "git": {
+  "commit": "99b5f2e0f56d1c0956f09a1d7431f342d854c0ac",
+  "branch": "claude/initial-benchmark",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "SPT": 1,
+   "MWKR": 1,
+   "Tabu-N5": 1,
+   "GA": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1
+  },
+  "instances": [
+   "ft06",
+   "ft10",
+   "la16",
+   "la21",
+   "abz5",
+   "orb01",
+   "ta01",
+   "swv01",
+   "ta11",
+   "ta21"
+  ],
+  "methods": {
+   "SPT": [
+    1
+   ],
+   "MWKR": [
+    1
+   ],
+   "Tabu-N5": [
+    1,
+    2,
+    3
+   ],
+   "GA": [
+    1,
+    2,
+    3
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "ft06": "fee212360082ab31d7a6f375e352dad79973e17e70da40d14fcce5400a721a1c",
+  "ft10": "eff0a40841b2160661f64bfc94c77a3d02d3dcfdfab9c02bf39f7da1153891b7",
+  "la16": "30b4c4ef875c9847ea29bd6c42a2ba58f7e7bda58c3d7736a6efd4df58669483",
+  "la21": "28b9ed55089bb38b58d7d936c96f599ebd234a4952cd2d18437d64f2341a179a",
+  "abz5": "bd8afe85d188fc3ae5c2be6a328d175a5eb4f020deab786931f18460a10849f4",
+  "orb01": "a8cdf6a752554df23a0da2eb4f408e2811e12ec3978647499142e268b3117340",
+  "ta01": "eb6efca2f3b22f29609abbbc15acc3ec33cac91eb2b75097aad343fc6930623d",
+  "swv01": "1bacbe31b1b2469b61904624041107b1caa2ed66d5dec66600fb8020cec5a4d3",
+  "ta11": "1e55a9039437d95715a7f7d0f419585732e6a0fbc707bbdf3e5a554e30357072",
+  "ta21": "7b3c36912f04636a01991787fd7cf29262fe2c3e46d2272cfc25e102677e6488"
+ }
+}
