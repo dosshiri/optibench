@@ -13,7 +13,8 @@
 <text x="530.0" y="297.0" text-anchor="middle" fill="#52514e">20%</text>
 <text x="102.0" y="55.0" text-anchor="end" fill="#0b0b0b">LKH(elkai)</text>
 <rect x="110" y="43" width="2.0" height="16" rx="4" fill="#2a78d6"/>
-<text x="118.0" y="55.0" text-anchor="start" fill="#52514e">0.00%</text>
+<circle cx="116" cy="51.0" r="6" fill="#2a78d6"/>
+<text x="128.0" y="55.0" text-anchor="start" fill="#52514e">0.00%（全問で参照値に到達）</text>
 <text x="102.0" y="85.0" text-anchor="end" fill="#0b0b0b">SA</text>
 <rect x="110" y="73" width="2.0" height="16" rx="4" fill="#2a78d6"/>
 <text x="118.0" y="85.0" text-anchor="start" fill="#52514e">0.08%</text>
@@ -31,8 +32,10 @@
 <text x="516.0" y="205.0" text-anchor="start" fill="#52514e">18.88%</text>
 <text x="102.0" y="235.0" text-anchor="end" fill="#0b0b0b">MIP-HiGHS</text>
 <rect x="110" y="223" width="2.0" height="16" rx="4" fill="#2a78d6"/>
-<text x="118.0" y="235.0" text-anchor="start" fill="#52514e">0.00%（解なし2問）</text>
+<circle cx="116" cy="231.0" r="6" fill="#2a78d6"/>
+<text x="128.0" y="235.0" text-anchor="start" fill="#52514e">0.00%（解けた問題はすべて参照値）（解なし2問）</text>
 <text x="102.0" y="265.0" text-anchor="end" fill="#0b0b0b">MIP-HiGHS-4w</text>
 <rect x="110" y="253" width="2.0" height="16" rx="4" fill="#2a78d6"/>
-<text x="118.0" y="265.0" text-anchor="start" fill="#52514e">0.00%（解なし2問）</text>
+<circle cx="116" cy="261.0" r="6" fill="#2a78d6"/>
+<text x="128.0" y="265.0" text-anchor="start" fill="#52514e">0.00%（解けた問題はすべて参照値）（解なし2問）</text>
 </svg>
