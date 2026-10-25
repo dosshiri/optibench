@@ -1,13 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="776" height="404" viewBox="0 0 776 404" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
-<rect width="776" height="404" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="872" height="404" viewBox="0 0 872 404" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
+<rect width="872" height="404" fill="#ffffff"/>
 <text x="8.0" y="20.0" text-anchor="start" fill="#0b0b0b" font-weight="600">JSSP（ジョブショップ）: インスタンス × 手法のギャップ (%)</text>
 <text x="144.0" y="54.0" text-anchor="middle" fill="#0b0b0b">CP-SAT-4w</text>
 <text x="240.0" y="54.0" text-anchor="middle" fill="#0b0b0b">CP-SAT</text>
 <text x="336.0" y="54.0" text-anchor="middle" fill="#0b0b0b">Tabu-N5</text>
 <text x="432.0" y="54.0" text-anchor="middle" fill="#0b0b0b">GA</text>
-<text x="528.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MIP-HiGHS</text>
-<text x="624.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MWKR</text>
-<text x="720.0" y="54.0" text-anchor="middle" fill="#0b0b0b">SPT</text>
+<text x="528.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MIP-HiGHS-4w</text>
+<text x="624.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MIP-HiGHS</text>
+<text x="720.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MWKR</text>
+<text x="816.0" y="54.0" text-anchor="middle" fill="#0b0b0b">SPT</text>
 <text x="88.0" y="83.0" text-anchor="end" fill="#0b0b0b">ft06</text>
 <rect x="97" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="83.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -19,40 +20,46 @@
 <text x="432.0" y="83.0" text-anchor="middle" fill="#0b0b0b">0</text>
 <rect x="481" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="528.0" y="83.0" text-anchor="middle" fill="#0b0b0b">0</text>
-<rect x="577" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="83.0" text-anchor="middle" fill="#ffffff">21.8</text>
+<rect x="577" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="624.0" y="83.0" text-anchor="middle" fill="#0b0b0b">0</text>
 <rect x="673" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="83.0" text-anchor="middle" fill="#ffffff">70.9</text>
+<text x="720.0" y="83.0" text-anchor="middle" fill="#ffffff">21.8</text>
+<rect x="769" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="83.0" text-anchor="middle" fill="#ffffff">70.9</text>
 <text x="88.0" y="113.0" text-anchor="end" fill="#0b0b0b">ft10</text>
 <rect x="97" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="113.0" text-anchor="middle" fill="#0b0b0b">0</text>
 <rect x="193" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="240.0" y="113.0" text-anchor="middle" fill="#0b0b0b">0</text>
-<rect x="289" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
-<text x="336.0" y="113.0" text-anchor="middle" fill="#0b0b0b">0</text>
+<rect x="289" y="95" width="94" height="28" rx="3" fill="#9ec5f4"/>
+<text x="336.0" y="113.0" text-anchor="middle" fill="#0b0b0b">0.25</text>
 <rect x="385" y="95" width="94" height="28" rx="3" fill="#184f95"/>
 <text x="432.0" y="113.0" text-anchor="middle" fill="#ffffff">7.28</text>
 <rect x="481" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="113.0" text-anchor="middle" fill="#ffffff">13.5</text>
+<text x="528.0" y="113.0" text-anchor="middle" fill="#ffffff">13.3</text>
 <rect x="577" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="113.0" text-anchor="middle" fill="#ffffff">26.7</text>
+<text x="624.0" y="113.0" text-anchor="middle" fill="#ffffff">13.7</text>
 <rect x="673" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="113.0" text-anchor="middle" fill="#ffffff">53.7</text>
+<text x="720.0" y="113.0" text-anchor="middle" fill="#ffffff">26.7</text>
+<rect x="769" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="113.0" text-anchor="middle" fill="#ffffff">53.7</text>
 <text x="88.0" y="143.0" text-anchor="end" fill="#0b0b0b">la16</text>
 <rect x="97" y="125" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="143.0" text-anchor="middle" fill="#0b0b0b">0</text>
 <rect x="193" y="125" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="240.0" y="143.0" text-anchor="middle" fill="#0b0b0b">0</text>
 <rect x="289" y="125" width="94" height="28" rx="3" fill="#3987e5"/>
-<text x="336.0" y="143.0" text-anchor="middle" fill="#0b0b0b">1.02</text>
+<text x="336.0" y="143.0" text-anchor="middle" fill="#0b0b0b">1.06</text>
 <rect x="385" y="125" width="94" height="28" rx="3" fill="#184f95"/>
 <text x="432.0" y="143.0" text-anchor="middle" fill="#ffffff">5.75</text>
-<rect x="481" y="125" width="94" height="28" rx="3" fill="#184f95"/>
-<text x="528.0" y="143.0" text-anchor="middle" fill="#ffffff">5.50</text>
-<rect x="577" y="125" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="143.0" text-anchor="middle" fill="#ffffff">29.0</text>
+<rect x="481" y="125" width="94" height="28" rx="3" fill="#256abf"/>
+<text x="528.0" y="143.0" text-anchor="middle" fill="#ffffff">4.97</text>
+<rect x="577" y="125" width="94" height="28" rx="3" fill="#184f95"/>
+<text x="624.0" y="143.0" text-anchor="middle" fill="#ffffff">6.35</text>
 <rect x="673" y="125" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="143.0" text-anchor="middle" fill="#ffffff">54.9</text>
+<text x="720.0" y="143.0" text-anchor="middle" fill="#ffffff">29.0</text>
+<rect x="769" y="125" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="143.0" text-anchor="middle" fill="#ffffff">54.9</text>
 <text x="88.0" y="173.0" text-anchor="end" fill="#0b0b0b">la21</text>
 <rect x="97" y="155" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="173.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -61,13 +68,15 @@
 <rect x="289" y="155" width="94" height="28" rx="3" fill="#6da7ec"/>
 <text x="336.0" y="173.0" text-anchor="middle" fill="#0b0b0b">0.67</text>
 <rect x="385" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="432.0" y="173.0" text-anchor="middle" fill="#ffffff">10.5</text>
+<text x="432.0" y="173.0" text-anchor="middle" fill="#ffffff">10.7</text>
 <rect x="481" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="173.0" text-anchor="middle" fill="#ffffff">17.7</text>
+<text x="528.0" y="173.0" text-anchor="middle" fill="#ffffff">16.7</text>
 <rect x="577" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="173.0" text-anchor="middle" fill="#ffffff">21.1</text>
+<text x="624.0" y="173.0" text-anchor="middle" fill="#ffffff">17.7</text>
 <rect x="673" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="173.0" text-anchor="middle" fill="#ffffff">58.4</text>
+<text x="720.0" y="173.0" text-anchor="middle" fill="#ffffff">21.1</text>
+<rect x="769" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="173.0" text-anchor="middle" fill="#ffffff">58.4</text>
 <text x="88.0" y="203.0" text-anchor="end" fill="#0b0b0b">abz5</text>
 <rect x="97" y="185" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="203.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -79,10 +88,12 @@
 <text x="432.0" y="203.0" text-anchor="middle" fill="#ffffff">5.94</text>
 <rect x="481" y="185" width="94" height="28" rx="3" fill="#6da7ec"/>
 <text x="528.0" y="203.0" text-anchor="middle" fill="#0b0b0b">0.57</text>
-<rect x="577" y="185" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="203.0" text-anchor="middle" fill="#ffffff">17.6</text>
+<rect x="577" y="185" width="94" height="28" rx="3" fill="#3987e5"/>
+<text x="624.0" y="203.0" text-anchor="middle" fill="#0b0b0b">1.05</text>
 <rect x="673" y="185" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="203.0" text-anchor="middle" fill="#ffffff">40.4</text>
+<text x="720.0" y="203.0" text-anchor="middle" fill="#ffffff">17.6</text>
+<rect x="769" y="185" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="203.0" text-anchor="middle" fill="#ffffff">40.4</text>
 <text x="88.0" y="233.0" text-anchor="end" fill="#0b0b0b">orb01</text>
 <rect x="97" y="215" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="233.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -95,9 +106,11 @@
 <rect x="481" y="215" width="94" height="28" rx="3" fill="#0d366b"/>
 <text x="528.0" y="233.0" text-anchor="middle" fill="#ffffff">18.6</text>
 <rect x="577" y="215" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="233.0" text-anchor="middle" fill="#ffffff">36.9</text>
+<text x="624.0" y="233.0" text-anchor="middle" fill="#ffffff">18.6</text>
 <rect x="673" y="215" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="233.0" text-anchor="middle" fill="#ffffff">39.8</text>
+<text x="720.0" y="233.0" text-anchor="middle" fill="#ffffff">36.9</text>
+<rect x="769" y="215" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="233.0" text-anchor="middle" fill="#ffffff">39.8</text>
 <text x="88.0" y="263.0" text-anchor="end" fill="#0b0b0b">ta01</text>
 <rect x="97" y="245" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="263.0" text-anchor="middle" fill="#0b0b0b">0</text>
@@ -108,16 +121,18 @@
 <rect x="385" y="245" width="94" height="28" rx="3" fill="#0d366b"/>
 <text x="432.0" y="263.0" text-anchor="middle" fill="#ffffff">14.9</text>
 <rect x="481" y="245" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="263.0" text-anchor="middle" fill="#ffffff">24.0</text>
+<text x="528.0" y="263.0" text-anchor="middle" fill="#ffffff">23.7</text>
 <rect x="577" y="245" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="263.0" text-anchor="middle" fill="#ffffff">29.1</text>
+<text x="624.0" y="263.0" text-anchor="middle" fill="#ffffff">23.7</text>
 <rect x="673" y="245" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="263.0" text-anchor="middle" fill="#ffffff">59.7</text>
+<text x="720.0" y="263.0" text-anchor="middle" fill="#ffffff">29.1</text>
+<rect x="769" y="245" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="263.0" text-anchor="middle" fill="#ffffff">59.7</text>
 <text x="88.0" y="293.0" text-anchor="end" fill="#0b0b0b">swv01</text>
 <rect x="97" y="275" width="94" height="28" rx="3" fill="#3987e5"/>
-<text x="144.0" y="293.0" text-anchor="middle" fill="#0b0b0b">1.85</text>
+<text x="144.0" y="293.0" text-anchor="middle" fill="#0b0b0b">1.56</text>
 <rect x="193" y="275" width="94" height="28" rx="3" fill="#256abf"/>
-<text x="240.0" y="293.0" text-anchor="middle" fill="#ffffff">4.62</text>
+<text x="240.0" y="293.0" text-anchor="middle" fill="#ffffff">4.12</text>
 <rect x="289" y="275" width="94" height="28" rx="3" fill="#184f95"/>
 <text x="336.0" y="293.0" text-anchor="middle" fill="#ffffff">7.46</text>
 <rect x="385" y="275" width="94" height="28" rx="3" fill="#0d366b"/>
@@ -125,27 +140,31 @@
 <rect x="481" y="275" width="94" height="28" rx="3" fill="#0d366b"/>
 <text x="528.0" y="293.0" text-anchor="middle" fill="#ffffff">54.1</text>
 <rect x="577" y="275" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="293.0" text-anchor="middle" fill="#ffffff">49.3</text>
+<text x="624.0" y="293.0" text-anchor="middle" fill="#ffffff">54.1</text>
 <rect x="673" y="275" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="293.0" text-anchor="middle" fill="#ffffff">60.3</text>
+<text x="720.0" y="293.0" text-anchor="middle" fill="#ffffff">49.3</text>
+<rect x="769" y="275" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="293.0" text-anchor="middle" fill="#ffffff">60.3</text>
 <text x="88.0" y="323.0" text-anchor="end" fill="#0b0b0b">ta11</text>
-<rect x="97" y="305" width="94" height="28" rx="3" fill="#3987e5"/>
-<text x="144.0" y="323.0" text-anchor="middle" fill="#0b0b0b">1.47</text>
+<rect x="97" y="305" width="94" height="28" rx="3" fill="#256abf"/>
+<text x="144.0" y="323.0" text-anchor="middle" fill="#ffffff">3.61</text>
 <rect x="193" y="305" width="94" height="28" rx="3" fill="#184f95"/>
 <text x="240.0" y="323.0" text-anchor="middle" fill="#ffffff">6.49</text>
 <rect x="289" y="305" width="94" height="28" rx="3" fill="#256abf"/>
 <text x="336.0" y="323.0" text-anchor="middle" fill="#ffffff">3.61</text>
 <rect x="385" y="305" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="432.0" y="323.0" text-anchor="middle" fill="#ffffff">19.8</text>
+<text x="432.0" y="323.0" text-anchor="middle" fill="#ffffff">19.5</text>
 <rect x="481" y="305" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="323.0" text-anchor="middle" fill="#ffffff">51.2</text>
+<text x="528.0" y="323.0" text-anchor="middle" fill="#ffffff">50.9</text>
 <rect x="577" y="305" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="323.0" text-anchor="middle" fill="#ffffff">32.4</text>
+<text x="624.0" y="323.0" text-anchor="middle" fill="#ffffff">51.2</text>
 <rect x="673" y="305" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="323.0" text-anchor="middle" fill="#ffffff">55.2</text>
+<text x="720.0" y="323.0" text-anchor="middle" fill="#ffffff">32.4</text>
+<rect x="769" y="305" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="323.0" text-anchor="middle" fill="#ffffff">55.2</text>
 <text x="88.0" y="353.0" text-anchor="end" fill="#0b0b0b">ta21</text>
-<rect x="97" y="335" width="94" height="28" rx="3" fill="#256abf"/>
-<text x="144.0" y="353.0" text-anchor="middle" fill="#ffffff">2.13</text>
+<rect x="97" y="335" width="94" height="28" rx="3" fill="#3987e5"/>
+<text x="144.0" y="353.0" text-anchor="middle" fill="#0b0b0b">1.83</text>
 <rect x="193" y="335" width="94" height="28" rx="3" fill="#184f95"/>
 <text x="240.0" y="353.0" text-anchor="middle" fill="#ffffff">5.66</text>
 <rect x="289" y="335" width="94" height="28" rx="3" fill="#184f95"/>
@@ -153,11 +172,13 @@
 <rect x="385" y="335" width="94" height="28" rx="3" fill="#0d366b"/>
 <text x="432.0" y="353.0" text-anchor="middle" fill="#ffffff">21.6</text>
 <rect x="481" y="335" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="353.0" text-anchor="middle" fill="#ffffff">81.1</text>
+<text x="528.0" y="353.0" text-anchor="middle" fill="#ffffff">57.6</text>
 <rect x="577" y="335" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="624.0" y="353.0" text-anchor="middle" fill="#ffffff">30.6</text>
+<text x="624.0" y="353.0" text-anchor="middle" fill="#ffffff">81.1</text>
 <rect x="673" y="335" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="720.0" y="353.0" text-anchor="middle" fill="#ffffff">58.2</text>
+<text x="720.0" y="353.0" text-anchor="middle" fill="#ffffff">30.6</text>
+<rect x="769" y="335" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="816.0" y="353.0" text-anchor="middle" fill="#ffffff">58.2</text>
 <text x="8.0" y="392.0" text-anchor="start" fill="#52514e">ギャップ:</text>
 <rect x="68" y="382" width="12" height="12" rx="2" fill="#cde2fb"/>
 <text x="84.0" y="392.0" text-anchor="start" fill="#52514e">最良値</text>

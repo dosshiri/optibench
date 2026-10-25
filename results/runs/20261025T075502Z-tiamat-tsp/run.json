@@ -1,0 +1,100 @@
+{
+ "run_id": "20261025T075502Z-tiamat-tsp",
+ "problem": "tsp",
+ "started_at": "2026-10-25T07:55:02+00:00",
+ "finished_at": "2026-10-25T08:13:22+00:00",
+ "status": "complete",
+ "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "command": "python.exe src/run_bench.py tsp 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "environment": {
+  "machine": "tiamat",
+  "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+  "cpu_count": 16,
+  "memory_gb": 31.4,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.9",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.5.4",
+   "pandas": "3.1.0",
+   "tsplib95": "0.7.1"
+  }
+ },
+ "git": {
+  "commit": "bffb27c179f5b5f84a3732222a2ce35f39d9e8f5",
+  "branch": "claude/project-thread-qnue7y",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "nn+ls": 1,
+   "SA": 1,
+   "LKH(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1,
+   "MIP-HiGHS-4w": 4
+  },
+  "solvers": {
+   "nn+ls": "nn+ls",
+   "SA": "SA",
+   "LKH(elkai)": "LKH(elkai)",
+   "ORTools-GLS": "ORTools-GLS",
+   "CP-SAT": "CP-SAT",
+   "CP-SAT-4w": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS",
+   "MIP-HiGHS-4w": "MIP-HiGHS"
+  },
+  "instances": [
+   "berlin52",
+   "kroA100",
+   "ch150",
+   "a280",
+   "pcb442",
+   "rat783"
+  ],
+  "methods": {
+   "nn+ls": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "LKH(elkai)": [
+    1
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ],
+   "MIP-HiGHS-4w": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "berlin52": "1e2815c9b1f3a507e06d74e03b3a1bf3f66ae823d94d073aba9be333ffb44993",
+  "kroA100": "32326e43edca13a967d9812acab73e50e5de2b8599a0dc9b5c1804d47658c943",
+  "ch150": "cbc82d9e0ba1c77f307717d4e8b0a46c0a70ea53264ba0f79f4a4df1ba9abc14",
+  "a280": "4b806d2752711a4cdc6e1dafc7893dd833df162bde0304a585e88602f3d56ee4",
+  "pcb442": "9864cc281ded9fcc4b1c53f15085f2ff33d999847878704075da08e19c1cdaa6",
+  "rat783": "05b321ca8c33122377ab6575400fbe4d78311dcda7500ed03cbd1bf5caa80712"
+ }
+}

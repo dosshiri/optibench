@@ -1,11 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="584" height="284" viewBox="0 0 584 284" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
-<rect width="584" height="284" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="284" viewBox="0 0 680 284" font-family="-apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif" font-size="12">
+<rect width="680" height="284" fill="#ffffff"/>
 <text x="8.0" y="20.0" text-anchor="start" fill="#0b0b0b" font-weight="600">ナーススケジューリング: インスタンス × 手法のペナルティ（色は最良値からの差）</text>
-<text x="144.0" y="54.0" text-anchor="middle" fill="#0b0b0b">CP-SAT-4w</text>
-<text x="240.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MIP-HiGHS</text>
-<text x="336.0" y="54.0" text-anchor="middle" fill="#0b0b0b">SA</text>
-<text x="432.0" y="54.0" text-anchor="middle" fill="#0b0b0b">CP-SAT</text>
-<text x="528.0" y="54.0" text-anchor="middle" fill="#0b0b0b">Greedy</text>
+<text x="144.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MIP-HiGHS-4w</text>
+<text x="240.0" y="54.0" text-anchor="middle" fill="#0b0b0b">CP-SAT-4w</text>
+<text x="336.0" y="54.0" text-anchor="middle" fill="#0b0b0b">MIP-HiGHS</text>
+<text x="432.0" y="54.0" text-anchor="middle" fill="#0b0b0b">SA</text>
+<text x="528.0" y="54.0" text-anchor="middle" fill="#0b0b0b">CP-SAT</text>
+<text x="624.0" y="54.0" text-anchor="middle" fill="#0b0b0b">Greedy</text>
 <text x="88.0" y="83.0" text-anchor="end" fill="#0b0b0b">nsp01</text>
 <rect x="97" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="83.0" text-anchor="middle" fill="#0b0b0b">11</text>
@@ -15,63 +16,75 @@
 <text x="336.0" y="83.0" text-anchor="middle" fill="#0b0b0b">11</text>
 <rect x="385" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="432.0" y="83.0" text-anchor="middle" fill="#0b0b0b">11</text>
-<rect x="481" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="83.0" text-anchor="middle" fill="#ffffff">628</text>
+<rect x="481" y="65" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="528.0" y="83.0" text-anchor="middle" fill="#0b0b0b">11</text>
+<rect x="577" y="65" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="624.0" y="83.0" text-anchor="middle" fill="#ffffff">628</text>
 <text x="88.0" y="113.0" text-anchor="end" fill="#0b0b0b">nsp02</text>
 <rect x="97" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="113.0" text-anchor="middle" fill="#0b0b0b">8</text>
 <rect x="193" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="240.0" y="113.0" text-anchor="middle" fill="#0b0b0b">8</text>
-<rect x="289" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="336.0" y="113.0" text-anchor="middle" fill="#ffffff">9</text>
-<rect x="385" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
-<text x="432.0" y="113.0" text-anchor="middle" fill="#0b0b0b">8</text>
-<rect x="481" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="528.0" y="113.0" text-anchor="middle" fill="#ffffff">2458</text>
+<rect x="289" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="336.0" y="113.0" text-anchor="middle" fill="#0b0b0b">8</text>
+<rect x="385" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="432.0" y="113.0" text-anchor="middle" fill="#ffffff">9</text>
+<rect x="481" y="95" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="528.0" y="113.0" text-anchor="middle" fill="#0b0b0b">8</text>
+<rect x="577" y="95" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="624.0" y="113.0" text-anchor="middle" fill="#ffffff">2458</text>
 <text x="88.0" y="143.0" text-anchor="end" fill="#0b0b0b">nsp03</text>
 <rect x="97" y="125" width="94" height="28" rx="3" fill="#cde2fb"/>
 <text x="144.0" y="143.0" text-anchor="middle" fill="#0b0b0b">48</text>
-<rect x="193" y="125" width="94" height="28" rx="3" fill="#cde2fb"/>
-<text x="240.0" y="143.0" text-anchor="middle" fill="#0b0b0b">48</text>
-<rect x="289" y="125" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="336.0" y="143.0" text-anchor="middle" fill="#ffffff">65</text>
+<rect x="193" y="125" width="94" height="28" rx="3" fill="#256abf"/>
+<text x="240.0" y="143.0" text-anchor="middle" fill="#ffffff">49</text>
+<rect x="289" y="125" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="336.0" y="143.0" text-anchor="middle" fill="#0b0b0b">48</text>
 <rect x="385" y="125" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="432.0" y="143.0" text-anchor="middle" fill="#ffffff">82</text>
-<rect x="481" y="125" width="94" height="28" rx="3" fill="#f0efec"/>
-<text x="528.0" y="143.0" text-anchor="middle" fill="#52514e">×</text>
+<text x="432.0" y="143.0" text-anchor="middle" fill="#ffffff">67</text>
+<rect x="481" y="125" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="528.0" y="143.0" text-anchor="middle" fill="#ffffff">61</text>
+<rect x="577" y="125" width="94" height="28" rx="3" fill="#f0efec"/>
+<text x="624.0" y="143.0" text-anchor="middle" fill="#52514e">×</text>
 <text x="88.0" y="173.0" text-anchor="end" fill="#0b0b0b">nsp04</text>
-<rect x="97" y="155" width="94" height="28" rx="3" fill="#256abf"/>
-<text x="144.0" y="173.0" text-anchor="middle" fill="#ffffff">44</text>
-<rect x="193" y="155" width="94" height="28" rx="3" fill="#cde2fb"/>
-<text x="240.0" y="173.0" text-anchor="middle" fill="#0b0b0b">42</text>
-<rect x="289" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="336.0" y="173.0" text-anchor="middle" fill="#ffffff">77</text>
+<rect x="97" y="155" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="144.0" y="173.0" text-anchor="middle" fill="#0b0b0b">41</text>
+<rect x="193" y="155" width="94" height="28" rx="3" fill="#184f95"/>
+<text x="240.0" y="173.0" text-anchor="middle" fill="#ffffff">44</text>
+<rect x="289" y="155" width="94" height="28" rx="3" fill="#256abf"/>
+<text x="336.0" y="173.0" text-anchor="middle" fill="#ffffff">42</text>
 <rect x="385" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="432.0" y="173.0" text-anchor="middle" fill="#ffffff">3852</text>
-<rect x="481" y="155" width="94" height="28" rx="3" fill="#f0efec"/>
-<text x="528.0" y="173.0" text-anchor="middle" fill="#52514e">×</text>
+<text x="432.0" y="173.0" text-anchor="middle" fill="#ffffff">80</text>
+<rect x="481" y="155" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="528.0" y="173.0" text-anchor="middle" fill="#ffffff">4242</text>
+<rect x="577" y="155" width="94" height="28" rx="3" fill="#f0efec"/>
+<text x="624.0" y="173.0" text-anchor="middle" fill="#52514e">×</text>
 <text x="88.0" y="203.0" text-anchor="end" fill="#0b0b0b">nsp05</text>
-<rect x="97" y="185" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="144.0" y="203.0" text-anchor="middle" fill="#ffffff">78</text>
-<rect x="193" y="185" width="94" height="28" rx="3" fill="#cde2fb"/>
-<text x="240.0" y="203.0" text-anchor="middle" fill="#0b0b0b">70</text>
-<rect x="289" y="185" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="336.0" y="203.0" text-anchor="middle" fill="#ffffff">116</text>
-<rect x="385" y="185" width="94" height="28" rx="3" fill="#f0efec"/>
-<text x="432.0" y="203.0" text-anchor="middle" fill="#52514e">×</text>
+<rect x="97" y="185" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="144.0" y="203.0" text-anchor="middle" fill="#0b0b0b">69</text>
+<rect x="193" y="185" width="94" height="28" rx="3" fill="#184f95"/>
+<text x="240.0" y="203.0" text-anchor="middle" fill="#ffffff">73</text>
+<rect x="289" y="185" width="94" height="28" rx="3" fill="#3987e5"/>
+<text x="336.0" y="203.0" text-anchor="middle" fill="#0b0b0b">70</text>
+<rect x="385" y="185" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="432.0" y="203.0" text-anchor="middle" fill="#ffffff">115</text>
 <rect x="481" y="185" width="94" height="28" rx="3" fill="#f0efec"/>
 <text x="528.0" y="203.0" text-anchor="middle" fill="#52514e">×</text>
+<rect x="577" y="185" width="94" height="28" rx="3" fill="#f0efec"/>
+<text x="624.0" y="203.0" text-anchor="middle" fill="#52514e">×</text>
 <text x="88.0" y="233.0" text-anchor="end" fill="#0b0b0b">nsp06</text>
-<rect x="97" y="215" width="94" height="28" rx="3" fill="#cde2fb"/>
-<text x="144.0" y="233.0" text-anchor="middle" fill="#0b0b0b">165</text>
-<rect x="193" y="215" width="94" height="28" rx="3" fill="#f0efec"/>
-<text x="240.0" y="233.0" text-anchor="middle" fill="#52514e">×</text>
-<rect x="289" y="215" width="94" height="28" rx="3" fill="#0d366b"/>
-<text x="336.0" y="233.0" text-anchor="middle" fill="#ffffff">230</text>
-<rect x="385" y="215" width="94" height="28" rx="3" fill="#f0efec"/>
-<text x="432.0" y="233.0" text-anchor="middle" fill="#52514e">×</text>
+<rect x="97" y="215" width="94" height="28" rx="3" fill="#f0efec"/>
+<text x="144.0" y="233.0" text-anchor="middle" fill="#52514e">×</text>
+<rect x="193" y="215" width="94" height="28" rx="3" fill="#cde2fb"/>
+<text x="240.0" y="233.0" text-anchor="middle" fill="#0b0b0b">171</text>
+<rect x="289" y="215" width="94" height="28" rx="3" fill="#f0efec"/>
+<text x="336.0" y="233.0" text-anchor="middle" fill="#52514e">×</text>
+<rect x="385" y="215" width="94" height="28" rx="3" fill="#0d366b"/>
+<text x="432.0" y="233.0" text-anchor="middle" fill="#ffffff">230</text>
 <rect x="481" y="215" width="94" height="28" rx="3" fill="#f0efec"/>
 <text x="528.0" y="233.0" text-anchor="middle" fill="#52514e">×</text>
+<rect x="577" y="215" width="94" height="28" rx="3" fill="#f0efec"/>
+<text x="624.0" y="233.0" text-anchor="middle" fill="#52514e">×</text>
 <text x="8.0" y="272.0" text-anchor="start" fill="#52514e">最良値との差:</text>
 <rect x="94" y="262" width="12" height="12" rx="2" fill="#cde2fb"/>
 <text x="110.0" y="272.0" text-anchor="start" fill="#52514e">最良値</text>
