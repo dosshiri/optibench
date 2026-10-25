@@ -267,8 +267,6 @@ def main(data):
                f'run `{P["run_id"]}`（{P["started_at"][:16].replace("T", " ")} UTC 開始）。'
                f'参照値: {P["ref"]}。制限時間 {P["time_limit"]:g} 秒、{threads_text(P)}。確率的手法は複数シードの平均。', "",
                f"実行環境: {env_text(P)}", ""]
-        md += [f"{m} の結果は、{why}、載せていません（結果は `results/runs/` に保存しています）。"
-               for m, why in P.get("hidden", {}).items()] + [""] * bool(P.get("hidden"))
         md += [
                f"![{P['label']} 手法別](figures/{k}_bars.svg)", "",
                f"![{P['label']} ヒートマップ](figures/{k}_heat.svg)", ""]
