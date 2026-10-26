@@ -1,0 +1,127 @@
+{
+  "run_id": "20261026T151516Z-cloud-vrptw",
+  "problem": "vrptw",
+  "started_at": "2026-10-26T15:15:16+00:00",
+  "finished_at": "2026-10-26T16:45:05+00:00",
+  "status": "complete",
+  "note": "クラウドでの試走（4 vCPU）。途中で実行が止まったため 16:09 に --run で再開した。再開時は main の取り込み（問題設定の説明の追加）後のコードだが、VRPTW の問題定義と解法のコードは記録したコミットと同じ",
+  "command": "python src/run_bench.py vrptw 60 --machine cloud --note クラウドでの試走（4 vCPU）",
+  "environment": {
+    "machine": "cloud",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cpu_count": 4,
+    "memory_gb": 15.7,
+    "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+    "python": "3.13.17",
+    "packages": {
+      "ortools": "9.15.6755",
+      "highspy": "1.15.1",
+      "elkai": "2.0.1",
+      "numba": "0.68.0",
+      "numpy": "2.5.3",
+      "pandas": "3.0.5",
+      "tsplib95": "0.7.1",
+      "pyvrp": "0.14.1",
+      "amplify": null,
+      "openjij": "0.12.2"
+    }
+  },
+  "git": {
+    "commit": "b68e12605a7e3101f04acf17453199581a441213",
+    "branch": "claude/project-thread-0817ym",
+    "dirty": false,
+    "dirty_files": []
+  },
+  "conditions": {
+    "time_limit": 60.0,
+    "workers": 4,
+    "threads": {
+      "Insertion+LS": 1,
+      "SISR": 1,
+      "LKH-3(elkai)": 1,
+      "ORTools-GLS": 1,
+      "CP-SAT": 1,
+      "CP-SAT-4w": 4,
+      "MIP-HiGHS": 1,
+      "MIP-HiGHS-4w": 4,
+      "PyVRP-HGS": 1
+    },
+    "solvers": {
+      "Insertion+LS": "Insertion+LS",
+      "SISR": "SISR",
+      "LKH-3(elkai)": "LKH-3(elkai)",
+      "ORTools-GLS": "ORTools-GLS",
+      "CP-SAT": "CP-SAT",
+      "CP-SAT-4w": "CP-SAT",
+      "MIP-HiGHS": "MIP-HiGHS",
+      "MIP-HiGHS-4w": "MIP-HiGHS",
+      "PyVRP-HGS": "PyVRP-HGS"
+    },
+    "instances": [
+      "R101.25",
+      "R201.25",
+      "R101.50",
+      "R201.50",
+      "C101",
+      "R101",
+      "R112",
+      "RC101",
+      "R201",
+      "RC208",
+      "R1_2_1",
+      "RC1_2_1"
+    ],
+    "methods": {
+      "Insertion+LS": [
+        1
+      ],
+      "SISR": [
+        1,
+        2,
+        3
+      ],
+      "LKH-3(elkai)": [
+        1,
+        2,
+        3
+      ],
+      "ORTools-GLS": [
+        1
+      ],
+      "CP-SAT": [
+        1
+      ],
+      "CP-SAT-4w": [
+        1
+      ],
+      "MIP-HiGHS": [
+        1
+      ],
+      "MIP-HiGHS-4w": [
+        1
+      ],
+      "PyVRP-HGS": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  "instance_sha256": {
+    "R101.25": "55f8de8e43150bc9340e0abfbdeb6ebed181c6f3c6650376ff6d314d91fa26cd",
+    "R201.25": "b264ad00f9d21f0e79d6c80caf99d7929baa3b43ccb5d9dd93f4d6839f5c758f",
+    "R101.50": "523e281f6a7619983ddd7a80b4ca86af1e4243ff24d1403055dc3f189a7e5e35",
+    "R201.50": "397d8ba9799665b6d507ddaf383e21c4f4f67c8fa911b58d8195662a6ee2e800",
+    "C101": "048312f0b95a6e474736f18e951322a002762016a08adb2d0cdf5688ad0a8192",
+    "R101": "1f13c0eb622c258b6e8b743c0a9725ac958efb62496eb4f6d07c646ab670f2b6",
+    "R112": "fa72090239924ff60b9b4ff0d9bba579cb85410d1a1dce6963ba74c70c7a1b74",
+    "RC101": "aa85524e59f3f52106bf6de262afdff81dbeeb769dba299cb14ead03e9955626",
+    "R201": "bd8e53a5d1e0976d227db51fd61cee90319bfc57750bc132258e5ad174e29b24",
+    "RC208": "ec70ed065a2bce0f00ead7b1dcff8afa38673ff0efcb14b91b0d17c000eea206",
+    "R1_2_1": "b45b327caf7dbffd6694273f806463972d95ca31e35372e5f62022a085c3f435",
+    "RC1_2_1": "13f70d197422900a1e6afa6f6026d179da7a9acfd26b4767d6cd3446f616b7d8"
+  },
+  "resumed_at": [
+    "2026-10-26T16:09:14+00:00"
+  ]
+}

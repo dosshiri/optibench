@@ -9,11 +9,13 @@ src/
   problems/            問題種別. 1 ファイルで 1 つ以上の問題を登録する
     routing.py           tsp, atsp
     atsptw.py            atsptw
+    vrptw.py             vrptw
     jssp.py              jssp
     nsp.py               nsp（合成インスタンスの生成を含む）
   solvers/             解法. 1 ファイルに好きな数の解法を登録できる
     routing.py           TSP/ATSP の解法
     atsptw.py            ATSP-TW の解法（任意の依存を使う解法は atsptw_pyvrp.py のように別ファイル）
+    vrptw.py             VRPTW の解法（PyVRP 版は vrptw_pyvrp.py）
     jssp.py              JSSP の解法
     nsp.py               NSP の解法
 instances/<問題>/      インスタンスファイル
@@ -227,5 +229,5 @@ def cpsat(inst, tl, seed):
 ## 中立性のための注意
 
 - 新しい解法も、既存の手法と同じ制限時間・スレッド数の条件で比べてください。複数スレッドを使う解法は、自前で手法名に `-4w` などを付けず、`threads` 引数で受け取るようにしてください（スレッド数が正しく記録され、スレッド別の比較表にも載ります）。
-- 解法が解を返せる場合は `solution` を返し、問題側には `evaluate` を用意してください。ソルバーの自己申告値ではなく共通の評価関数で確かめられます（現在 TSP/ATSP/ATSP-TW/NSP は対応済み、JSSP は未対応）。
+- 解法が解を返せる場合は `solution` を返し、問題側には `evaluate` を用意してください。ソルバーの自己申告値ではなく共通の評価関数で確かめられます（現在 TSP/ATSP/ATSP-TW/VRPTW/NSP は対応済み、JSSP は未対応）。
 - コードを変えたらコミットしてから run を回してください（`run.json` に記録されるコミットで結果を再現できるようにするため）。

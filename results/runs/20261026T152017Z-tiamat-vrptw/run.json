@@ -1,0 +1,124 @@
+{
+ "run_id": "20261026T152017Z-tiamat-vrptw",
+ "problem": "vrptw",
+ "started_at": "2026-10-26T15:20:17+00:00",
+ "finished_at": "2026-10-26T16:05:48+00:00",
+ "status": "complete",
+ "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "command": "python.exe src/run_bench.py vrptw 60 --threads 1,4 --note 手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較",
+ "environment": {
+  "machine": "tiamat",
+  "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+  "cpu_count": 16,
+  "memory_gb": 31.4,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.9",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.3.4",
+   "pandas": "2.3.3",
+   "tsplib95": "0.7.1",
+   "pyvrp": "0.14.1",
+   "amplify": null,
+   "openjij": "0.12.2"
+  }
+ },
+ "git": {
+  "commit": "96b5f25e27cb74a53d6fb6af0aa7408e2c9f96f2",
+  "branch": "claude/project-thread-0817ym",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "Insertion+LS": 1,
+   "SISR": 1,
+   "LKH-3(elkai)": 1,
+   "ORTools-GLS": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1,
+   "MIP-HiGHS-4w": 4,
+   "PyVRP-HGS": 1
+  },
+  "solvers": {
+   "Insertion+LS": "Insertion+LS",
+   "SISR": "SISR",
+   "LKH-3(elkai)": "LKH-3(elkai)",
+   "ORTools-GLS": "ORTools-GLS",
+   "CP-SAT": "CP-SAT",
+   "CP-SAT-4w": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS",
+   "MIP-HiGHS-4w": "MIP-HiGHS",
+   "PyVRP-HGS": "PyVRP-HGS"
+  },
+  "instances": [
+   "R101.25",
+   "R201.25",
+   "R101.50",
+   "R201.50",
+   "C101",
+   "R101",
+   "R112",
+   "RC101",
+   "R201",
+   "RC208",
+   "R1_2_1",
+   "RC1_2_1"
+  ],
+  "methods": {
+   "Insertion+LS": [
+    1
+   ],
+   "SISR": [
+    1,
+    2,
+    3
+   ],
+   "LKH-3(elkai)": [
+    1,
+    2,
+    3
+   ],
+   "ORTools-GLS": [
+    1
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ],
+   "MIP-HiGHS-4w": [
+    1
+   ],
+   "PyVRP-HGS": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ "instance_sha256": {
+  "R101.25": "b47ba5c768bcca8c1a47ad82e63bf92ff28125d2f2a326d86356f9a6be1d3fb5",
+  "R201.25": "6edc7657558b204b7b12ef30bf8d94d23fadd650cee96b1a279e7cd9cc4d0fcc",
+  "R101.50": "4ed1656d5fc8c32f5f5982076ab6be09c0cd60bb8722c6ce2f753ef4adbcd54f",
+  "R201.50": "49b6a6d3d5bc0ad9b2acb6d4ce6508c8d54a1121d0fe7bcc8102fb7714522e29",
+  "C101": "43e7c9561d57a09f81bc86a5a46a9c41594fe9202f5740453bfb2a013bc5d64a",
+  "R101": "8eed5bebaf3ac65b8e3f482cb362a4fba95358153c9c863d449bdc4ddcae5539",
+  "R112": "fbfb0e3aaab4f4e2ff760633abdb583e6942e8499e8c838925241e4beecb820d",
+  "RC101": "88b955cd92faad7d6a9d24abc4a22999b44bb149307ed15d4e5336ed268d580c",
+  "R201": "7cde8078ce074dceb43ec15c79cbf304d42ad904b6267a512816ef62f5c664e4",
+  "RC208": "63bdcbce3e2b151bc6de41e76bbc5deb2f54ae42399c2cb640e65fbe88b44189",
+  "R1_2_1": "1ec3fefd9de1131fa8b5a3c0935812b73ed0b044dc4b07e666a1d4e911c94ef7",
+  "RC1_2_1": "391393ca332de06d3902ab29f44e6ac9c7911e4167b383a83fe920ae49f9eba7"
+ }
+}
