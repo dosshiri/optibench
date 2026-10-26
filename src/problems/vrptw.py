@@ -85,7 +85,39 @@ def evaluate(inst, routes):
     return round(total / 10, 1)
 
 
+def instance_info(name):
+    inst = load(name)
+    w = (inst["l"] - inst["e"])[1:] / 10
+    return {"顧客数": len(inst["q"]) - 1, "車両の容量": inst["Q"], "車両の上限": inst["K"],
+            "時間枠の幅（中央値）": round(float(np.median(w)), 1), "計画期間": int(inst["l"][0] // 10),
+            "既知最良値": BKS.get(name)}
+
+
 PROBLEM = register_problem(Problem(
     name="vrptw", label="VRPTW（時間枠付き配送計画）", unit="総距離",
     ref_label="既知最良値（Solomon 100 顧客以下は証明済みの最適値）", instance_file="vrptw/{}.vrp",
-    instances=list(BKS), load=load, reference=BKS.get, evaluate=evaluate, order=27))
+    instances=list(BKS), load=load, reference=BKS.get, evaluate=evaluate, order=27, discussion="vrptw.html",
+    instance_info=lambda name: instance_info(name),
+    setting=dict(
+        brief="容量に上限のある複数の車両で、各顧客を時間枠の中で 1 回ずつ訪れて荷を届ける経路のうち、総距離が最小のものを求める。",
+        summary=("デポから容量 Q の車両を何台か出し、各顧客をちょうど 1 台が 1 回訪れて需要ぶんの荷を届け、デポに戻る。"
+                 "各顧客には作業を始めてよい時間枠と作業時間があり、全車両の経路の総距離を最小にする。"
+                 "宅配・ルート営業・訪問サービスなど、時間指定のある配車計画の中心にあたる問題。"),
+        variables=("顧客をどの車両に割り当て、どの順に回るか（経路）と、各顧客での作業開始時刻 t_i。"
+                   "0-1 変数で書くと、x_ij = 1 は「顧客 i の次に顧客 j へ行く」ことを表す。使う車両の台数も結果として決まる。"),
+        constraints=[
+            "各顧客をちょうど 1 台が 1 回訪れる。各経路はデポを出てデポに戻る。",
+            "容量: 1 本の経路で届ける需要の合計は Q 以下。",
+            "時間枠: e_i ≤ t_i ≤ l_i。e_i より早く着いたら e_i まで待つ（待ち時間は費用にならない）。l_i より遅れて着くのは実行不能。",
+            "時刻のつじつま: 顧客 i の次に顧客 j へ行くなら t_j ≥ t_i + s_i + d_ij（s_i は作業時間、移動時間は距離 d_ij に等しい）。",
+            "デポの時間枠の中で出発し、戻る。使う車両は上限 K 台以内（今回のインスタンスでは効かない）。",
+        ],
+        objective="全車両の経路の総距離 Σ d_ij x_ij を最小化する。車両の台数は問わない。",
+        note=("ヒューリスティクスの文献では「まず車両台数、次に総距離」を最小化することが多いが、ここでは厳密解法の文献と "
+              "DIMACS 2021 の競技にそろえて総距離だけを目的にした。距離は座標間のユークリッド距離を小数第 1 位で切り捨てた値。"),
+        instances=("Solomon（1987）の 100 顧客 6 問（C101・R101・R112・RC101・R201・RC208）と、R101・R201 の先頭 25・50 顧客を切り出した 4 問、"
+                   "Gehring & Homberger（1999）の 200 顧客 2 問（R1_2_1・RC1_2_1）。C は顧客が集まった配置、R はばらけた配置、RC はその混在。"
+                   "1 系は時間枠が狭く容量も小さいので短い経路が多数並び、2 系は時間枠が広く容量も大きいので 1 台が多くの顧客を回る。"
+                   "R112・RC208 は時間枠が計画期間の半分ほどある、時間枠の広い問題。"
+                   "参照値は CVRPLIB の既知最良値で、100 顧客以下の 10 問は最適値（200 顧客の R1_2_1 も手元の MIP・CP-SAT で最適性を確認）。"),
+        scale="Solomon・Gehring & Homberger 12 問（25〜200 顧客）")))
