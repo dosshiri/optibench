@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRPTW の文献レビュー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+<!-- VRPTW（時間枠付き配送計画問題）の文献レビュー。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の「要点」に 1 項目足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">文献レビューのトップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a>
+  </div>
+  <div class="eyebrow">文献レビュー · Vehicle Routing Problem with Time Windows · 2026-10-26 時点</div>
+  <h1>VRPTW（時間枠付き配送計画問題）</h1>
+  <p class="lead">積載量に上限のある複数の車両で、各顧客を指定の時間帯に訪れて荷を届ける経路を求める問題です。宅配・ルート営業・訪問サービスの配車計画の中心にあたります。厳密解は列生成を使う専用の分枝価格カット、近似解はハイブリッド遺伝的探索（HGS）を筆頭とするメタヒューリスティクスが強く、汎用 MIP は 100 顧客を超えると急に苦しくなる、というのが文献から読み取れる構図です。OR-Tools Routing は手軽で実用的ですが、最先端との差は規模とともに広がります。</p>
+  <div class="legend">
+    <span class="tag t-mp">数理計画 (MIP / CP / B&amp;P&amp;C)</span>
+    <span class="tag t-mh">メタヒューリスティクス</span>
+    <span class="tag t-sp">専用ヒューリスティクス</span>
+    <span class="tag t-ml">機械学習</span>
+    <span class="tag t-qa">アニーリング系 (QUBO)</span>
+  </div>
+</header>
+
+<nav class="idx" aria-label="目次">
+  <a href="#overview">概要</a>
+  <a href="#studies">主要な比較研究</a>
+  <a href="#matrix">手法ごとの評価</a>
+  <a href="#neutral">比べ方の注意</a>
+  <a href="#plan">手元ベンチマークへの示唆</a>
+  <a href="#refs">文献</a>
+</nav>
+
+<section id="overview">
+  <h2>概要</h2>
+  <div class="caveat"><b>読み方の注意。</b> 以下の数値は各論文の条件（ハードウェア、時間制限、スレッド数、ソルバー版）での結果です。論文間で直接比較することはできません。本ページの数値と結論は原典の要旨・本文の確認に基づき、確認できなかった点はその旨を書いています。</div>
+  <div class="facts">
+    <div class="fact"><div class="k">標準インスタンス</div><div class="v">Solomon（1987）の 100 顧客 56 件が古典です。顧客の配置で C（集まっている）・R（ばらけている）・RC（混在）に分かれ、1 系は時間枠が狭く車両の容量が小さい、2 系は時間枠が広く 1 台で多くの顧客を回れる、という違いがあります。大規模版は Gehring &amp; Homberger（1999）の 200〜1000 顧客 300 件。既知最良値は CVRPLIB と SINTEF の一覧にまとまっています</div></div>
+    <div class="fact"><div class="k">代表ソルバー</div><div class="v">厳密解: 列生成による分枝価格カット（Kohl ら、Baldacci ら、Pecin ら、汎用 VRP ソルバー VRPSolver）。近似解: HGS（Vidal ら、DIMACS 優勝の HGS-DIMACS、PyVRP）、EAX 型の遺伝的アルゴリズム（Nagata ら）、SISR、ALNS（Ropke–Pisinger）、LKH-3、OR-Tools Routing。商用では Hexaly など</div></div>
+    <div class="fact"><div class="k">目的関数の種類</div><div class="v">ヒューリスティクスの論文の多くは「まず車両台数、次に総距離」を最小化する二段階の目的で、SINTEF の一覧もこの規約です。一方、厳密解法の論文と DIMACS 2021 の競技、CVRPLIB の一覧は総距離だけを最小化します。同じインスタンスでも最良解が違うので、どちらの規約か必ず確かめてください</div></div>
+  </div>
+</section>
+
+<section id="studies">
+  <h2>主要な比較研究</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>文献</th><th>比較した手法</th><th>インスタンス</th><th>主な結果</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">Pecin, Contardo, Desaulniers, Uchoa<span class="yr">INFORMS J. Comput. 2017</span></td>
+        <td><span class="tag t-mp">分枝価格カット（制限記憶の部分集合行カットの改良など）</span></td>
+        <td>Solomon 100 顧客、Gehring &amp; Homberger 200 顧客</td>
+        <td>Solomon の 100 顧客 56 件をすべて解き、200 顧客は 60 件中 51 件を解きました。総距離を目的とする厳密解法の到達点で、Solomon の既知最良値は全件が最適値になりました。<span class="note">（要旨で確認）</span></td></tr>
+      <tr><td class="ref">Pessoa, Sadykov, Uchoa, Vanderbeck<span class="yr">Math. Program. 2020</span></td>
+        <td><span class="tag t-mp">汎用の VRP 向け分枝価格カット（VRPSolver）</span></td>
+        <td>VRPTW を含む多数の変種</td>
+        <td>問題ごとに作り込まなくても、専用の厳密解法と同等の成績を出せる汎用ソルバーとして提案されました。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
+      <tr><td class="ref">Nagata, Bräysy, Dullaert<span class="yr">Comput. Oper. Res. 2010</span></td>
+        <td><span class="tag t-mh">EAX 型の遺伝的アルゴリズム + 違反のペナルティ</span></td>
+        <td>Solomon、Gehring &amp; Homberger（356 件）</td>
+        <td>巡回セールスマン問題で強い枝組み立て交叉（EAX）を VRPTW に移し、356 件中 184 件で既知最良値を更新しました。<span class="note">（要旨で確認）</span></td></tr>
+      <tr><td class="ref">Vidal, Crainic, Gendreau, Prins<span class="yr">Comput. Oper. Res. 2013</span></td>
+        <td><span class="tag t-mh">HGS（多様性を管理するハイブリッド遺伝的探索）</span></td>
+        <td>Solomon、Gehring &amp; Homberger ほか時間枠付きの変種</td>
+        <td>のちの HGS-DIMACS と PyVRP の土台になった手法です。二段階の目的（台数、次に距離）で既知最良値に並ぶか上回る成績が報告されています。<span class="note">（本調査では原典本文を未確認）</span></td></tr>
+      <tr><td class="ref">Christiaens, Vanden Berghe<span class="yr">Transp. Sci. 2020</span></td>
+        <td><span class="tag t-mh">SISR（連なりを抜いて入れ直す ruin &amp; recreate）</span></td>
+        <td>CVRP、時間枠付きの変種、ピックアップ・デリバリーなど</td>
+        <td>近い顧客の連なりを抜いて貪欲に入れ直すだけの単純な仕組みで、汎用の手法にも問題専用の手法にも一貫して勝つと報告しています。実装が短く、自作の基準にしやすい手法です。<span class="note">（要旨で確認、VRPTW の数値は未確認）</span></td></tr>
+      <tr><td class="ref">DIMACS 実装チャレンジ（VRPTW 部門）<span class="yr">2021〜2022</span></td>
+        <td><span class="tag t-mh">HGS 系</span> <span class="tag t-mh">ALNS 系</span> <span class="tag t-sp">LK 系</span> ほか 12 チーム</td>
+        <td>Solomon、Gehring &amp; Homberger（356 件）</td>
+        <td>総距離（小数第 1 位で切り捨て）を、時間とともにどれだけ早く良い解に近づくか（primal integral）で競いました。決勝 7 チームの 1 位は HGS を改良した Kool らのチーム（平均 0.070）で、2 位（0.327）以下を大きく引き離しました。<span class="note">（公式ページで確認）</span></td></tr>
+      <tr><td class="ref">Wouda, Lan, Kool（PyVRP）<span class="yr">INFORMS J. Comput. 2024</span></td>
+        <td><span class="tag t-mh">PyVRP</span> 対 <span class="tag t-mh">HGS-DIMACS</span></td>
+        <td>Gehring &amp; Homberger 1000 顧客 60 件</td>
+        <td>2 時間・10 シードの平均で、既知最良値とのギャップは PyVRP 0.40%、HGS-DIMACS 0.32%。PyVRP は Python から使えるライブラリとしてはほぼ最先端の水準です。OR-Tools は VRPTW の比較には含めていません。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Hexaly 社のベンチマーク<span class="yr">2025〜2026</span></td>
+        <td><span class="tag t-mh">Hexaly 15.0</span> 対 <span class="tag t-mp">Gurobi 11.0（MIP）</span> <span class="tag t-sp">OR-Tools 9.14</span></td>
+        <td>Solomon、Gehring &amp; Homberger（100〜1000 顧客）</td>
+        <td>1 分・既定設定での既知最良値とのギャップは、100 顧客で Hexaly 0.2%・OR-Tools 1.5%・Gurobi 5.5%、200 顧客で 0.8%・4.4%・9.6%、400 顧客で 2.3%・10.3%・31.6%。汎用 MIP は規模とともに急に悪くなり、1000 顧客では 60 件中 46 件でしか解を得られませんでした。<span class="note">（公開ページで確認。製品の提供元による比較で、MIP の定式化も公開されていない点に注意）</span></td></tr>
+      <tr><td class="ref">Berto ら（RouteFinder）<span class="yr">TMLR 2025</span></td>
+        <td><span class="tag t-ml">ニューラル構築法（RouteFinder、MTPOMO、MVMoE）</span> 対 <span class="tag t-mh">PyVRP</span> <span class="tag t-sp">OR-Tools</span></td>
+        <td>一様乱数で作った 50 / 100 顧客の VRPTW</td>
+        <td>PyVRP の解を基準に、OR-Tools は 50 顧客で 0.35%、100 顧客で 1.51% の差。ニューラル解法は 2.1〜3.9% の差で、1 件あたりの計算は速いものの品質では及びません。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Rascoussier, Billot, Fahed, Solnon<span class="yr">arXiv 2026</span></td>
+        <td><span class="tag t-mh">PyVRP</span> 対 <span class="tag t-sp">OR-Tools</span></td>
+        <td>Solomon 56 件、Gehring &amp; Homberger 600 / 1000 顧客</td>
+        <td>距離を整数に直すときの倍率と丸め方で、元の小数の距離では実行不能な解が多く出たり、順位が入れ替わったりすることを示しました。一方、条件をそろえると、既知最良値から 5% 以内に届いた実行の割合は PyVRP が 80〜87%、OR-Tools が 48〜64% でした。<span class="note">（本文で確認）</span></td></tr>
+      <tr><td class="ref">Holliday, Blount, Osaba, Luu<span class="yr">arXiv 2025</span></td>
+        <td><span class="tag t-qa">D-Wave のハイブリッドソルバー（CQM）+ タブー探索</span> 対 <span class="tag t-sp">OR-Tools</span></td>
+        <td>Solomon R101〜R103、RC101〜RC103</td>
+        <td>顧客の割り当てを古典のタブー探索、経路の順番を D-Wave に任せる混合手法で、平均ギャップ 3.86%（OR-Tools 3.52%）。D-Wave だけで解かせた場合は 35 地点で時間枠を守れなくなりました。<span class="note">（本文で確認）</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="caveat"><b>VRPTW の空白。</b> 無償で使えるソルバー（PyVRP、OR-Tools Routing、LKH-3、CP-SAT、HiGHS）を、同じ規約・同じ制限時間・同じスレッド数で横並びにした中立的な比較は、本調査では見つかりませんでした。製品の提供元による比較か、ニューラル解法の論文の比較相手としての扱いがほとんどです。</div>
+</section>
+
+<section id="matrix">
+  <h2>手法ごとの評価</h2>
+  <p>上の文献に基づく定性的な整理です。<span class="lvl l3">◎</span> 最前線、<span class="lvl l2">○</span> 実用的に強い、<span class="lvl l1">△</span> 条件付きで有効、<span class="lvl l0">–</span> 現状では不利または実証が少ない。</p>
+  <div class="tbl"><table class="matrix">
+    <thead><tr><th>手法</th><th>評価</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-mp">専用 分枝価格カット（列生成）</span></td><td class="lvl l3">◎ 200 顧客まで最適性を証明</td></tr>
+      <tr><td><span class="tag t-mp">汎用MIP（2 添字の定式化）</span></td><td class="lvl l1">△ 小規模・時間枠が狭いとき</td></tr>
+      <tr><td><span class="tag t-mp">CP / CP-SAT</span></td><td class="lvl l1">△ 小規模</td></tr>
+      <tr><td><span class="tag t-sp">LKH-3・OR-Tools Routing</span></td><td class="lvl l2">○ 100 顧客程度まで（規模とともに差が開く）</td></tr>
+      <tr><td><span class="tag t-mh">HGS・EAX・SISR・ALNS</span></td><td class="lvl l3">◎ HGS（PyVRP で手軽に使える）</td></tr>
+      <tr><td><span class="tag t-ml">ニューラル構築 / 改善型</span></td><td class="lvl l0">– 2〜4% の差が残る</td></tr>
+      <tr><td><span class="tag t-qa">量子・疑似量子アニーリング（QUBO）</span></td><td class="lvl l0">– 古典との混合でも OR-Tools 並み</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="neutral">
+  <h2>比べ方の注意</h2>
+  <ol class="pit">
+    <li><b>目的の規約</b>「台数、次に距離」と「距離だけ」では最良解が違います。台数を優先する手法を距離だけで評価すると不利になり、その逆も起きます。本ベンチマークは厳密解法と DIMACS にそろえて、総距離だけを目的にしました。</li>
+    <li><b>距離の丸め</b>元の小数の距離、小数第 1 位での切り捨て（DIMACS・CVRPLIB の規約）、整数への丸めで、最適値も実行可能性も変わります。Rascoussier ら（2026）は、丸め方だけで手法の順位が入れ替わることを示しています。既知最良値と同じ規約で評価してください。</li>
+    <li><b>時間枠の狭さ</b>時間枠が狭いインスタンス（R1・RC1 系）では通れる弧が少なく、汎用 MIP でも簡単に解けることがあります。時間枠が広い 2 系とで、手法の得意・不得意が逆転しやすいので、両方を含めて結論を出します。</li>
+    <li><b>提供元による比較</b>製品の提供元が公開する比較は、他社製品を既定設定で動かし、定式化も公開しないことがほとんどです。傾向の参考にとどめます。</li>
+  </ol>
+</section>
+
+<section id="plan">
+  <h2>手元ベンチマークへの示唆</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>インスタンス</th><th>候補ソルバー</th><th>文献の空白</th></tr></thead>
+    <tbody>
+      <tr><td>Solomon の R101・R201 の先頭 25 / 50 顧客（4 件）、100 顧客の C101・R101・R112・RC101・R201・RC208（6 件）、Gehring &amp; Homberger 200 顧客の R1_2_1・RC1_2_1（2 件）。時間枠の狭い 1 系と広い 2 系を両方含める。目的は総距離（小数第 1 位で切り捨て）</td><td>PyVRP（HGS）、SISR（自作）、LKH-3、OR-Tools Routing、CP-SAT、MIP（HiGHS, big-M 定式化）、挿入法 + 局所探索</td><td>無償ソルバーを同じ規約・同じ条件で横並びにした比較がない。特に、汎用の CP-SAT・HiGHS がどの規模・どの時間枠の狭さまで戦えるかの実データが少ない</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="refs">
+  <h2>文献</h2>
+  <ol class="refs">
+    <li>M. M. Solomon. Algorithms for the Vehicle Routing and Scheduling Problems with Time Window Constraints. Oper. Res. 35(2), 254–265, 1987. <a href="https://doi.org/10.1287/opre.35.2.254" target="_blank" rel="noopener">doi:10.1287/opre.35.2.254</a></li>
+    <li>H. Gehring, J. Homberger. A parallel hybrid evolutionary metaheuristic for the vehicle routing problem with time windows. Proc. EUROGEN99, 57–64, 1999.</li>
+    <li>N. Kohl, J. Desrosiers, O. B. G. Madsen, M. M. Solomon, F. Soumis. 2-Path Cuts for the Vehicle Routing Problem with Time Windows. Transp. Sci. 33(1), 101–116, 1999. <a href="https://doi.org/10.1287/trsc.33.1.101" target="_blank" rel="noopener">doi:10.1287/trsc.33.1.101</a></li>
+    <li>D. Pecin, C. Contardo, G. Desaulniers, E. Uchoa. New Enhancements for the Exact Solution of the Vehicle Routing Problem with Time Windows. INFORMS J. Comput. 29(3), 489–502, 2017. <a href="https://doi.org/10.1287/ijoc.2016.0744" target="_blank" rel="noopener">doi:10.1287/ijoc.2016.0744</a></li>
+    <li>A. Pessoa, R. Sadykov, E. Uchoa, F. Vanderbeck. A generic exact solver for vehicle routing and related problems. Math. Program. 183, 483–523, 2020. <a href="https://doi.org/10.1007/s10107-020-01523-z" target="_blank" rel="noopener">doi:10.1007/s10107-020-01523-z</a></li>
+    <li>Y. Nagata, O. Bräysy, W. Dullaert. A penalty-based edge assembly memetic algorithm for the vehicle routing problem with time windows. Comput. Oper. Res. 37(4), 724–737, 2010. <a href="https://doi.org/10.1016/j.cor.2009.06.022" target="_blank" rel="noopener">doi:10.1016/j.cor.2009.06.022</a></li>
+    <li>T. Vidal, T. G. Crainic, M. Gendreau, C. Prins. A hybrid genetic algorithm with adaptive diversity management for a large class of vehicle routing problems with time-windows. Comput. Oper. Res. 40(1), 475–489, 2013. <a href="https://doi.org/10.1016/j.cor.2012.07.018" target="_blank" rel="noopener">doi:10.1016/j.cor.2012.07.018</a></li>
+    <li>J. Christiaens, G. Vanden Berghe. Slack Induction by String Removals for Vehicle Routing Problems. Transp. Sci. 54(2), 417–433, 2020. <a href="https://doi.org/10.1287/trsc.2019.0914" target="_blank" rel="noopener">doi:10.1287/trsc.2019.0914</a></li>
+    <li>S. Ropke, D. Pisinger. An Adaptive Large Neighborhood Search Heuristic for the Pickup and Delivery Problem with Time Windows. Transp. Sci. 40(4), 455–472, 2006. <a href="https://doi.org/10.1287/trsc.1050.0135" target="_blank" rel="noopener">doi:10.1287/trsc.1050.0135</a></li>
+    <li>K. Helsgaun. An Extension of the Lin-Kernighan-Helsgaun TSP Solver for Constrained Traveling Salesman and Vehicle Routing Problems (LKH-3). Technical report, Roskilde University, 2017.</li>
+    <li>DIMACS Implementation Challenge: Vehicle Routing, VRPTW 部門の結果. <a href="https://dimacs.rutgers.edu/programs/implementation-challenges/vehicle-routing/implementation-challenge-competition-updates/vrptw-competition-updates" target="_blank" rel="noopener">dimacs.rutgers.edu</a></li>
+    <li>W. Kool, J. O. Juninck, E. Roos, K. Cornelissen, P. Agterberg, J. van Hoorn, T. Visser. Hybrid Genetic Search for the Vehicle Routing Problem with Time Windows: a High-Performance Implementation. 12th DIMACS Implementation Challenge, 2022.</li>
+    <li>N. A. Wouda, L. Lan, W. Kool. PyVRP: A High-Performance VRP Solver Package. INFORMS J. Comput., 2024. <a href="https://doi.org/10.1287/ijoc.2023.0055" target="_blank" rel="noopener">doi:10.1287/ijoc.2023.0055</a></li>
+    <li>Hexaly. Hexaly, Gurobi, OR-Tools on the Capacitated Vehicle Routing Problem with Time Windows (CVRPTW). <a href="https://www.hexaly.com/benchmarks/hexaly-gurobi-or-tools-capacitated-vehicle-routing-problem-with-time-windows-cvrptw" target="_blank" rel="noopener">hexaly.com</a></li>
+    <li>F. Berto, C. Hua, N. G. Zepeda, A. Hottung, N. Wouda, L. Lan, J. Park, K. Tierney, J. Park. RouteFinder: Towards Foundation Models for Vehicle Routing Problems. TMLR, 2025. <a href="https://arxiv.org/abs/2406.15007" target="_blank" rel="noopener">arXiv:2406.15007</a></li>
+    <li>F. Rascoussier, R. Billot, L. Fahed, C. Solnon. Impact of Scaling and Rounding on Metaheuristic Performance for the Vehicle Routing Problem with Time Windows. 2026. <a href="https://arxiv.org/abs/2606.09196" target="_blank" rel="noopener">arXiv:2606.09196</a></li>
+    <li>J. B. Holliday, D. Blount, E. Osaba, K. Luu. Advanced Quantum Annealing Approach to Vehicle Routing Problems with Time Windows. 2025. <a href="https://arxiv.org/abs/2503.24285" target="_blank" rel="noopener">arXiv:2503.24285</a></li>
+    <li>PyVRP. VRPTW のインスタンスと既知最良値（CVRPLIB の一覧を PyVRP の形式にしたもの）. <a href="https://github.com/PyVRP/Instances" target="_blank" rel="noopener">github.com/PyVRP/Instances</a></li>
+  </ol>
+  <p class="note">比較の進め方に関する文献（Accorsi ら、Dolan–Moré）は<a href="index.html#refs">トップ</a>にあります。</p>
+</section>
+
+<footer>本ページは公開資料の要旨・本文の確認に基づく整理です。「未確認」と書いた項目は、手元ベンチマークの設計前に原典で確認することをおすすめします。</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>
