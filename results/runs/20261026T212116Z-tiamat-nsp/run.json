@@ -1,0 +1,130 @@
+{
+ "run_id": "20261026T212116Z-tiamat-nsp",
+ "problem": "nsp",
+ "started_at": "2026-10-26T21:21:16+00:00",
+ "finished_at": "2026-10-26T21:59:19+00:00",
+ "status": "complete",
+ "note": "手元PC で Valouxis-2phase を追加",
+ "command": "python.exe src/run_bench.py nsp 60 --only Valouxis-2phase --threads 1,4 --note 手元PC で Valouxis-2phase を追加",
+ "environment": {
+  "machine": "tiamat",
+  "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics",
+  "cpu_count": 16,
+  "memory_gb": 31.4,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.9",
+  "packages": {
+   "ortools": "9.15.6755",
+   "highspy": "1.15.1",
+   "elkai": "2.0.1",
+   "numba": "0.68.0",
+   "numpy": "2.3.4",
+   "pandas": "2.3.3",
+   "tsplib95": "0.7.1",
+   "pyvrp": "0.14.1",
+   "amplify": null,
+   "openjij": "0.12.2"
+  }
+ },
+ "git": {
+  "commit": "c35c318b3dca3a94e19edcc24b15c440915b1947",
+  "branch": "claude/project-thread-9z9lwc",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "conditions": {
+  "time_limit": 60.0,
+  "workers": 4,
+  "threads": {
+   "Valouxis-2phase": 1,
+   "Valouxis-2phase-4w": 4,
+   "Greedy": 1,
+   "SA": 1,
+   "CP-SAT": 1,
+   "CP-SAT-4w": 4,
+   "MIP-HiGHS": 1,
+   "MIP-HiGHS-4w": 4
+  },
+  "solvers": {
+   "Valouxis-2phase": "Valouxis-2phase",
+   "Valouxis-2phase-4w": "Valouxis-2phase",
+   "Greedy": "Greedy",
+   "SA": "SA",
+   "CP-SAT": "CP-SAT",
+   "CP-SAT-4w": "CP-SAT",
+   "MIP-HiGHS": "MIP-HiGHS",
+   "MIP-HiGHS-4w": "MIP-HiGHS"
+  },
+  "instances": [
+   "nsp01",
+   "nsp02",
+   "nsp03",
+   "nsp04",
+   "nsp05",
+   "nsp06"
+  ],
+  "methods": {
+   "Valouxis-2phase": [
+    1,
+    2,
+    3
+   ],
+   "Valouxis-2phase-4w": [
+    1,
+    2,
+    3
+   ],
+   "Greedy": [
+    1
+   ],
+   "SA": [
+    1,
+    2,
+    3
+   ],
+   "CP-SAT": [
+    1
+   ],
+   "CP-SAT-4w": [
+    1
+   ],
+   "MIP-HiGHS": [
+    1
+   ],
+   "MIP-HiGHS-4w": [
+    1
+   ]
+  }
+ },
+ "instance_sha256": {
+  "nsp01": "f123c272192a9dc0ea664378159bb76cc83cb5b4c680fc11e8ae82926e60600e",
+  "nsp02": "34db45cdd4db37f1082c64e2d06c5f1b084b352908b8f036ea08f9ce2b80f044",
+  "nsp03": "7623507173f4143ede715855027b05dfb3d0bcc1f8a12f5c070e4eacfda9e2e8",
+  "nsp04": "98552195e8b26f44ec073ce3998a8281e8ecb68545b50eed2fcca6486174d0a7",
+  "nsp05": "a98cc87a0d055fcfb8ad4d81310321c4612ce80999ca834f5713e5628a762afb",
+  "nsp06": "ccb386be24e32283f3d5a5a4a7015e0a1ece055c79418ab8a9bde517df41b608"
+ },
+ "additions": [
+  {
+   "at": "2026-10-26T21:44:40+00:00",
+   "methods": [
+    "Greedy",
+    "SA",
+    "CP-SAT",
+    "CP-SAT-4w",
+    "MIP-HiGHS",
+    "MIP-HiGHS-4w"
+   ],
+   "git": {
+    "commit": "c35c318b3dca3a94e19edcc24b15c440915b1947",
+    "branch": "claude/project-thread-9z9lwc",
+    "dirty": false,
+    "dirty_files": []
+   },
+   "command": "python.exe src/run_bench.py nsp 60 --run 20261026T212116Z-tiamat-nsp --only Greedy,SA,CP-SAT,MIP-HiGHS --threads 1,4"
+  }
+ ],
+ "resumed_at": [
+  "2026-10-26T21:44:40+00:00"
+ ]
+}
