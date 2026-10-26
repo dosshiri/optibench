@@ -4,7 +4,7 @@
  "started_at": "2026-10-26T21:21:16+00:00",
  "finished_at": "2026-10-26T21:59:19+00:00",
  "status": "complete",
- "note": "手元PC で Valouxis-2phase を追加",
+ "note": "手元PC（Windows 11, 16 論理 CPU）で 1 スレッドと 4 スレッドを比較。numpy・pandas の更新で前回の run に追加できなかったため、Valouxis-2phase を新しい run で実行し、既存の 6 手法も同じ run で回し直した",
  "command": "python.exe src/run_bench.py nsp 60 --only Valouxis-2phase --threads 1,4 --note 手元PC で Valouxis-2phase を追加",
  "environment": {
   "machine": "tiamat",
