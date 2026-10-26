@@ -53,6 +53,37 @@
   </ul>
   <p>避けたいのは、時間枠の広い問題に汎用の MIP や CP-SAT を使うことと、挿入法 + 簡単な局所探索の解をそのまま使うことです。前者は R112・RC208 で既知最良値の 1.4〜2.7 倍、後者は平均 11%、2 系では平均 24% 劣りました。</p>
 
+  <!-- 問題設定とインスタンス: python src/export_web.py が src/problems/ の setting と instance_info から書き出す（この間は直接編集しない） -->
+  <h3 id="setting">問題設定とインスタンス</h3>
+  <p>デポから容量 Q の車両を何台か出し、各顧客をちょうど 1 台が 1 回訪れて需要ぶんの荷を届け、デポに戻る。各顧客には作業を始めてよい時間枠と作業時間があり、全車両の経路の総距離を最小にする。宅配・ルート営業・訪問サービスなど、時間指定のある配車計画の中心にあたる問題。</p>
+  <dl class="setting">
+    <dt>決めるもの</dt><dd>顧客をどの車両に割り当て、どの順に回るか（経路）と、各顧客での作業開始時刻 t_i。0-1 変数で書くと、x_ij = 1 は「顧客 i の次に顧客 j へ行く」ことを表す。使う車両の台数も結果として決まる。</dd>
+    <dt>制約</dt><dd><ul class="pts"><li>各顧客をちょうど 1 台が 1 回訪れる。各経路はデポを出てデポに戻る。</li><li>容量: 1 本の経路で届ける需要の合計は Q 以下。</li><li>時間枠: e_i ≤ t_i ≤ l_i。e_i より早く着いたら e_i まで待つ（待ち時間は費用にならない）。l_i より遅れて着くのは実行不能。</li><li>時刻のつじつま: 顧客 i の次に顧客 j へ行くなら t_j ≥ t_i + s_i + d_ij（s_i は作業時間、移動時間は距離 d_ij に等しい）。</li><li>デポの時間枠の中で出発し、戻る。使う車両は上限 K 台以内（今回のインスタンスでは効かない）。</li></ul></dd>
+    <dt>目的関数</dt><dd>全車両の経路の総距離 Σ d_ij x_ij を最小化する。車両の台数は問わない。</dd>
+    <dt>補足</dt><dd>ヒューリスティクスの文献では「まず車両台数、次に総距離」を最小化することが多いが、ここでは厳密解法の文献と DIMACS 2021 の競技にそろえて総距離だけを目的にした。距離は座標間のユークリッド距離を小数第 1 位で切り捨てた値。</dd>
+  </dl>
+  <p>Solomon（1987）の 100 顧客 6 問（C101・R101・R112・RC101・R201・RC208）と、R101・R201 の先頭 25・50 顧客を切り出した 4 問、Gehring &amp; Homberger（1999）の 200 顧客 2 問（R1_2_1・RC1_2_1）。C は顧客が集まった配置、R はばらけた配置、RC はその混在。1 系は時間枠が狭く容量も小さいので短い経路が多数並び、2 系は時間枠が広く容量も大きいので 1 台が多くの顧客を回る。R112・RC208 は時間枠が計画期間の半分ほどある、時間枠の広い問題。参照値は CVRPLIB の既知最良値で、100 顧客以下の 10 問は最適値（200 顧客の R1_2_1 も手元の MIP・CP-SAT で最適性を確認）。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th class="num">顧客数</th><th class="num">車両の容量</th><th class="num">車両の上限</th><th class="num">時間枠の幅（中央値）</th><th class="num">計画期間</th><th class="num">既知最良値</th></tr></thead>
+    <tbody>
+      <tr><td><code>R101.25</code></td><td class="num">25</td><td class="num">200</td><td class="num">25</td><td class="num">10.0</td><td class="num">230</td><td class="num">617.1</td></tr>
+      <tr><td><code>R201.25</code></td><td class="num">25</td><td class="num">1,000</td><td class="num">25</td><td class="num">117.0</td><td class="num">1,000</td><td class="num">463.3</td></tr>
+      <tr><td><code>R101.50</code></td><td class="num">50</td><td class="num">200</td><td class="num">25</td><td class="num">10.0</td><td class="num">230</td><td class="num">1044.0</td></tr>
+      <tr><td><code>R201.50</code></td><td class="num">50</td><td class="num">1,000</td><td class="num">25</td><td class="num">117.0</td><td class="num">1,000</td><td class="num">791.9</td></tr>
+      <tr><td><code>C101</code></td><td class="num">100</td><td class="num">200</td><td class="num">25</td><td class="num">61.0</td><td class="num">1,236</td><td class="num">827.3</td></tr>
+      <tr><td><code>R101</code></td><td class="num">100</td><td class="num">200</td><td class="num">25</td><td class="num">10.0</td><td class="num">230</td><td class="num">1637.7</td></tr>
+      <tr><td><code>R112</code></td><td class="num">100</td><td class="num">200</td><td class="num">25</td><td class="num">118.0</td><td class="num">230</td><td class="num">948.6</td></tr>
+      <tr><td><code>RC101</code></td><td class="num">100</td><td class="num">200</td><td class="num">25</td><td class="num">30.0</td><td class="num">240</td><td class="num">1619.8</td></tr>
+      <tr><td><code>R201</code></td><td class="num">100</td><td class="num">1,000</td><td class="num">25</td><td class="num">117.0</td><td class="num">1,000</td><td class="num">1143.2</td></tr>
+      <tr><td><code>RC208</code></td><td class="num">100</td><td class="num">1,000</td><td class="num">25</td><td class="num">472.5</td><td class="num">960</td><td class="num">776.1</td></tr>
+      <tr><td><code>R1_2_1</code></td><td class="num">200</td><td class="num">200</td><td class="num">50</td><td class="num">10.0</td><td class="num">634</td><td class="num">4667.2</td></tr>
+      <tr><td><code>RC1_2_1</code></td><td class="num">200</td><td class="num">200</td><td class="num">50</td><td class="num">30.0</td><td class="num">634</td><td class="num">3516.9</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /問題設定とインスタンス -->
+
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/ の @solver の description）と同じ文。解法を足したら 1 項目足す -->
   <p>手法名の末尾の <code>-4w</code> は 4 スレッドで実行したことを示します。</p>
@@ -144,7 +175,9 @@
 
   <h3 id="repro">再現性（クラウドと手元PC）</h3>
   <ul class="pts">
-    <li>クラウドでの試走（Xeon 4 vCPU）は計測中です。結果がそろい次第、ここに手元PCとの違いを追記します。</li>
+    <li>決定的な <code>Insertion+LS</code> と、<code>ORTools-GLS</code> はクラウド（Xeon 4 vCPU）でも 12 問とも同じ値。<code>PyVRP-HGS</code> もクラウドで平均 0.04%（36 回中 29 回で既知最良値）で、結論は計算機に左右されない。</li>
+    <li>SISR（0.65% → 0.83%）と LKH-3（0.71% → 0.96%）はクラウドでやや悪いが、2 番手争いという位置づけと、SISR が R201 系、LKH-3 が RC1_2_1 で崩れる傾向は同じ。</li>
+    <li>時間で打ち切る厳密系は、証明できる 7 問は両方で同じ。証明できない問題の解は大きく揺れ、CP-SAT-4w の R112 は手元PCで 47.7%、クラウドで 28.4%、MIP の RC101 は 6.6% と 25.2%。「時間枠の広い問題では汎用の厳密系を避ける」という結論は変わらないが、その中の数値は参考程度に見る。</li>
   </ul>
 
   <h3 id="limits">この問題での限界</h3>
