@@ -51,7 +51,33 @@ def evaluate(inst, tour):
     return cost if late == 0 else None
 
 
+def instance_info(name):
+    inst = load(name)
+    w = (inst["d"] - inst["r"])[1:]
+    return {"都市数（デポを含む）": len(inst["r"]), "時間枠の幅（中央値）": int(np.median(w)),
+            "デポに戻る締め切り": int(inst["d"][0]), "最適値": OPT.get(name)}
+
+
 PROBLEM = register_problem(Problem(
     name="atsptw", label="ATSP-TW（時間枠付き非対称巡回セールスマン）", unit="移動時間",
     ref_label="公表最適値（AFG セット）", instance_file="atsptw/{}.tw", instances=list(OPT),
-    load=load, reference=OPT.get, evaluate=evaluate, order=25))
+    load=load, reference=OPT.get, evaluate=evaluate, order=25, discussion="atsptw.html",
+    instance_info=lambda name: instance_info(name),
+    setting=dict(
+        brief="各地点を時間枠の中で 1 回ずつ訪れてデポに戻る巡回路のうち、移動時間の合計が最小のものを求める。移動時間は非対称。",
+        summary=("デポ（都市 0）を出発し、各都市をちょうど 1 回ずつ、それぞれに決められた時間枠 [r_i, d_i] の中で訪れてデポに戻る"
+                 "巡回路のうち、移動時間の合計が最小のものを求める。移動時間は向きによって異なってよい。"
+                 "時間指定のある配送や、作業ごとに開始可能時刻と締め切りがある作業順序の決定に現れる。"),
+        variables=("都市を回る順序と、各都市での作業開始時刻 t_i。0-1 変数で書くと、x_ij = 1 は「都市 i の次に都市 j へ行く」ことを表す。"),
+        constraints=[
+            "各都市をちょうど 1 回訪れ、全都市が 1 本の巡回路でつながる（部分巡回路を作らない）。",
+            "時間枠: r_i ≤ t_i ≤ d_i。r_i より早く着いたら r_i まで待つ（待ち時間は費用にならない）。d_i より遅れて着くのは実行不能。",
+            "時刻のつじつま: 都市 i の次に都市 j へ行くなら t_j ≥ t_i + c_ij（c_ij は i での作業時間を含む移動時間）。",
+            "デポに戻る時刻は、デポの締め切り d_0 までに収める。",
+        ],
+        objective="通った弧の移動時間の合計 Σ c_ij x_ij を最小化する（待ち時間は含めない）。",
+        instances=("Ascheuer が自動倉庫のスタッカークレーンの作業順序から作った rbg 系（AFG セット）の 9 問で、デポを含め"
+                   "20〜232 都市。López-Ibáñez の TSPTW インスタンス集で公表されている最適値（9 問とも最適性が証明済み）を参照値にした。"
+                   "時間枠の幅はほとんどの都市で 600（rbg019a は 300、rbg027a は約 1,700）で、"
+                   "デポに戻る締め切りまでの計画期間（約 6,000〜53,000）に比べてかなり狭い。"),
+        scale="AFG セット 9 問（20〜232 都市）")))

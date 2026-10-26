@@ -90,6 +90,14 @@ dl.about { margin: 0; font-size: 14px; }
 dl.about dt { font-weight: 600; margin-top: 10px; }
 dl.about dt:first-child { margin-top: 0; }
 dl.about dd { margin: 2px 0 0; color: var(--text-secondary); max-width: 52em; }
+dl.setting { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 8px 0 12px; font-size: 14px; }
+dl.setting dt { font-weight: 600; color: var(--text-secondary); }
+dl.setting dd { margin: 0; max-width: 52em; }
+dl.setting ul { margin: 0; padding-left: 1.2em; }
+#setting p { margin: 0 0 8px; font-size: 14px; max-width: 52em; }
+#setting td.num, #setting th.num { text-align: right; }
+#setting td.txt, #setting th.txt { text-align: left; white-space: normal; }
+@media (max-width: 560px) { dl.setting { grid-template-columns: 1fr; gap: 2px; } dl.setting dd { margin-bottom: 6px; } }
 </style>
 </head>
 <body>
@@ -102,6 +110,12 @@ dl.about dd { margin: 2px 0 0; color: var(--text-secondary); max-width: 52em; }
     <label>比較対象 <select id="cmpSel"></select></label>
     <label id="thrLab">スレッド数 <select id="thrSel"></select></label>
   </div>
+  <section class="card" id="settingCard" hidden>
+    <details open>
+      <summary id="settingSum">問題設定とインスタンス</summary>
+      <div id="setting" style="margin-top:8px"></div>
+    </details>
+  </section>
   <section class="card">
     <details id="runinfo">
       <summary id="runsum"></summary>
@@ -285,6 +299,24 @@ function drawAbout(P, R) {
   document.getElementById("about").innerHTML = names.map(n => `<dt>${esc(n)}</dt><dd>${esc(about[n])}</dd>`).join("");
 }
 
+// 問題設定とインスタンスの説明（src/problems/ の setting と instance_info から data.json に書き出したもの）
+function drawSetting(P) {
+  const s = P.setting, t = P.instance_table;
+  document.getElementById("settingCard").hidden = !s;
+  if (!s) return;
+  document.getElementById("settingSum").textContent = `問題設定とインスタンス: ${s.scale}`;
+  const num = t ? t.columns.map((_, i) => t.rows.every(r => r[i + 1] == null || typeof r[i + 1] === "number")) : [];
+  const val = v => v == null ? "—" : typeof v === "number" ? v.toLocaleString("en-US") : esc(v);
+  document.getElementById("setting").innerHTML = `<p>${esc(s.summary)}</p><dl class="setting">` +
+    `<dt>決めるもの</dt><dd>${esc(s.variables)}</dd>` +
+    `<dt>制約</dt><dd><ul>${s.constraints.map(c => `<li>${esc(c)}</li>`).join("")}</ul></dd>` +
+    `<dt>目的関数</dt><dd>${esc(s.objective)}</dd>` + (s.note ? `<dt>補足</dt><dd>${esc(s.note)}</dd>` : "") +
+    `</dl><p>${esc(s.instances)}</p>` + (t ? `<div class="scroll"><table><thead><tr><th>インスタンス</th>` +
+      t.columns.map((c, i) => `<th class="${num[i] ? "num" : "txt"}">${esc(c)}</th>`).join("") + `</tr></thead><tbody>` +
+      t.rows.map(r => `<tr><td>${esc(r[0])}</td>` + r.slice(1).map((v, i) => `<td class="${num[i] ? "num" : "txt"}">${val(v)}</td>`).join("") + `</tr>`).join("") +
+      `</tbody></table></div>` : "");
+}
+
 function drawTable(P) {
   const rows = P.cells.slice().sort((a, b) =>
     P.instances.indexOf(a.instance) - P.instances.indexOf(b.instance) || (a.mean_gap ?? 1e9) - (b.mean_gap ?? 1e9));
@@ -444,6 +476,7 @@ function render(key) {
     document.getElementById("cmpSel").disabled = !others.length;
     drawRunInfo(R);
   }
+  drawSetting(Pm);
   document.querySelector(".runbar").hidden = !R;
   document.getElementById("runinfo").parentElement.hidden = !R;
   const byValue = P.display === "value";

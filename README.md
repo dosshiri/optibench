@@ -36,6 +36,7 @@ src/            実行スクリプト
   analyze.py      集計（results/runs/<run_id>/summary.csv）
   export_web.py   ビュー用データ（docs/data.json, docs/data.js）と結果ページの書き出し
   export_report.py 結果ページ（results/README.md, results/figures/*.svg）の生成
+  export_setting.py 問題設定とインスタンスの説明（src/problems/ の setting）を結果ページ・考察・ポータルに書き出す
   make_instances.py 合成インスタンスの（再）生成
 instances/      ベンチマークインスタンス
 results/        run ごとの実行結果（runs/）と結果ページ（README.md と figures/）
@@ -43,6 +44,8 @@ docs/           入口（index.html）、対話型のグラフビュー（benchm
 ```
 
 ## インスタンス
+
+各問題の問題設定（決めるもの・制約・目的関数）とインスタンスごとの規模は、[`results/README.md`](results/README.md) の各問題の先頭、結果ビューの各タブ、考察の各ページの「問題設定とインスタンス」にあります（説明の元は `src/problems/*.py` の `setting` と `instance_info`）。
 
 | 問題 | インスタンス | 出典 | 参照値 |
 |---|---|---|---|

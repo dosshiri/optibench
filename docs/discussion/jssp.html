@@ -28,6 +28,7 @@
 
 <nav class="toc" aria-label="目次">
   <a href="#choose">手法の選び方</a>
+  <a href="#setting">問題設定とインスタンス</a>
   <a href="#methods">比べた手法</a>
   <a href="#results">手元の結果</a>
   <a href="#literature">文献との突き合わせ</a>
@@ -44,6 +45,34 @@
 
   <h3 id="choose">手法の選び方</h3>
   <p>工程の順序づけには、まず CP-SAT を使えるだけのコアで動かします。最適性の証明が要らず、問題専用の近傍を実装できるならタブーサーチも有力です。すぐ答えが必要な再スケジュールにはディスパッチングルールを使い、その解を CP-SAT やタブーサーチの初期解にします。big-M の MIP は小さな問題以外では使いません。</p>
+  <!-- 問題設定とインスタンス: python src/export_web.py が src/problems/ の setting と instance_info から書き出す（この間は直接編集しない） -->
+  <h3 id="setting">問題設定とインスタンス</h3>
+  <p>n 個のジョブを m 台の機械で加工する。各ジョブは決まった順序で機械を 1 台ずつ回り（回る順序はジョブごとに異なる）、各工程の処理時間は決まっている。すべての工程の開始時刻を決めて、最後の工程が終わる時刻（メイクスパン）を最小にする。多品種少量生産の工場で、機械ごとの作業の順番を決める問題の基本形。</p>
+  <dl class="setting">
+    <dt>決めるもの</dt><dd>各工程 o の開始時刻 s_o（整数）。同じ機械で処理する工程の順番を決めることと同じで、MIP では同じ機械の 2 工程のどちらを先にするかを表す 0-1 変数も使う。</dd>
+    <dt>制約</dt><dd><ul class="pts"><li>ジョブ内の順序: 同じジョブの前の工程が終わるまで、次の工程を始められない（s_次 ≥ s_前 + p_前、p は処理時間）。</li><li>機械の容量: 1 台の機械は同時に 1 つの工程しか処理できない（同じ機械の工程の処理時間帯が重ならない）。</li><li>工程は始めたら途中で中断しない。</li></ul></dd>
+    <dt>目的関数</dt><dd>メイクスパン C_max = max_o (s_o + p_o) を最小化する。</dd>
+  </dl>
+  <p>JSPLIB（OR-Library 形式）から 6×6〜20×20 の 10 問を選んだ。各ジョブはすべての機械を 1 回ずつ通るので、工程数はジョブ数 × 機械数になる。1963 年の Fisher &amp; Thompson の古典問題から、難しいことで知られる Storer らや Taillard の問題まで含む。参照値は既知の最適値（ta11・ta21 は JSPLIB では未解決扱いだが、その後に最適性が証明された文献値）。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th>ジョブ数 × 機械数</th><th class="num">工程数</th><th>出典</th><th class="num">最適値</th></tr></thead>
+    <tbody>
+      <tr><td><code>ft06</code></td><td>6 × 6</td><td class="num">36</td><td>Fisher &amp; Thompson (1963)</td><td class="num">55</td></tr>
+      <tr><td><code>ft10</code></td><td>10 × 10</td><td class="num">100</td><td>Fisher &amp; Thompson (1963)</td><td class="num">930</td></tr>
+      <tr><td><code>la16</code></td><td>10 × 10</td><td class="num">100</td><td>Lawrence (1984)</td><td class="num">945</td></tr>
+      <tr><td><code>la21</code></td><td>15 × 10</td><td class="num">150</td><td>Lawrence (1984)</td><td class="num">1,046</td></tr>
+      <tr><td><code>abz5</code></td><td>10 × 10</td><td class="num">100</td><td>Adams, Balas &amp; Zawack (1988)</td><td class="num">1,234</td></tr>
+      <tr><td><code>orb01</code></td><td>10 × 10</td><td class="num">100</td><td>Applegate &amp; Cook (1991)</td><td class="num">1,059</td></tr>
+      <tr><td><code>ta01</code></td><td>15 × 15</td><td class="num">225</td><td>Taillard (1993)</td><td class="num">1,231</td></tr>
+      <tr><td><code>swv01</code></td><td>20 × 10</td><td class="num">200</td><td>Storer, Wu &amp; Vaccari (1992)</td><td class="num">1,407</td></tr>
+      <tr><td><code>ta11</code></td><td>20 × 15</td><td class="num">300</td><td>Taillard (1993)</td><td class="num">1,357</td></tr>
+      <tr><td><code>ta21</code></td><td>20 × 20</td><td class="num">400</td><td>Taillard (1993)</td><td class="num">1,642</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /問題設定とインスタンス -->
+
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/ の @solver の description）と同じ文。解法を足したら 1 項目足す -->
   <p>手法名の末尾の <code>-4w</code> は 4 スレッドで実行したことを示します。</p>

@@ -28,6 +28,7 @@
 
 <nav class="toc" aria-label="目次">
   <a href="#choose">手法の選び方</a>
+  <a href="#setting">問題設定とインスタンス</a>
   <a href="#methods">比べた手法</a>
   <a href="#results">手元の結果</a>
   <a href="#literature">文献との突き合わせ</a>
@@ -44,6 +45,30 @@
 
   <h3 id="choose">手法の選び方</h3>
   <p>一方通行や上り下りで所要時間が違う経路は ATSP になります。近似解なら LKH が第一候補で、局所探索を自作するなら 2-opt ではなく向きを保つ移動（Or-opt など）を中心にします。時間枠のある問題（ATSP-TW）で最も強かった PyVRP は、時間枠が無いと 0.29% で LKH に届きません。時間枠の有無が混ざる業務で道具を 1 つにまとめたい場合の候補です。最適性の証明が必要なら、MIP と CP-SAT の両方を試して速い方を使います。どちらが速いかはインスタンスの構造で変わります。</p>
+  <!-- 問題設定とインスタンス: python src/export_web.py が src/problems/ の setting と instance_info から書き出す（この間は直接編集しない） -->
+  <h3 id="setting">問題設定とインスタンス</h3>
+  <p>TSP と同じく、すべての都市をちょうど 1 回ずつ訪れて出発点に戻る最短の巡回路を求める。ただし距離が向きによって異なってよい（i から j と j から i で距離が違う）。一方通行や上り下りのある移動のほか、前の品種によって段取り替えの時間が変わる生産順序の決定などに現れる。</p>
+  <dl class="setting">
+    <dt>決めるもの</dt><dd>都市を回る順序（巡回路）。0-1 変数で書くと、x_ij = 1 は「都市 i の次に都市 j へ行く」ことを表す（向きつき）。</dd>
+    <dt>制約</dt><dd><ul class="pts"><li>各都市にちょうど 1 回ずつ入り、ちょうど 1 回ずつ出る（各都市をちょうど 1 回訪れる）。</li><li>全都市が 1 本の巡回路でつながる。一部の都市だけで閉じた小さな輪（部分巡回路）を作らない。</li></ul></dd>
+    <dt>目的関数</dt><dd>巡回路の総距離 Σ d_ij x_ij を最小化する。</dd>
+  </dl>
+  <p>TSPLIB95 から 34〜443 都市の 6 問を選んだ。距離はすべて行列で直接与えられる。名前の数字と都市数がずれるものがある（ftv33 は 34 都市、kro124p は 100 都市）。rbg323・rbg443 は自動倉庫のスタッカークレーンの作業順序から作られた実務由来の問題。参照値は公表されている最適値。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th class="num">都市数</th><th>内容</th><th class="num">最適値</th></tr></thead>
+    <tbody>
+      <tr><td><code>ftv33</code></td><td class="num">34</td><td>都市部での医薬品配送（Fischetti, Toth &amp; Vigo）</td><td class="num">1,286</td></tr>
+      <tr><td><code>ftv70</code></td><td class="num">71</td><td>都市部での医薬品配送（Fischetti, Toth &amp; Vigo）</td><td class="num">1,950</td></tr>
+      <tr><td><code>kro124p</code></td><td class="num">100</td><td>kroA100 の距離を一部変えて非対称にしたもの（Fischetti &amp; Toth）</td><td class="num">36,230</td></tr>
+      <tr><td><code>ft70</code></td><td class="num">70</td><td>非対称の 70 都市（Fischetti &amp; Toth）</td><td class="num">38,673</td></tr>
+      <tr><td><code>rbg323</code></td><td class="num">323</td><td>自動倉庫のスタッカークレーンの作業順序（Ascheuer）</td><td class="num">1,326</td></tr>
+      <tr><td><code>rbg443</code></td><td class="num">443</td><td>自動倉庫のスタッカークレーンの作業順序（Ascheuer）</td><td class="num">2,720</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /問題設定とインスタンス -->
+
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/ の @solver の description）と同じ文。解法を足したら 1 項目足す -->
   <p>手法名の末尾の <code>-4w</code> は 4 スレッドで実行したことを示します。</p>

@@ -28,6 +28,7 @@
 
 <nav class="toc" aria-label="目次">
   <a href="#choose">手法の選び方</a>
+  <a href="#setting">問題設定とインスタンス</a>
   <a href="#methods">比べた手法</a>
   <a href="#results">手元の結果</a>
   <a href="#literature">文献との突き合わせ</a>
@@ -51,6 +52,33 @@
     <li><b>最適であることの証明が必要</b>で 70 地点ほどまでなら、CP-SAT を複数スレッドで動かします。4 スレッドで 4 問を数秒で証明しました。</li>
   </ul>
   <p>避けたいのは、OR-Tools Routing を時間枠の厳しい問題に既定の設定で使うことと、時刻変数の big-M 定式化の MIP をそのまま使うことです。どちらも 30 地点前後の問題で解を返せませんでした。LKH-3 は文献では強い手法ですが、150 地点を超えると 60 秒では時間枠を守れる解にたどり着けませんでした。</p>
+
+  <!-- 問題設定とインスタンス: python src/export_web.py が src/problems/ の setting と instance_info から書き出す（この間は直接編集しない） -->
+  <h3 id="setting">問題設定とインスタンス</h3>
+  <p>デポ（都市 0）を出発し、各都市をちょうど 1 回ずつ、それぞれに決められた時間枠 [r_i, d_i] の中で訪れてデポに戻る巡回路のうち、移動時間の合計が最小のものを求める。移動時間は向きによって異なってよい。時間指定のある配送や、作業ごとに開始可能時刻と締め切りがある作業順序の決定に現れる。</p>
+  <dl class="setting">
+    <dt>決めるもの</dt><dd>都市を回る順序と、各都市での作業開始時刻 t_i。0-1 変数で書くと、x_ij = 1 は「都市 i の次に都市 j へ行く」ことを表す。</dd>
+    <dt>制約</dt><dd><ul class="pts"><li>各都市をちょうど 1 回訪れ、全都市が 1 本の巡回路でつながる（部分巡回路を作らない）。</li><li>時間枠: r_i ≤ t_i ≤ d_i。r_i より早く着いたら r_i まで待つ（待ち時間は費用にならない）。d_i より遅れて着くのは実行不能。</li><li>時刻のつじつま: 都市 i の次に都市 j へ行くなら t_j ≥ t_i + c_ij（c_ij は i での作業時間を含む移動時間）。</li><li>デポに戻る時刻は、デポの締め切り d_0 までに収める。</li></ul></dd>
+    <dt>目的関数</dt><dd>通った弧の移動時間の合計 Σ c_ij x_ij を最小化する（待ち時間は含めない）。</dd>
+  </dl>
+  <p>Ascheuer が自動倉庫のスタッカークレーンの作業順序から作った rbg 系（AFG セット）の 9 問で、デポを含め20〜232 都市。López-Ibáñez の TSPTW インスタンス集で公表されている最適値（9 問とも最適性が証明済み）を参照値にした。時間枠の幅はほとんどの都市で 600（rbg019a は 300、rbg027a は約 1,700）で、デポに戻る締め切りまでの計画期間（約 6,000〜53,000）に比べてかなり狭い。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th class="num">都市数（デポを含む）</th><th class="num">時間枠の幅（中央値）</th><th class="num">デポに戻る締め切り</th><th class="num">最適値</th></tr></thead>
+    <tbody>
+      <tr><td><code>rbg019a</code></td><td class="num">20</td><td class="num">300</td><td class="num">5,900</td><td class="num">1,262</td></tr>
+      <tr><td><code>rbg027a</code></td><td class="num">28</td><td class="num">1,712</td><td class="num">10,434</td><td class="num">5,091</td></tr>
+      <tr><td><code>rbg041a</code></td><td class="num">42</td><td class="num">600</td><td class="num">8,702</td><td class="num">2,598</td></tr>
+      <tr><td><code>rbg055a</code></td><td class="num">56</td><td class="num">600</td><td class="num">14,944</td><td class="num">3,761</td></tr>
+      <tr><td><code>rbg067a</code></td><td class="num">68</td><td class="num">600</td><td class="num">21,748</td><td class="num">4,625</td></tr>
+      <tr><td><code>rbg092a</code></td><td class="num">93</td><td class="num">600</td><td class="num">26,100</td><td class="num">7,158</td></tr>
+      <tr><td><code>rbg125a</code></td><td class="num">126</td><td class="num">600</td><td class="num">29,420</td><td class="num">7,936</td></tr>
+      <tr><td><code>rbg172a</code></td><td class="num">173</td><td class="num">600</td><td class="num">36,574</td><td class="num">10,950</td></tr>
+      <tr><td><code>rbg233</code></td><td class="num">232</td><td class="num">600</td><td class="num">53,386</td><td class="num">14,992</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /問題設定とインスタンス -->
 
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/ の @solver の description）と同じ文。解法を足したら 1 項目足す -->
