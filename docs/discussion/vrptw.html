@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRPTW の手法選び</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<!-- 時間枠付き配送計画（VRPTW）の考察。新しい問題を追加するときは、このファイルを複製して中身を書き換え、index.html の早見表と「問題別の考察」に 1 行ずつ足す（手順は docs/extending.md） -->
+<header class="top">
+  <div class="crumb">
+    <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータル</a>
+    <a href="index.html">考察トップ</a>
+    <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">手元ベンチマーク</a>
+    <a href="../literature/vrptw.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a>
+  </div>
+  <div class="eyebrow">考察 · VRPTW · 2026-10-26 時点</div>
+  <h1>時間枠付き配送計画の手法選び</h1>
+  <p class="lede">Solomon の 100 顧客 6 問と、その先頭 25・50 顧客を切り出した 4 問、Gehring &amp; Homberger の 200 顧客 2 問の計 12 問。容量に上限のある車両を何台使ってもよく（上限 25〜50 台）、各顧客を時間枠の中で訪れて、総距離を最小にします。距離は DIMACS の規約どおり小数第 1 位で切り捨て。参照値は既知最良値で、100 顧客以下の 10 問は最適値です。</p>
+  <p class="meta">計測環境と、全問題に共通する前提・限界は<a href="index.html#common">考察トップ</a>にまとめています。この問題の計測は commit <code>96b5f25</code>、PyVRP 0.14.1、elkai 2.0.1（LKH-3.0.8 を同梱）、OR-Tools 9.15、HiGHS 1.15 を使いました。</p>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <a href="#choose">手法の選び方</a>
+  <a href="#methods">比べた手法</a>
+  <a href="#results">手元の結果</a>
+  <a href="#literature">文献との突き合わせ</a>
+  <a href="#discussion">考察</a>
+  <a href="#threads">スレッド数</a>
+  <a href="#repro">再現性</a>
+  <a href="#limits">限界</a>
+  <a href="#next">次の一手</a>
+</nav>
+
+<section>
+  <div class="verdict"><div class="k">結論</div>
+    <p>PyVRP（ハイブリッド遺伝的探索）が平均 0.04% で抜けており、36 回中 30 回で既知最良値に並び、最も悪くても 0.46% でした。2 番手は自作の SISR（0.65%）と LKH-3（0.71%）ですが、得意な問題の型が逆で、SISR は少数の長い経路を走る 2 系、LKH-3 は短い経路が多数並ぶ 1 系の一部で 1〜6% 落とします。汎用の MIP と CP-SAT は、時間枠がそろって狭い問題なら 200 顧客でも最適性を証明する一方、時間枠が広いと既知最良値の 1.4〜2.7 倍の解しか返せませんでした。</p></div>
+
+  <h3 id="choose">手法の選び方</h3>
+  <p>複数の車両で、決められた時間帯に顧客を回る配車計画の問題です。まず <b>PyVRP</b> を使います。容量・時間枠・作業時間をそのままモデルに書け、12 問すべてで既知最良値から 0.5% 以内に入りました。pip で入り、Windows でも動きます。</p>
+  <p>次の条件に当てはまるときは、手法を切り替えます。</p>
+  <ul class="pts">
+    <li><b>時間枠がそろって狭く（計画期間の数 % 程度）、最適であることの証明が必要</b>なときは、MIP（HiGHS）か CP-SAT。R101・C101 と 200 顧客の R1_2_1 は、どちらも 60 秒以内に最適性を証明しました（R1_2_1 は MIP 13 秒、CP-SAT 4 スレッド 22 秒）。50 顧客までなら、時間枠がやや広くても証明できます。ただし、時間枠が狭くても RC 系（集まった顧客とばらけた顧客の混在）は証明できなかったので、試してみて判断します。</li>
+    <li><b>独自の制約を足したい、自前で実装したい</b>ときは SISR のような「壊して直す」探索。挿入の可否を判定する関数さえ書けば動き、1 系の 8 問では平均 0.22% でした。1 台が多くの顧客を回る 2 系では R201 の 3 問で 1.3〜2.4% 残るので、その場合は経路の中を組み替える近傍を足します。</li>
+    <li><b>すでに OR-Tools で業務の制約を書いている</b>なら、そのままでも全問で実行可能解が得られ、平均 1.2% です。ただし 200 顧客では 3.8〜4.4% 劣るので、規模が大きいなら PyVRP に移る価値があります。</li>
+  </ul>
+  <p>避けたいのは、時間枠の広い問題に汎用の MIP や CP-SAT を使うことと、挿入法 + 簡単な局所探索の解をそのまま使うことです。前者は R112・RC208 で既知最良値の 1.4〜2.7 倍、後者は平均 11%、2 系では平均 24% 劣りました。</p>
+
+  <h3 id="methods">比べた手法</h3>
+  <!-- 解法の登録時の解説（src/solvers/ の @solver の description）と同じ文。解法を足したら 1 項目足す -->
+  <p>手法名の末尾の <code>-4w</code> は 4 スレッドで実行したことを示します。</p>
+  <dl class="methods">
+    <dt><code>Insertion+LS</code></dt><dd>デポから遠い顧客から順に、距離の増え方が最も小さく時間枠と容量を守れる位置へ挿入して経路を作る構築法（入らなければ新しい車両を出す）。続けて、顧客 1 人の移動（Relocate）と 2 本の経路の後半の交換（2-opt*）で、改善できなくなるまで局所探索する。決定的で一瞬で終わる、実務でまず試す素朴な方法。</dd>
+    <dt><code>SISR</code></dt><dd>焼きなまし法の受理基準を使う「壊して直す」型の探索（ruin and recreate）で、Christiaens &amp; Vanden Berghe (2020) の SISR にならった自作版。近くにいる顧客の連なりを数本の経路からまとめて抜き、抜いた顧客を見送りを交えた貪欲挿入で入れ直す。温度は制限時間に合わせて 100 から 1 まで下げる（元論文の分割した連なりの抜き方と、台数を減らす手順は省いた）。</dd>
+    <dt><code>LKH-3(elkai)</code></dt><dd>LKH の後継で、制約付きの巡回路問題を扱える LKH-3 を、容量と時間枠付きの配送計画（CVRPTW）として呼ぶ。車両の台数ぶんデポを複製した 1 本の巡回路として扱い、容量・時間枠の違反をペナルティにして LK 型の局所探索を行う。制限時間いっぱい試行を繰り返す。</dd>
+    <dt><code>ORTools-GLS</code></dt><dd>OR-Tools の配送計画ソルバー（Routing）に、積載量と時刻の 2 つの次元を加えて容量と時間枠を表す。挿入法で初期解を作り、誘導局所探索（GLS）で改善する。</dd>
+    <dt><code>CP-SAT</code></dt><dd>CP-SAT で、弧の 0-1 変数と AddMultipleCircuit 制約（デポを何度も通ってよい巡回路）で経路を表し、各顧客の作業開始時刻と積載量の整数変数に「弧を使うなら、次の顧客は作業時間と移動時間のぶん後に始まり、積載量は需要のぶん増える」条件を付けたモデル。解と同時に下界を出し、最適性を証明できる。</dd>
+    <dt><code>MIP-HiGHS</code></dt><dd>弧の 0-1 変数と、各顧客の作業開始時刻・積載量の連続変数を big-M 制約（弧を使うときだけ時刻と積載量の順序を強制する）で結んだ 2 添字の定式化を HiGHS で解く。時刻の制約が部分巡回路も防ぐ。big-M は緩和が弱く、専用の厳密解法（列生成）に比べて扱える規模がずっと小さい。</dd>
+    <dt><code>PyVRP-HGS</code></dt><dd>配送計画ライブラリ PyVRP のハイブリッド遺伝的探索（HGS）。解の集団を交叉させ、生まれた子を局所探索で磨く遺伝的アルゴリズムで、Vidal の HGS を基にした最先端の配送計画ソルバー。容量と時間枠をそのまま PyVRP のモデルに載せ、総距離を最小化する。</dd>
+  </dl>
+
+  <h3 id="results">手元の結果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>手法</th><th class="num">平均ギャップ</th><th class="num">1 系（8 問）</th><th class="num">2 系（4 問）</th><th class="num">最良値到達</th><th class="num">最適性証明</th><th class="num">平均時間</th></tr></thead>
+    <tbody>
+      <tr class="top1"><td class="m"><code>PyVRP-HGS</code></td><td class="num">0.04%</td><td class="num">0.06%</td><td class="num">0.00%</td><td class="num">30/36 回</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>SISR</code>（自作）</td><td class="num">0.65%</td><td class="num">0.22%</td><td class="num">1.49%</td><td class="num">18/36 回</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>LKH-3(elkai)</code></td><td class="num">0.71%</td><td class="num">0.97%</td><td class="num">0.21%</td><td class="num">18/36 回</td><td class="num">–</td><td class="num">60.0 秒</td></tr>
+      <tr><td class="m"><code>ORTools-GLS</code></td><td class="num">1.24%</td><td class="num">1.61%</td><td class="num">0.51%</td><td class="num">4/12</td><td class="num">–</td><td class="num">60.2 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT-4w</code></td><td class="num">8.86%</td><td class="num">7.89%</td><td class="num">10.8%</td><td class="num">7/12</td><td class="num">7</td><td class="num">29.4 秒</td></tr>
+      <tr><td class="m"><code>Insertion+LS</code>（自作）</td><td class="num">11.3%</td><td class="num">4.87%</td><td class="num">24.3%</td><td class="num">1/12</td><td class="num">–</td><td class="num">0.3 秒</td></tr>
+      <tr><td class="m"><code>CP-SAT</code></td><td class="num">14.0%</td><td class="num">10.7%</td><td class="num">20.6%</td><td class="num">7/12</td><td class="num">7</td><td class="num">31.0 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS-4w</code></td><td class="num">41.6%</td><td class="num">40.9%</td><td class="num">43.1%</td><td class="num">7/12</td><td class="num">7</td><td class="num">26.1 秒</td></tr>
+      <tr><td class="m"><code>MIP-HiGHS</code></td><td class="num">41.6%</td><td class="num">40.9%</td><td class="num">43.1%</td><td class="num">7/12</td><td class="num">7</td><td class="num">26.3 秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">1 系（R1・C1・RC1 と Gehring &amp; Homberger の R1_2_1・RC1_2_1）は容量が小さく、短い経路が 10〜23 本並ぶ型。2 系（R201 とその切り出し、RC208）は 1 台が多くの顧客を回り、経路が 2〜8 本の型。全手法が 12 問すべてで実行可能解を返し、返された解はすべて共通の評価関数で容量・時間枠・総距離を検証済み。平均ギャップは全インスタンス・全シードの単純平均。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th class="num">顧客数</th><th class="num">PyVRP</th><th class="num">SISR</th><th class="num">LKH-3</th><th class="num">OR-Tools</th><th class="num">CP-SAT-4w</th><th class="num">MIP</th></tr></thead>
+    <tbody>
+      <tr><td>R101.25 / R101.50</td><td class="num">25 / 50</td><td class="num">0 / 0</td><td class="num">0 / 0</td><td class="num">0 / 0</td><td class="num">0 / 0.16</td><td class="num">証明 / 証明</td><td class="num">証明 / 証明</td></tr>
+      <tr><td>R201.25 / R201.50</td><td class="num">25 / 50</td><td class="num">0 / 0</td><td class="num">1.28 / 2.30</td><td class="num">0 / 0</td><td class="num">0 / 0</td><td class="num">証明 / 証明</td><td class="num">証明 / 証明</td></tr>
+      <tr><td>C101</td><td class="num">100</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">証明（18 秒）</td><td class="num">証明（0.4 秒）</td></tr>
+      <tr><td>R101</td><td class="num">100</td><td class="num">0</td><td class="num">0.16</td><td class="num">0</td><td class="num">0.32</td><td class="num">証明（2 秒）</td><td class="num">証明（1 秒）</td></tr>
+      <tr><td>RC101</td><td class="num">100</td><td class="num">0</td><td class="num">0</td><td class="num">0.53</td><td class="num">2.29</td><td class="num">3.12</td><td class="num">6.59</td></tr>
+      <tr><td>R112</td><td class="num">100</td><td class="num">0.21</td><td class="num">0.34</td><td class="num">4.32</td><td class="num">1.86</td><td class="num">47.7</td><td class="num">155.5</td></tr>
+      <tr><td>R201</td><td class="num">100</td><td class="num">0</td><td class="num">2.38</td><td class="num">0.03</td><td class="num">1.18</td><td class="num">0.48</td><td class="num">2.10</td></tr>
+      <tr><td>RC208</td><td class="num">100</td><td class="num">0</td><td class="num">0</td><td class="num">0.80</td><td class="num">0.86</td><td class="num">42.7</td><td class="num">170.1</td></tr>
+      <tr><td>R1_2_1</td><td class="num">200</td><td class="num">0.06</td><td class="num">0.53</td><td class="num">0.07</td><td class="num">3.79</td><td class="num">証明（22 秒）</td><td class="num">証明（13 秒）</td></tr>
+      <tr><td>RC1_2_1</td><td class="num">200</td><td class="num">0.23</td><td class="num">0.76</td><td class="num">2.81</td><td class="num">4.43</td><td class="num">12.3</td><td class="num">165.3</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">既知最良値とのギャップ（%）。3 シードの手法は平均。MIP は 1 スレッド。「証明」は 60 秒以内に最適性を証明したもの（値は既知最良値と一致）。</p>
+
+  <h3 id="literature">文献との突き合わせ</h3>
+  <div class="legend">
+    <span>判定:</span>
+    <span><span class="v ok">一致</span> 文献と同じ傾向</span>
+    <span><span class="v part">条件つき</span> 一部だけ一致、または条件が違いすぎて比べにくい</span>
+    <span><span class="v new">新規</span> 文献に比較がなかった点</span>
+  </div>
+  <div class="frame">
+  <table>
+    <thead><tr><th>文献の主張</th><th>手元の結果</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><td class="claim">無償ソルバーを同じ規約・同じ条件で横並びにした中立的な比較は見つからない</td><td class="ours">7 手法 × 12 問を同条件で比較。PyVRP 0.04% ＞ SISR 0.65% ≒ LKH-3 0.71% ＞ OR-Tools 1.24% ≫ 汎用 CP-SAT・MIP</td><td><span class="v new">新規</span></td></tr>
+      <tr><td class="claim">HGS が最前線。DIMACS 2021 で HGS 系が 1 位、PyVRP は 1000 顧客・2 時間で 0.40%（Wouda ら 2024）</td><td class="ours">60 秒・200 顧客以下で 0.04%、全問 0.5% 以内。2 番手以下に 1 桁の差</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">OR-Tools は 1 分で 100 顧客 1.5%、200 顧客 4.4%（Hexaly 社の比較）。100 顧客で PyVRP より 1.5% 劣る（Berto ら 2025）</td><td class="ours">100 顧客の 6 問で平均 1.09%、200 顧客の 2 問で 4.11%</td><td><span class="v ok">一致</span></td></tr>
+      <tr><td class="claim">汎用 MIP は 1 分で 100 顧客 5.5%、200 顧客 9.6% で、規模とともに急に悪くなる（Hexaly 社の比較の Gurobi）</td><td class="ours">規模よりも時間枠の狭さで二極化。時間枠がそろって狭い R101・C101・R1_2_1（200 顧客）は最適性を証明、時間枠の広い R112・RC208 と RC1_2_1 は 155〜170%</td><td><span class="v part">条件つき</span></td></tr>
+      <tr><td class="claim">専用の分枝価格カットは Solomon 100 顧客を全件、200 顧客を 51/60 件解く（Pecin ら 2017）</td><td class="ours">汎用の MIP・CP-SAT でも、時間枠の狭い問題なら 200 顧客まで 60 秒で証明できた。専用解法が要るのは時間枠の広い問題</td><td><span class="v part">条件つき</span></td></tr>
+      <tr><td class="claim">SISR は単純な仕組みで汎用・専用の手法に勝つ（Christiaens–Vanden Berghe 2020）</td><td class="ours">簡略化した自作版で 0.65%。1 系では強い（0.22%）が、R201 系で 1.3〜2.4% 残り PyVRP に及ばない</td><td><span class="v part">条件つき</span></td></tr>
+      <tr><td class="claim">条件をそろえると、既知最良値の 5% 以内に届く割合は PyVRP が OR-Tools より高い（Rascoussier ら 2026）</td><td class="ours">1% 以内: PyVRP 36/36 回、OR-Tools 7/12 問（5% 以内はどちらも全件）</td><td><span class="v ok">一致</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="discussion">考察</h3>
+  <p>厳密系（MIP・CP-SAT）の成否を分けたのは、規模よりも時間枠の狭さでした。時間枠が狭いと、時間の上でつながりうる弧が少なくなります。R101・R1_2_1 では全弧の 3〜4 割しか残らず、汎用の MIP でも探索空間が小さくなります。200 顧客の R1_2_1 を MIP が 13 秒で証明できたのはこのためです。逆に R112・RC208 は時間枠が計画期間の半分ほどあり、ほぼすべての弧が残ります。big-M 制約の緩和も弱く、MIP の下界は既知最良値の 6 割ほど（R112 で 627 対 949）、整数解は 2.5 倍前後でした。RC101・RC1_2_1 は時間枠が狭いのに証明できておらず、狭さだけでは決まりません（理由は未検証）。<a href="atsptw.html">ATSP-TW</a> では時間枠の厳しさが「解を返せるか」を分けましたが、VRPTW では車両を増やせば必ず実行可能解が作れるため、差は品質に出ています。</p>
+  <p>メタヒューリスティクスどうしでは、経路の形で順位が入れ替わりました。自作の SISR は顧客を抜いて入れ直すだけの探索で、経路の中の順番を直接組み替える近傍を持ちません。1 台が多くの顧客を回る R201 系で 1.3〜2.4% 残ったのはこのためと考えられます（推測。同じ 2 系の RC208 では既知最良値に届いており、これだけでは説明しきれません）。LKH-3 は逆で、巡回路の中の組み替えが得意な一方、短い経路が多数並ぶ R112・RC1_2_1 では 3〜4% 残りました。PyVRP は経路間と経路内の両方の近傍を局所探索に持ち、どちらの型でも崩れていません。</p>
+  <p>挿入法 + 局所探索（Insertion+LS）は 0.3 秒で全問に実行可能解を返しますが、品質は平均 11% で、RC208 では 41% 劣りました。経路の中の 2-opt などを入れていない簡素な局所探索のためで、実務の「とりあえずの解」としても物足りません。PyVRP を数秒だけ動かす方がよいと考えられます（数秒での品質は記録していないので推測）。</p>
+  <p>OR-Tools は全問で実行可能解を返し、ATSP-TW のように初期解の構築で失敗することはありませんでした。複数の車両が使えるので、挿入法で必ず解が作れるためです。品質は文献の報告とよく合っています。</p>
+
+  <h3 id="threads">スレッド数の効果</h3>
+  <div class="frame">
+  <table>
+    <thead><tr><th>解法</th><th class="num">1 スレッド</th><th class="num">4 スレッド</th><th>主な変化</th></tr></thead>
+    <tbody>
+      <tr><td>CP-SAT</td><td class="num">14.0%</td><td class="num up">8.86%</td><td>RC208 が 77.8% → 42.7%、R201 が 4.48% → 0.48%、RC1_2_1 が 20.4% → 12.3%。R1_2_1 の証明が 38 秒 → 22 秒。下界はほとんど変わらない</td></tr>
+      <tr><td>MIP-HiGHS</td><td class="num">41.6%</td><td class="num">41.6%</td><td>解はほぼ同じ（RC101 が 6.59% → 6.24%）。R1_2_1 の証明が 13 秒 → 10 秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="repro">再現性（クラウドと手元PC）</h3>
+  <ul class="pts">
+    <li>クラウドでの試走（Xeon 4 vCPU）は計測中です。結果がそろい次第、ここに手元PCとの違いを追記します。</li>
+  </ul>
+
+  <h3 id="limits">この問題での限界</h3>
+  <ul class="pts">
+    <li>Solomon・Gehring &amp; Homberger 356 件のうち 12 件だけで、400 顧客以上や、C2 系（集まった顧客・広い時間枠）がない。</li>
+    <li>目的は総距離だけで、ヒューリスティクスの文献で一般的な「まず台数、次に距離」は扱っていない。実務で車両の固定費が大きいなら、台数を優先した比較が別に要る。</li>
+    <li>距離を小数第 1 位で切り捨てる規約だけで比べた。元の小数の距離で評価すると、時間枠の境目にある解が実行不能になることがある（Rascoussier ら 2026）。</li>
+    <li>MIP は 2 添字の big-M 定式化だけで、文献で強い列生成（分枝価格カット）は試していない。</li>
+    <li>SISR と Insertion+LS は自作の簡略版で、元論文の SISR（分割した連なりの抜き方、台数削減）や経路内の 2-opt を入れていない。SISR の温度などの設定も調整していない。</li>
+    <li>メタヒューリスティクスは 60 秒を使い切る設定で、最良値に何秒で届いたかは記録していない。</li>
+  </ul>
+
+  <h3 id="next">次の一手</h3>
+  <ul class="pts">
+    <li>解の更新時刻を記録し、PyVRP が数秒でどこまで届くかを出す（実務では数秒〜数十秒で答えたい場面が多い）。</li>
+    <li>「まず台数、次に距離」の目的でも同じ比較を回し、目的の規約で順位が変わるかを確かめる。</li>
+    <li>SISR に経路内の 2-opt や Or-opt を足し、時間枠の広い問題での差が縮まるかを見る。</li>
+    <li>400〜1000 顧客の問題を足し、OR-Tools と PyVRP の差が文献どおり広がるかを確かめる。</li>
+  </ul>
+</section>
+
+<footer>
+  <p>出典: 手元ベンチマークの数値は <a href="../benchmark.html" data-web="https://claude.ai/artifact/WD5ZV3bttWbyhEqsmLdZMW">結果ビュー</a> と <code>results/runs/20261026T152017Z-tiamat-vrptw</code>、文献の数値は <a href="../literature/vrptw.html" data-web="https://claude.ai/artifact/UiqSc5rCjnhnbwCW5FL6zf">文献レビュー</a> によります。「推測」「未検証」と書いた箇所は、ログや追加実験で確かめていない解釈です。</p>
+  <p><a href="index.html">考察トップに戻る</a> · <a href="../index.html" data-web="https://claude.ai/artifact/1wC4Hm1fzEdV9gwEGKcXLq">ポータルに戻る</a></p>
+</footer>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

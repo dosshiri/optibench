@@ -76,7 +76,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
 <header>
   <div class="eyebrow">optibench · 組合せ最適化ベンチマーク</div>
   <h1>optibench ポータル</h1>
-  <p class="lede">巡回セールスマン問題（時間枠付きを含む）、ジョブショップスケジューリング、ナーススケジューリングなど、実務でよく使われる組合せ最適化問題について、どの解法を選べばよいかを調べました。このページはその入口で、論文の調査、手元のPCでの計測、両者を踏まえた考察の 3 つのページにつながっています。</p>
+  <p class="lede">巡回セールスマン問題（時間枠付きを含む）、時間枠付き配送計画、ジョブショップスケジューリング、ナーススケジューリングなど、実務でよく使われる組合せ最適化問題について、どの解法を選べばよいかを調べました。このページはその入口で、論文の調査、手元のPCでの計測、両者を踏まえた考察の 3 つのページにつながっています。</p>
   <p class="hint">どの手法を使えばよいかを知りたいときは、まず <a href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a> を開いてください。根拠を詳しく確かめたいときは、ほかの 2 つのページを参照してください。</p>
 </header>
 
@@ -110,7 +110,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
     <h2><a href="discussion/index.html" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></h2>
     <p>問題ごとに、どの手法を選ぶべきかと、その根拠をどこまで信じてよいか。</p>
     <ul>
-      <li>TSP・ATSP・ATSP-TW・JSSP・ナースの章ごとに、手法の選び方を先頭に。量子・疑似量子アニーリングは横断の章</li>
+      <li>TSP・ATSP・ATSP-TW・VRPTW・JSSP・ナースの章ごとに、手法の選び方を先頭に。量子・疑似量子アニーリングは横断の章</li>
       <li>手元の結果と文献の突き合わせ、スレッド数の効果、再現性</li>
       <li>その問題での限界と次の一手</li>
     </ul>
@@ -128,6 +128,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
       <tr><td>TSP</td><td>LKH</td><td>業務制約があれば OR-Tools Routing。数百ノードまでで証明が要れば MIP（初期解つき）</td><td>大規模での CP-SAT、初期解なしの MIP、QUBO 系のアニーリング</td></tr>
       <tr><td>ATSP</td><td>LKH</td><td>証明が要れば MIP と CP-SAT の両方を試す</td><td>2-opt 中心の自作局所探索、QUBO 系のアニーリング</td></tr>
       <tr><td>ATSP-TW</td><td>PyVRP</td><td>自作するなら GVNS。即答が必要なら締め切り順 + 局所探索。70 地点ほどまでで証明が要れば CP-SAT（複数スレッド）</td><td>時間枠の厳しい問題での OR-Tools Routing、big-M の MIP</td></tr>
+      <tr><td>VRPTW</td><td>PyVRP</td><td>時間枠がそろって狭く証明が要れば MIP か CP-SAT（200 顧客でも可）。自作するなら SISR のような壊して直す探索。OR-Tools で書いてあれば 100 顧客ほどまではそのままでよい</td><td>時間枠の広い問題での汎用 MIP・CP-SAT、挿入法 + 簡単な局所探索の解をそのまま使う</td></tr>
       <tr><td>JSSP</td><td>CP-SAT（複数スレッド）</td><td>専用近傍を実装できればタブーサーチ。即答が必要ならディスパッチングルール</td><td>big-M の MIP、1 スレッドの CP-SAT、QUBO 系のアニーリング</td></tr>
       <tr><td>ナース</td><td>MIP</td><td>大規模で MIP が解を出せなければ CP-SAT（複数スレッド）</td><td>調整なしの汎用 SA、1 スレッドの CP-SAT</td></tr>
     </tbody>
@@ -147,6 +148,8 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
     <dt>締め切り順 + 局所探索</dt><dd>時間枠の締め切りが早い順に地点を並べ、地点の付け替えや入れ替えで遅れと移動時間を減らす素朴な方法。一瞬で終わる。</dd>
     <dt>CP-SAT</dt><dd>Google OR-Tools の制約プログラミングソルバー。整数変数と制約（巡回路、重ならない区間など）でモデルを書くと、SAT ソルバーの技術と線形緩和を組み合わせて解き、下界と最適性の証明も出す。複数スレッドで異なる探索を並走させると大きく強くなる。</dd>
     <dt>MIP</dt><dd>混合整数計画。0-1 変数と線形の制約・目的関数でモデルを書き、分枝限定法で解く。ここではオープンソースの HiGHS を使った。最適性を証明できるが、big-M のように緩和が弱い定式化では大きな問題が苦手。</dd>
+    <dt>SISR（壊して直す探索）</dt><dd>今の解から近くにいる顧客の連なりをまとめて抜き（壊す）、抜いた顧客を貪欲に入れ直す（直す）ことを繰り返し、焼きなまし法の基準で受け入れるメタヒューリスティクス（ruin and recreate）。仕組みが単純で、制約は挿入の可否の判定に書けばよいので、自前の実装に向く。</dd>
+    <dt>挿入法 + 局所探索</dt><dd>顧客を 1 人ずつ、距離の増え方が最も小さく制約を守れる位置へ入れて経路を作り、顧客の移動や経路の後半の交換で改善する素朴な方法。一瞬で終わる。</dd>
     <dt>タブーサーチ</dt><dd>近傍で最も良い解へ移り続け、直前の操作を一定期間禁じて逆戻りを防ぐメタヒューリスティクス。JSSP ではクリティカルパス上の作業を入れ替える専用の近傍（N5）を使う。</dd>
     <dt>ディスパッチングルール</dt><dd>機械が空くたびに、処理時間が短い順（SPT）や残り作業が多い順（MWKR）などの規則で次の作業を選ぶ方法。一瞬で解が出るが、品質は低め。</dd>
     <dt>量子・疑似量子アニーリング（QUBO 系）</dt><dd>問題を QUBO（0/1 変数の二次式）に直し、量子アニーラや、それを古典計算機で模した疑似量子アニーリング・焼きなまし法でエネルギー最小の解を探す手法の系統。制約は罰金として目的関数に足す。TSP では変数が都市数の 2 乗になるため、扱えるのは数十都市まで。ここでは手元の CPU で動く OpenJij と dwave-samplers を比べた。</dd>

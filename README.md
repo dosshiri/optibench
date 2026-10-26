@@ -2,7 +2,7 @@
 
 組合せ最適化ベンチマーク。実務で使われる代表的な組合せ最適化問題について、数理計画・制約プログラミング・メタヒューリスティクスなどの解法を、同じ条件で手元比較するためのリポジトリです。
 
-- 対象問題: TSP（対称巡回セールスマン）、TSP 小規模（量子・疑似量子アニーリングと比べるための 14〜70 都市）、ATSP（非対称）、ATSP-TW（時間枠付き非対称）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
+- 対象問題: TSP（対称巡回セールスマン）、TSP 小規模（量子・疑似量子アニーリングと比べるための 14〜70 都市）、ATSP（非対称）、ATSP-TW（時間枠付き非対称）、VRPTW（時間枠付き配送計画）、JSSP（ジョブショップスケジューリング）、ナーススケジューリング（NSP）
 - 入口: `docs/index.html`（文献調査・結果・考察の 3 ページへのリンク集。ダブルクリックで開きます）
 - 文献調査: `docs/literature/`（既存研究における解法比較のレビュー。`index.html` が全体の要点、`<問題>.html` が問題ごとのページ）
 - 考察: `docs/discussion/`（問題ごとの手法の選び方と、その根拠・限界・次の一手。`index.html` が早見表、`<問題>.html` が問題ごとのページ）
@@ -18,11 +18,13 @@ src/            実行スクリプト
   problems/       問題種別（インスタンス読込・参照値・解の評価・インスタンス生成）
     routing.py      TSP / TSP 小規模 / ATSP
     atsptw.py       ATSP-TW（時間枠の評価を含む）
+    vrptw.py        VRPTW（容量・時間枠の評価を含む）
     jssp.py         JSSP
     nsp.py          NSP のモデル・評価関数・合成インスタンス生成
   solvers/        解法（@solver で登録）
     routing.py      TSP / ATSP の解法
     atsptw.py       ATSP-TW の解法（PyVRP 版は atsptw_pyvrp.py）
+    vrptw.py        VRPTW の解法（PyVRP 版は vrptw_pyvrp.py）
     jssp.py         JSSP の解法
     qubo_*.py       量子・疑似量子アニーリング系の解法（OpenJij, dwave-samplers, Amplify AE）
     nsp.py          NSP の解法
@@ -48,6 +50,7 @@ docs/           入口（index.html）、対話型のグラフビュー（benchm
 | TSP 小規模 | burma14, ulysses16, ulysses22, bayg29, att48, eil51, berlin52, st70 | TSPLIB95 | 公表最適値 |
 | ATSP | ftv33, ftv70, kro124p, ft70, rbg323, rbg443 | TSPLIB95 | 公表最適値 |
 | ATSP-TW | rbg019a, rbg027a, rbg041a, rbg055a, rbg067a, rbg092a, rbg125a, rbg172a, rbg233 | Ascheuer の AFG セット（López-Ibáñez の一覧） | 公表最適値（9 問とも証明済み） |
+| VRPTW | R101.25, R201.25, R101.50, R201.50（Solomon の先頭 25・50 顧客）, C101, R101, R112, RC101, R201, RC208, R1_2_1, RC1_2_1 | Solomon、Gehring & Homberger（PyVRP/Instances の VRPLIB 形式） | 既知最良値（CVRPLIB。距離は小数第 1 位で切り捨て、目的は総距離。100 顧客以下は最適値） |
 | JSSP | ft06, ft10, la16, la21, abz5, orb01, ta01, swv01, ta11, ta21 | JSPLIB（OR-Library 形式） | 既知最適値（ta11=1357, ta21=1642 は文献値） |
 | NSP | nsp01–nsp06（8〜50 人, 14〜42 日, 1〜4 勤務種別） | 合成（`make_instances.py` で再生成可能） | 全 run・全手法中の最良値 |
 
@@ -73,6 +76,13 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 | | `ORTools-GLS` OR-Tools Routing + 時間の次元 + 誘導局所探索 | メタヒューリスティクス |
 | | `CP-SAT`, `CP-SAT-4w` AddCircuit + 時刻変数（1 / 4 ワーカー） | 制約プログラミング |
 | | `MIP-HiGHS`, `MIP-HiGHS-4w` 時刻変数の big-M 定式化（1 / 4 スレッド） | 数理計画 |
+| VRPTW | `Insertion+LS` 最小増分の挿入法 + Relocate / 2-opt* の局所探索 | 構築法 + 局所探索（自作, numba） |
+| | `SISR` 連なりを抜いて入れ直す ruin & recreate + 焼きなまし（Christiaens & Vanden Berghe 2020 の簡略版） | メタヒューリスティクス（自作, numba） |
+| | `LKH-3(elkai)` elkai 同梱の LKH-3.0.8 を CVRPTW として実行 | 専用ヒューリスティクス |
+| | `PyVRP-HGS` PyVRP（容量・時間枠付きの配送計画） | メタヒューリスティクス（HGS） |
+| | `ORTools-GLS` OR-Tools Routing + 積載量と時刻の次元 + 誘導局所探索 | メタヒューリスティクス |
+| | `CP-SAT`, `CP-SAT-4w` AddMultipleCircuit + 時刻・積載量の変数（1 / 4 ワーカー） | 制約プログラミング |
+| | `MIP-HiGHS`, `MIP-HiGHS-4w` 2 添字の big-M 定式化（1 / 4 スレッド） | 数理計画 |
 | JSSP | `SPT`, `MWKR` Giffler-Thompson 法 + 優先規則 | ディスパッチングルール |
 | | `GA` 乱数キー GA（BRKGA 型, 能動スケジュール復号） | メタヒューリスティクス（自作） |
 | | `Tabu-N5` タブー探索（Nowicki & Smutnicki の N5 近傍） | メタヒューリスティクス（自作, numba） |
@@ -87,7 +97,7 @@ NSP は Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmark
 
 - 制限時間 60 秒（`LKH(elkai)` は時間制限を持たないため runs=10 固定、構築法は収束まで）
 - 全手法 1 スレッド（`-4w` のみ 4 スレッド、単独実行）。1 スレッド手法は 4 ジョブ並列で実行。手法名の `-<n>w` は同じ解法を n スレッドで実行したもの（`--threads` で任意のスレッド数を追加できます。[`docs/extending.md`](docs/extending.md#スレッド数を変えて実行する)）
-- 確率的手法（`SA`, `GA`, `Tabu-N5`, `OpenJij-SQA`, `OpenJij-SA`, `DWave-SA`）は 3 シードの平均
+- 確率的手法（`SA`, `GA`, `Tabu-N5`, `GVNS`, `SISR`, `LKH-3(elkai)`, `PyVRP-HGS`, `OpenJij-SQA`, `OpenJij-SA`, `DWave-SA`）は 3 シードの平均
 - 量子・疑似量子アニーリング系は、QUBO の変数が 5,000 個を超えるインスタンス（TSP・ATSP は 72 都市以上、JSSP は ft06 以外）を解かずに「解なし」とする
 - 指標: 参照値に対するギャップ (%) = (得られた値 − 参照値) / 参照値 × 100
 - 実行環境: 4 vCPU / 16 GB のクラウドコンテナ、Python 3.13、OR-Tools 9.15、HiGHS 1.15（run ごとの詳細は各 `run.json`）
