@@ -1,6 +1,6 @@
 """集計結果をビュー用データに書き出す.
 docs/data.json と docs/data.js（benchmark.html をダブルクリックで開いても読めるようにするため）を書き、
-GitHub 上で読める results/README.md と results/figures/*.svg も更新する.
+GitHub 上で読める results/README.md と results/figures/*.svg、考察ページとポータルの問題設定の節も更新する.
 results/runs/ の全 run を含め、問題ごとに最新の run を既定の表示にする.
 python export_web.py [出力先 data.json]"""
 import datetime
@@ -11,6 +11,7 @@ import sys
 import pandas as pd
 
 import export_report
+import export_setting
 import registry
 import runmeta
 from analyze import summarize
@@ -103,6 +104,7 @@ def main(out):
         info = dict(label=p.label, ref=p.ref_label, unit=p.unit,
                     about={s.name: s.description for s in registry.solvers(prob).values()
                            if s.description and not s.hidden})
+        info.update(export_setting.problem_info(p))
         if p.display != "gap":
             info["display"] = p.display
         if p.sense != "min":
@@ -114,6 +116,7 @@ def main(out):
     with open(os.path.splitext(out)[0] + ".js", "w", encoding="utf-8") as f:
         f.write("window.OPTIBENCH_DATA = " + json.dumps(data, ensure_ascii=False) + ";\n")
     export_report.main(data)
+    export_setting.write_pages()
 
 
 if __name__ == "__main__":

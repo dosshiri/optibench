@@ -28,6 +28,7 @@
 
 <nav class="toc" aria-label="目次">
   <a href="#choose">手法の選び方</a>
+  <a href="#setting">問題設定とインスタンス</a>
   <a href="#methods">比べた手法</a>
   <a href="#results">手元の結果</a>
   <a href="#literature">文献との突き合わせ</a>
@@ -43,6 +44,33 @@
 
   <h3 id="choose">手法の選び方</h3>
   <p>TSP・ATSP・JSSP のように専用の解法や CP-SAT・MIP が使える問題では、QUBO 系を本番の解法に選ぶ理由は今回の結果からは見つかりませんでした。各問題のページの「まず使う」手法（TSP・ATSP は LKH、JSSP は CP-SAT）を使ってください。量子アニーラ実機やその後継を将来使う前提で、定式化と罰金の調整を先に確かめておきたい場合は、手元で動く dwave-samplers（SA）を基準にします。OpenJij の疑似量子アニーリング（SQA）は、同じ QUBO・同じ時間で焼きなまし法より劣ったので、品質目的では選びません。QUBO の変数が数千を超える規模（TSP なら 70 都市級より上）に QUBO 系を使うのは避けます。</p>
+
+  <!-- 問題設定とインスタンス: python src/export_web.py が src/problems/ の setting と instance_info から書き出す（この間は直接編集しない） -->
+  <h3 id="setting">問題設定とインスタンス（TSP 小規模）</h3>
+  <p>問題は TSP（対称巡回セールスマン）と同じ。量子・疑似量子アニーリング（QUBO 系の解法）は扱える変数の数に限りがあるため、数十都市までのインスタンスに絞り、すべての手法を同じ土俵で比べる。</p>
+  <dl class="setting">
+    <dt>決めるもの</dt><dd>都市を回る順序（巡回路）。0-1 変数で書くと、x_ij = 1 は「都市 i の次に都市 j へ行く」ことを表す。</dd>
+    <dt>制約</dt><dd><ul class="pts"><li>各都市にちょうど 1 回ずつ入り、ちょうど 1 回ずつ出る（各都市をちょうど 1 回訪れる）。</li><li>全都市が 1 本の巡回路でつながる。一部の都市だけで閉じた小さな輪（部分巡回路）を作らない。</li></ul></dd>
+    <dt>目的関数</dt><dd>巡回路の総距離 Σ d_ij x_ij を最小化する。</dd>
+    <dt>補足</dt><dd>QUBO 系の解法では、x_it = 1 を「都市 i を t 番目に訪れる」とする位置の 0/1 変数を使い、都市 0 を先頭に固定して (n − 1)² 個の変数にする。「各都市を 1 回」「各位置に 1 都市」の制約は、破ると目的関数に罰金が加わる形で表す。変数が 5,000 個を超える問題（72 都市以上）は解かずに「解なし」とする。</dd>
+  </dl>
+  <p>TSPLIB95 から 14〜70 都市の 8 問を選んだ。距離の与え方は問題によって異なり、緯度経度から求めた地球上の距離（burma14・ulysses16・ulysses22）、距離行列（bayg29）、疑似ユークリッド距離（att48）、平面のユークリッド距離（eil51・berlin52・st70）が混ざる。参照値は公表されている最適値。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th class="num">都市数</th><th>距離</th><th>内容</th><th class="num">QUBO の変数</th><th class="num">最適値</th></tr></thead>
+    <tbody>
+      <tr><td><code>burma14</code></td><td class="num">14</td><td>緯度経度から求めた地球上の距離</td><td>ミャンマーの 14 都市（Zaw Win）</td><td class="num">169</td><td class="num">3,323</td></tr>
+      <tr><td><code>ulysses16</code></td><td class="num">16</td><td>緯度経度から求めた地球上の距離</td><td>『オデュッセイア』でオデュッセウスがたどった 16 地点（Grötschel &amp; Padberg）</td><td class="num">225</td><td class="num">6,859</td></tr>
+      <tr><td><code>ulysses22</code></td><td class="num">22</td><td>緯度経度から求めた地球上の距離</td><td>『オデュッセイア』でオデュッセウスがたどった 22 地点（Grötschel &amp; Padberg）</td><td class="num">441</td><td class="num">7,013</td></tr>
+      <tr><td><code>bayg29</code></td><td class="num">29</td><td>距離行列で直接与える</td><td>バイエルン州の 29 都市（Grötschel, Jünger &amp; Reinelt）</td><td class="num">784</td><td class="num">1,610</td></tr>
+      <tr><td><code>att48</code></td><td class="num">48</td><td>平面座標の疑似ユークリッド距離</td><td>アメリカ本土 48 州の州都（Padberg &amp; Rinaldi）</td><td class="num">2,209</td><td class="num">10,628</td></tr>
+      <tr><td><code>eil51</code></td><td class="num">51</td><td>平面座標のユークリッド距離</td><td>平面上の 51 都市（Christofides &amp; Eilon）</td><td class="num">2,500</td><td class="num">426</td></tr>
+      <tr><td><code>berlin52</code></td><td class="num">52</td><td>平面座標のユークリッド距離</td><td>ベルリン市内の 52 地点（Grötschel）</td><td class="num">2,601</td><td class="num">7,542</td></tr>
+      <tr><td><code>st70</code></td><td class="num">70</td><td>平面座標のユークリッド距離</td><td>平面上の 70 都市（Smith &amp; Thompson）</td><td class="num">4,761</td><td class="num">675</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /問題設定とインスタンス -->
 
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/qubo_*.py の @solver の description）と同じ文。解法を足したら 1 項目足す -->
