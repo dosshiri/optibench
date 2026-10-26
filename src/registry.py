@@ -42,6 +42,17 @@ class Problem:
                    値と順位で比較）
     order          ビューのタブなどに並べる順（小さいほど先）
     packages       run.json にバージョンを記録する追加パッケージ
+    setting        問題設定の説明（日本語）. 結果ビュー・results/README.md・考察・ポータルに表示する. キーは
+                     brief        何を決めて何を最小化するかの 1 文（ポータルの一覧に出す）
+                     summary      問題の説明（どんな問題か、実務のどこに現れるか）
+                     variables    決めるもの（決定変数）
+                     constraints  制約のリスト
+                     objective    目的関数
+                     note         定式化についての補足（省略可）
+                     instances    使ったインスタンスの説明（出典・規模・性質）
+                     scale        インスタンスの規模の 1 文（ポータルの一覧に出す）
+    instance_info  instance_info(インスタンス名) -> {列名: 値}. インスタンスごとの規模などの表に使う. 省略可
+    discussion     考察ページのファイル名（docs/discussion/ から）. 問題設定の節をここに書き出す
     """
     name: str
     label: str
@@ -57,6 +68,9 @@ class Problem:
     display: str = "gap"
     order: int = 100
     packages: list = field(default_factory=list)
+    setting: dict = field(default_factory=dict)
+    instance_info: Optional[Callable] = None
+    discussion: str = ""
 
     def instance_path(self, name):
         return os.path.join(ROOT, "instances", self.instance_file.format(name))
@@ -193,6 +207,8 @@ def packages():
 def main():
     for p in problems():
         print(f"{p.name}: {p.label}（{len(p.default_instances())} インスタンス, 参照値: {p.ref_label}）")
+        if not p.setting:
+            print("  （問題設定の説明なし: Problem の setting を書いてください）")
         for s in solvers(p.name).values():
             extra = [f"{s.seeds} シード"] * (s.seeds > 1)
             if s.parallel:

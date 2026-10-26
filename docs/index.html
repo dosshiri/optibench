@@ -119,6 +119,26 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
 </ol>
 
 <section>
+  <h2>扱う問題</h2>
+  <p class="hint">それぞれの問題で何を決め、何を最小にするかと、使ったインスタンスの規模です。決定変数・制約・目的関数とインスタンスごとの規模は、考察の各章の「問題設定とインスタンス」と、手元ベンチマークの各タブにあります。</p>
+  <!-- 扱う問題: python src/export_web.py が src/problems/ の setting から書き出す（この間は直接編集しない） -->
+  <div class="frame">
+  <table>
+    <thead><tr><th>問題</th><th>何を決めて何を最小にするか</th><th>インスタンス</th><th>詳しい説明</th></tr></thead>
+    <tbody>
+      <tr><td>TSP</td><td>全都市を 1 回ずつ回って出発点に戻る巡回路のうち、総距離が最短のものを求める。距離は行きと帰りで等しい。</td><td>TSPLIB 6 問（52〜783 都市）</td><td><a href="discussion/tsp.html#setting" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></td></tr>
+      <tr><td>TSP 小規模</td><td>TSP と同じ問題を、量子・疑似量子アニーリングで扱える 14〜70 都市に絞って全手法で比べる。</td><td>TSPLIB 8 問（14〜70 都市）</td><td><a href="discussion/qubo.html#setting" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></td></tr>
+      <tr><td>ATSP</td><td>TSP と同じく全都市を 1 回ずつ回る最短の巡回路を求めるが、距離が行きと帰りで異なる。</td><td>TSPLIB 6 問（34〜443 都市）</td><td><a href="discussion/atsp.html#setting" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></td></tr>
+      <tr><td>ATSP-TW</td><td>各地点を時間枠の中で 1 回ずつ訪れてデポに戻る巡回路のうち、移動時間の合計が最小のものを求める。移動時間は非対称。</td><td>AFG セット 9 問（20〜232 都市）</td><td><a href="discussion/atsptw.html#setting" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></td></tr>
+      <tr><td>JSSP</td><td>各ジョブが決まった順序で機械を回るとき、全工程の開始時刻を決めて、最後の工程が終わる時刻（メイクスパン）を最小にする。</td><td>JSPLIB 10 問（6×6〜20×20、36〜400 工程）</td><td><a href="discussion/jssp.html#setting" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></td></tr>
+      <tr><td>ナーススケジューリング</td><td>職員ごとに毎日の勤務か休みを決めて勤務表を作る。労務上の規則を守りつつ、人数の過不足と希望の違反を最小にする。</td><td>合成 6 問（8〜50 人 × 14〜42 日、勤務種別 1〜4）</td><td><a href="discussion/nsp.html#setting" data-web="https://claude.ai/artifact/UHqkvC8dU3UuCXUqZ5AvEN">考察</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /扱う問題 -->
+</section>
+
+<section>
   <h2>手法選びの早見表</h2>
   <p class="hint">各問題で最初に試す手法の一覧です。計測結果と論文の両方にもとづく目安で、詳しい根拠は考察の各章にあります。</p>
   <div class="frame">
@@ -167,7 +187,7 @@ footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:va
 </section>
 
 <footer>
-  <p>2026-10-25 更新。手元ベンチマークを再実行したときは、考察の数値は自動では更新されません。</p>
+  <p>2026-10-26 更新。手元ベンチマークを再実行したときは、考察の数値は自動では更新されません。</p>
 </footer>
 
 </div>

@@ -28,6 +28,7 @@
 
 <nav class="toc" aria-label="目次">
   <a href="#choose">手法の選び方</a>
+  <a href="#setting">問題設定とインスタンス</a>
   <a href="#methods">比べた手法</a>
   <a href="#results">手元の結果</a>
   <a href="#literature">文献との突き合わせ</a>
@@ -44,6 +45,31 @@
 
   <h3 id="choose">手法の選び方</h3>
   <p>病棟単位の勤務表のような中規模までなら、まず MIP で解き、最適性の証明か下界との差を確認します。規模が大きい、制約がきつくて MIP が解を出せない、という場合は CP-SAT を複数スレッドで使います。調整していない汎用の SA で品質を判断するのは避けます。</p>
+  <!-- 問題設定とインスタンス: python src/export_web.py が src/problems/ の setting と instance_info から書き出す（この間は直接編集しない） -->
+  <h3 id="setting">問題設定とインスタンス</h3>
+  <p>職員ごとに、計画期間の毎日の勤務（早番・遅番・夜勤などの勤務種別のどれか、または休み）を決めて勤務表を作る。労務上の規則（ハード制約）を必ず守ったうえで、日ごとの必要人数をなるべく満たし、職員の希望をなるべくかなえる。病棟の看護師のほか、コールセンターや工場、小売店のシフト作成に現れる。</p>
+  <dl class="setting">
+    <dt>決めるもの</dt><dd>x_eds = 1 は「職員 e が日 d に勤務種別 s で働く」ことを表す 0-1 変数。どの勤務種別も 0 の日は休み。</dd>
+    <dt>制約</dt><dd><ul class="pts"><li>1 日に入る勤務は 1 つまで。</li><li>休息が足りない勤務の並び（遅番や夜勤の翌日の早番など）を禁止する。</li><li>勤務種別ごとの回数の上限（夜勤不可の職員は夜勤 0 回）。</li><li>期間中の総勤務時間の下限と上限。</li><li>連続勤務は 2〜5 日、連続休日は 2 日以上（期間の端にかかる連続は除く）。</li><li>土日のどちらかに勤務する週末の数の上限。</li><li>職員ごとの指定休日には勤務しない。</li></ul></dd>
+    <dt>目的関数</dt><dd>ペナルティの合計を最小化する。必要人数に対する不足は 1 人につき 100、超過は 1 人につき 1。勤務の希望がかなわないとき、または避けたい勤務に入れたときは、希望ごとの重み（1〜3）を加える。</dd>
+    <dt>補足</dt><dd>上の制約はすべてハード制約で、1 つでも破った勤務表は実行不能（解なし）として扱う。</dd>
+  </dl>
+  <p>Curtois &amp; Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmarks.org）と同じ制約体系を持つ合成インスタンス 6 問で、8〜50 人、14〜42 日、勤務種別 1〜4 種類。職員の約 75% が常勤（週 5 日相当）、残りが非常勤（週 3 日相当）で、必要人数は職員が働ける量の約 8 割を日と勤務種別にばらつかせて配分した（週末は 1 人ずつ減らす）。python src/make_instances.py nsp で同じものを再生成できる。最適値が分からないため、参照値は全 run・全手法中の最良値。</p>
+  <div class="frame">
+  <table>
+    <thead><tr><th>インスタンス</th><th class="num">職員数</th><th class="num">日数</th><th>勤務種別</th><th class="num">0-1 変数</th><th class="num">必要人数（延べ）</th><th class="num">勤務の希望</th></tr></thead>
+    <tbody>
+      <tr><td><code>nsp01</code></td><td class="num">8</td><td class="num">14</td><td>日勤</td><td class="num">112</td><td class="num">54</td><td class="num">32</td></tr>
+      <tr><td><code>nsp02</code></td><td class="num">14</td><td class="num">14</td><td>早番・遅番</td><td class="num">392</td><td class="num">97</td><td class="num">51</td></tr>
+      <tr><td><code>nsp03</code></td><td class="num">20</td><td class="num">28</td><td>早番・遅番</td><td class="num">1,120</td><td class="num">253</td><td class="num">149</td></tr>
+      <tr><td><code>nsp04</code></td><td class="num">30</td><td class="num">28</td><td>早番・遅番・夜勤</td><td class="num">2,520</td><td class="num">392</td><td class="num">223</td></tr>
+      <tr><td><code>nsp05</code></td><td class="num">40</td><td class="num">28</td><td>早番・遅番・夜勤</td><td class="num">3,360</td><td class="num">523</td><td class="num">296</td></tr>
+      <tr><td><code>nsp06</code></td><td class="num">50</td><td class="num">42</td><td>早番・日勤・遅番・夜勤</td><td class="num">8,400</td><td class="num">1,025</td><td class="num">548</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <!-- /問題設定とインスタンス -->
+
   <h3 id="methods">比べた手法</h3>
   <!-- 解法の登録時の解説（src/solvers/ の @solver の description）と同じ文。解法を足したら 1 項目足す -->
   <p>手法名の末尾の <code>-4w</code> は 4 スレッドで実行したことを示します。</p>

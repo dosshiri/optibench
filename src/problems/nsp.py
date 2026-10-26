@@ -213,8 +213,43 @@ def generate_all():
         print(n, len(inst["employees"]), inst["horizon"], inst["shifts"], np.array(inst["cover"]).sum())
 
 
+SHIFT_NAME = {"E": "早番", "D": "日勤", "L": "遅番", "N": "夜勤"}
+
+
+def instance_info(name):
+    inst = load_instance(name)
+    E, H, S = len(inst["employees"]), inst["horizon"], len(inst["shifts"])
+    req = sum(len(e["on_req"]) + len(e["off_req"]) for e in inst["employees"])
+    return {"職員数": E, "日数": H, "勤務種別": "・".join(SHIFT_NAME.get(x, x) for x in inst["shifts"]),
+            "0-1 変数": E * H * S, "必要人数（延べ）": int(np.sum(inst["cover"])), "勤務の希望": req}
+
+
 register_problem(Problem(
     name="nsp", label="ナーススケジューリング", unit="ペナルティ",
     ref_label="全 run・全手法中の最良値（合成インスタンス、最適値未知）", instance_file="nsp/{}.json",
     instances=lambda: sorted(f[:-5] for f in os.listdir(NSP_DIR) if f.endswith(".json")),
-    load=load_instance, evaluate=check, generate=generate_all, display="value", order=40))
+    load=load_instance, evaluate=check, generate=generate_all, display="value", order=40,
+    discussion="nsp.html", instance_info=instance_info,
+    setting=dict(
+        brief="職員ごとに毎日の勤務か休みを決めて勤務表を作る。労務上の規則を守りつつ、人数の過不足と希望の違反を最小にする。",
+        summary=("職員ごとに、計画期間の毎日の勤務（早番・遅番・夜勤などの勤務種別のどれか、または休み）を決めて勤務表を作る。"
+                 "労務上の規則（ハード制約）を必ず守ったうえで、日ごとの必要人数をなるべく満たし、職員の希望をなるべくかなえる。"
+                 "病棟の看護師のほか、コールセンターや工場、小売店のシフト作成に現れる。"),
+        variables="x_eds = 1 は「職員 e が日 d に勤務種別 s で働く」ことを表す 0-1 変数。どの勤務種別も 0 の日は休み。",
+        constraints=[
+            "1 日に入る勤務は 1 つまで。",
+            "休息が足りない勤務の並び（遅番や夜勤の翌日の早番など）を禁止する。",
+            "勤務種別ごとの回数の上限（夜勤不可の職員は夜勤 0 回）。",
+            "期間中の総勤務時間の下限と上限。",
+            "連続勤務は 2〜5 日、連続休日は 2 日以上（期間の端にかかる連続は除く）。",
+            "土日のどちらかに勤務する週末の数の上限。",
+            "職員ごとの指定休日には勤務しない。",
+        ],
+        objective=("ペナルティの合計を最小化する。必要人数に対する不足は 1 人につき 100、超過は 1 人につき 1。"
+                   "勤務の希望がかなわないとき、または避けたい勤務に入れたときは、希望ごとの重み（1〜3）を加える。"),
+        note="上の制約はすべてハード制約で、1 つでも破った勤務表は実行不能（解なし）として扱う。",
+        instances=("Curtois & Qu (2014) の Shift Scheduling Benchmark（schedulingbenchmarks.org）と同じ制約体系を持つ合成インスタンス 6 問で、"
+                   "8〜50 人、14〜42 日、勤務種別 1〜4 種類。職員の約 75% が常勤（週 5 日相当）、残りが非常勤（週 3 日相当）で、"
+                   "必要人数は職員が働ける量の約 8 割を日と勤務種別にばらつかせて配分した（週末は 1 人ずつ減らす）。"
+                   "python src/make_instances.py nsp で同じものを再生成できる。最適値が分からないため、参照値は全 run・全手法中の最良値。"),
+        scale="合成 6 問（8〜50 人 × 14〜42 日、勤務種別 1〜4）")))

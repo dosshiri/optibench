@@ -6,6 +6,8 @@ import os
 import sys
 from xml.sax.saxutils import escape
 
+import export_setting
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # リポジトリ直下
 OUT_DIR = os.path.join(ROOT, "results")
 FIG_DIR = os.path.join(OUT_DIR, "figures")
@@ -263,7 +265,7 @@ def main(data):
         for name, svg in ((f"{k}_bars.svg", bars_svg(P, st)), (f"{k}_heat.svg", heat_svg(P, order))):
             with open(os.path.join(FIG_DIR, name), "w", encoding="utf-8", newline="\n") as f:
                 f.write(svg)
-        md += [f'<a id="{k}"></a>', "", f'## {P["label"]}', "",
+        md += [f'<a id="{k}"></a>', "", f'## {P["label"]}', ""] + export_setting.md_lines(Pm) + ["### 結果", "",
                f'run `{P["run_id"]}`（{P["started_at"][:16].replace("T", " ")} UTC 開始）。'
                f'参照値: {P["ref"]}。制限時間 {P["time_limit"]:g} 秒、{threads_text(P)}。確率的手法は複数シードの平均。', "",
                f"実行環境: {env_text(P)}", ""]
