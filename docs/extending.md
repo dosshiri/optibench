@@ -17,7 +17,7 @@ src/
     atsptw.py            ATSP-TW の解法（任意の依存を使う解法は atsptw_pyvrp.py のように別ファイル）
     vrptw.py             VRPTW の解法（PyVRP 版は vrptw_pyvrp.py）
     jssp.py              JSSP の解法
-    nsp.py               NSP の解法
+    nsp.py               NSP の解法（Valouxis らの 2 段階解法は nsp_valouxis.py）
 instances/<問題>/      インスタンスファイル
 ```
 

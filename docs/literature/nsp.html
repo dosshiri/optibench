@@ -59,7 +59,7 @@
       <tr><td class="ref">Valouxis ら<span class="yr">EJOR 2012</span></td>
         <td><span class="tag t-mp">MIPによる2段階分解</span></td>
         <td>INRC-I（INRC2010）</td>
-        <td>大規模問題を部分問題に分け、整数計画で逐次解きます。INRC2010 の全トラックで1位。「時間制限つきの競技でもMIP分解は勝てる」ことを示しました。</td></tr>
+        <td>大規模問題を部分問題に分け、整数計画で逐次解きます。第1段階で職員ごと・日ごとの勤務量（働くかどうか）を決め、第2段階で具体的な勤務種別を割り当て、その後に職員の部分勤務表の組合せを入れ替える局所最適化を時間の許す限り繰り返します。INRC2010 の全トラックで1位。「時間制限つきの競技でもMIP分解は勝てる」ことを示しました。公開コードは見当たらないため、手元ベンチマークでは要旨の骨組みに沿って HiGHS で組み直した <code>Valouxis-2phase</code> を比べています。<span class="note">（要旨レベルで確認。部分問題の分け方などの細部は原典と異なりうる）</span></td></tr>
       <tr><td class="ref">Ceschia, Dang, De Causmaecker, Haspeslagh, Schaerf<span class="yr">Ann. Oper. Res. 2019</span></td>
         <td>INRC-II の主催報告</td>
         <td>INRC-II（多段階：週ごとに逐次決定）</td>
